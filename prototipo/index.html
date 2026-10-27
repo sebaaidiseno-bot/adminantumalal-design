@@ -10,21 +10,22 @@
 <style>
 /* ============ Tokens ============ */
 :root{
-  --ant-navy:#0b2a4a;        /* texto fuerte / marca */
-  --ant-blue:#1d5fa8;        /* iconos de módulo y enlaces */
-  --ant-accent:#e85215;      /* única acción primaria (naranja de la casa) */
-  --ant-bg:#f4f6f9;
+  /* Mismos nombres y valores que ya tiene app.css (--ant-dark, --ant-accent, --ant-r-*, --ant-s*) */
+  --ant-navy:#011e39;        /* = --ant-tinta */
+  --ant-blue:#1b5b95;        /* = --imp-azul (ya existe): color de iconos y enlaces */
+  --ant-accent:#e85215;
+  --ant-bg:#f2f5f9;
   --ant-surface:#fff;
-  --ant-line:#e3e8ee;
-  --ant-muted:#5b6b7d;
-  --ant-r-s:8px; --ant-r-m:12px;
-  --ant-shadow:0 1px 2px rgba(11,42,74,.05);
-  --ant-shadow-hover:0 4px 14px rgba(11,42,74,.10);
+  --ant-line:#dfe6ee;
+  --ant-muted:#566a80;
+  --ant-r-s:10px; --ant-r-m:14px;
+  --ant-shadow:0 1px 2px rgba(1,30,57,.06),0 1px 3px rgba(1,30,57,.05);        /* = --ant-s1 */
+  --ant-shadow-hover:0 2px 6px rgba(1,30,57,.07),0 10px 28px rgba(1,30,57,.11); /* = --ant-s2 */
 }
 @media (prefers-color-scheme:dark){
   :root:not([data-bs-theme="light"]){
-    --ant-navy:#e8eef6; --ant-blue:#6aa8ee; --ant-bg:#0a1626; --ant-surface:#10233a;
-    --ant-line:#1f3550; --ant-muted:#93a6bc; --ant-shadow:none; --ant-shadow-hover:0 4px 14px rgba(0,0,0,.4);
+    --ant-navy:#dbe7f3; --ant-blue:#4d9bd8; --ant-bg:#0a1626; --ant-surface:#10233a;   /* --ant-celeste-oscuro */
+    --ant-line:#1f3550; --ant-muted:#93a6bc; --ant-shadow:0 1px 2px rgba(0,0,0,.35); --ant-shadow-hover:0 2px 6px rgba(0,0,0,.35),0 8px 20px rgba(0,0,0,.30);
   }
 }
 html{color-scheme:light dark}
@@ -84,18 +85,35 @@ a.kpi:hover{box-shadow:var(--ant-shadow-hover)}
 .grupo-h{display:flex;align-items:center;gap:.5rem;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
   color:var(--ant-muted);margin:0 0 8px;padding-bottom:6px;border-bottom:1px solid var(--ant-line)}
 .grupo-h .n{font-weight:500;letter-spacing:0;text-transform:none}
-.grid-mod{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:10px}
+.grid-mod{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-rows:104px;grid-auto-flow:dense;gap:10px}
+/* Bento de 4 columnas. El primer módulo del grupo (o el fijado) es la pieza grande 2×2. Con 4 o más módulos, el segundo es
+   una pieza ancha 2×1 y los dos siguientes 1×1: el bloque de 2 filas queda exacto, sin huecos. Los módulos que sobran siguen en filas de 4
+   y el último se estira para cerrar la fila (.llena). Con 1–2 módulos: piezas anchas 2×1 en una sola fila (compacto); con 3: una grande y dos anchas.
+   Con búsqueda activa todo vuelve a 1×1 para leer resultados sin saltos. */
+.grid-mod.bento .mod.hero{grid-column:span 2;grid-row:span 2;align-items:flex-start;justify-content:flex-end;text-align:left;padding:38px 16px 14px;gap:6px;
+  background:linear-gradient(160deg,color-mix(in srgb,var(--ant-blue) 9%,var(--ant-surface)),var(--ant-surface) 60%)}
+.grid-mod.bento .mod.hero .mod-icono{font-size:4rem;margin-bottom:auto}
+.grid-mod.bento .mod.hero .mod-nombre{font-size:1.05rem}
+.grid-mod.bento .mod.ancho{grid-column:span 2;flex-direction:row;justify-content:flex-start;text-align:left;gap:14px;padding:12px 44px 12px 18px}
+.grid-mod.bento .mod.ancho .mod-nivel,.grid-mod.bento .mod.ancho .mod-fijo{top:8px;left:auto;right:46px}
+.mod-desc,.mod-dato{display:none;margin:0;font-size:12px;color:var(--ant-muted)}
+.mod.hero .mod-desc{display:block;max-width:34ch}
+.mod.hero .mod-dato,.mod.ancho .mod-dato{display:inline-flex;align-items:center;gap:.35rem;font-weight:600;color:var(--ant-navy);font-variant-numeric:tabular-nums}
+.mod-dato::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--ant-accent)}
+.mod.ancho .mod-texto{display:flex;flex-direction:column;gap:2px}
+.mod.ancho .mod-icono{font-size:2.5rem}
 .mod{position:relative;background:var(--ant-surface);border:1px solid var(--ant-line);border-radius:var(--ant-r-m);
   corner-shape:squircle;
   min-height:104px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:12px 10px 10px;
   text-align:center;box-shadow:var(--ant-shadow);transition:box-shadow .18s,border-color .18s,transform .18s}
 .mod:hover,.mod:focus-within{box-shadow:var(--ant-shadow-hover);border-color:color-mix(in srgb,var(--ant-blue) 40%,var(--ant-line))}
-.mod:hover{transform:translateY(-1px)}
+.mod:hover{transform:translateY(-1px)}  /* antes -3px + sombra grande */
 .mod-icono{font-size:2.5rem;line-height:1;color:var(--ant-blue)}   /* sin fondo azul: el icono ES el color */
 .mod-nombre{font-weight:600;font-size:13px;line-height:1.25;color:var(--ant-navy);text-decoration:none;text-wrap:balance}
 .mod-nombre::after{content:"";position:absolute;inset:0;border-radius:inherit}  /* toda la tarjeta es enlace */
 .mod-nivel,.mod-fijo{position:absolute;top:10px;left:10px;font-size:12px;color:var(--ant-muted)}
 .mod-fijo{color:var(--ant-accent)}
+.mod>.dropdown{position:static}  /* Bootstrap pone position:relative y el ⋯ quedaba centrado sobre el icono */
 .mod-mas{position:absolute;top:0;right:0;z-index:2;min-width:44px;min-height:44px;display:grid;place-items:center;border:0;background:none;
   color:var(--ant-muted);border-radius:var(--ant-r-s);opacity:0;transition:opacity .15s}
 .mod:hover .mod-mas,.mod:focus-within .mod-mas,.mod-mas[aria-expanded="true"]{opacity:1}
@@ -170,6 +188,16 @@ dialog.cmd::backdrop{background:rgba(5,15,28,.45)}
 :focus-visible{outline:3px solid color-mix(in srgb,var(--ant-accent) 70%,transparent);outline-offset:2px}
 .skip{position:absolute;left:-999px}.skip:focus{left:8px;top:8px;z-index:99;background:#fff;padding:8px}
 
+@media (min-width:861px){.grid-mod.bento .mod.llena{grid-column:span var(--llena,2)}}
+@media (max-width:860px){
+  .grid-mod{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .grid-mod.bento .mod.hero{grid-column:span 2;grid-row:span 1;flex-direction:row;align-items:center;justify-content:flex-start;padding:12px 44px 12px 18px;gap:14px}
+  .grid-mod.bento .mod.hero .mod-icono{font-size:3rem;margin:0}
+  .grid-mod.bento .mod.hero .mod-desc{display:none}
+  .grid-mod.bento .mod.hero .mod-texto{display:flex;flex-direction:column;gap:2px}
+  .grid-mod.bento .mod.ancho{grid-column:span 2}
+  .grid-mod.bento .mod.hero .mod-nivel,.grid-mod.bento .mod.hero .mod-fijo{top:8px;left:auto;right:46px}
+}
 @media (max-width:860px){
   .shell{grid-template-columns:1fr}
   .lateral{position:static;max-height:none}
@@ -387,9 +415,9 @@ function transicion(fn){
 let filtroGrupo = 'todos', texto = '';
 const norm = s => s.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase();
 
-function tarjeta(g, m){
+function tarjeta(g, m, forma){
   const [nombre, icono, href] = m, key = g.id + ':' + nombre, fijo = fijados.has(key);
-  return `<div class="mod">
+  return `<div class="mod ${forma || ''}">
     ${fijo ? '<i class="bi bi-pin-angle-fill mod-fijo" role="img" aria-label="Fijado"></i>' : '<i class="bi bi-shield-lock mod-nivel" role="img" aria-label="Solo administradores" title="Solo administradores"></i>'}
     <div class="dropdown">
       <button class="mod-mas" data-bs-toggle="dropdown" aria-label="Opciones de ${nombre}"><i class="bi bi-three-dots"></i></button>
@@ -400,8 +428,21 @@ function tarjeta(g, m){
       </ul>
     </div>
     <i class="bi bi-${icono} mod-icono" aria-hidden="true"></i>
-    <a class="mod-nombre" href="${href || '#'}" ${href ? 'data-ir="'+href.slice(1)+'"' : ''}>${nombre}</a>
+    <span class="mod-texto">
+      <a class="mod-nombre" href="${href || '#'}" ${href ? 'data-ir="'+href.slice(1)+'"' : ''}>${nombre}</a>
+      <p class="mod-desc">Descripción breve del módulo (texto de ejemplo).</p>
+      <span class="mod-dato">00 pendientes</span>
+    </span>
   </div>`;
+}
+/* Forma bento de cada pieza según cuántos módulos tiene el grupo (ver comentario del CSS) */
+function formaBento(i, n){
+  if (n <= 3 && i > 0 || n <= 2) return 'ancho';
+  if (i === 0) return 'hero';
+  if (i === 1) return 'ancho';
+  const extra = n - 4, resto = extra % 4;
+  if (i === n - 1 && resto) return 'ancho llena" style="--llena:' + (4 - resto + 1);
+  return '';
 }
 function renderModulos(){
   const q = norm(texto.trim()); let total = 0;
@@ -413,7 +454,7 @@ function renderModulos(){
     if (!mods.length) return '';
     return `<section class="grupo" aria-labelledby="h-${g.id}">
       <h2 class="grupo-h" id="h-${g.id}">${g.nombre} <span class="n">· ${mods.length}</span></h2>
-      <div class="grid-mod">${mods.map(m => tarjeta(g,m)).join('')}</div></section>`;
+      <div class="grid-mod${q ? '' : ' bento'}">${mods.map((m,i) => tarjeta(g, m, q ? "" : formaBento(i, mods.length))).join('')}</div></section>`;
   }).join('');
   $('#sinRes').hidden = total > 0;
 }
