@@ -15,7 +15,12 @@
   --ant-r-s:10px; --ant-r-m:14px;
   --ant-s1:0 1px 2px rgba(1,30,57,.06),0 1px 3px rgba(1,30,57,.05);
   --ant-s2:0 2px 6px rgba(1,30,57,.07),0 10px 28px rgba(1,30,57,.11);
-  --ant-alerta:var(--ant-accent);       /* campana, avisos: en las paletas sobrias pasa a rojo y el naranja se retira */
+  --ant-accent-fondo:#c44010;           /* relleno de botones e insignias con texto blanco: #e85215 daba 3.7:1; este da 5.4:1 (AA) */
+  --ant-accent-fondo-hover:#a3360d;
+  --ant-alerta:var(--ant-accent-fondo); /* campana, avisos: en las paletas sobrias pasa a rojo y el naranja se retira */
+  /* texto de estado sobre su propio tinte al 14 %: el color base oscurecido 30 % (en oscuro se usa tal cual) */
+  --t-ok:color-mix(in srgb,var(--c-ok) 70%,#000);--t-warn:color-mix(in srgb,var(--c-warn) 62%,#000);--t-bad:color-mix(in srgb,var(--c-bad) 74%,#000);
+  --t-info:color-mix(in srgb,var(--c-info) 72%,#000);--t-neutro:color-mix(in srgb,var(--c-neutro) 65%,#000);--t-azul:color-mix(in srgb,var(--c-azul) 68%,#000);
   --c-warn:#b7791f; --c-bad:#c0392b; --c-ok:#198754; --c-info:#0b7285; --c-neutro:#6b7280; --c-azul:#2b6cb0;
   --bs-body-bg:var(--ant-bg); --bs-body-color:var(--ant-tinta);
 }
@@ -23,19 +28,22 @@
   --ant-tinta:#dbe7f3; --ant-icono:#4d9bd8; --ant-bg:#0a1626; --ant-surface:#10233a; --ant-line:#1f3550; --ant-muted:#93a6bc;
   --ant-s1:0 1px 2px rgba(0,0,0,.35); --ant-s2:0 2px 6px rgba(0,0,0,.35),0 8px 20px rgba(0,0,0,.30);
   --c-warn:#e0b04a; --c-bad:#ef7b6e; --c-ok:#4cc38a; --c-info:#4fc3d9; --c-neutro:#9aa8b8; --c-azul:#6aa8ee;
+  --ant-enlace:#6aa8ee;                 /* enlaces en oscuro: el celeste de iconos daba 4.49:1 sobre avisos tintados */
+  --txt-mezcla:100%;
+  --t-ok:var(--c-ok);--t-warn:var(--c-warn);--t-bad:var(--c-bad);--t-info:var(--c-info);--t-neutro:var(--c-neutro);--t-azul:var(--c-azul);
   --bs-body-bg:var(--ant-bg); --bs-body-color:var(--ant-tinta);
 }
 
 /* ============ Paletas alternativas (se eligen en el menú de usuario → Paleta). A = la actual, sin atributo. ============ */
 /* B · Marino sobrio: el naranja desaparece; el énfasis es el marino y el rojo queda solo para alertas */
-[data-paleta="b"]{--ant-accent:#0b3a66;--ant-hover:#062a4d;--ant-alerta:#c0392b;--kpi-borde:var(--ant-line);--kpi-ico:var(--ant-muted)}
-[data-paleta="b"][data-bs-theme="dark"]{--ant-accent:#2a6fb5;--ant-hover:#3b82c9;--ant-alerta:#ef7b6e}
+[data-paleta="b"]:not([data-bs-theme="dark"]){--ant-accent:#0b3a66;--ant-hover:#062a4d;--ant-accent-fondo:#0b3a66;--ant-accent-fondo-hover:#062a4d;--ant-alerta:#c0392b;--kpi-borde:var(--ant-line);--kpi-ico:var(--ant-muted)}
+[data-paleta="b"][data-bs-theme="dark"]{--ant-accent:#2a6fb5;--ant-hover:#3b82c9;--ant-accent-fondo:#2a6fb5;--ant-accent-fondo-hover:#3b82c9;--ant-alerta:#b3382b}
 /* C · Verde azulado y piedra: fondo cálido, acento teal */
-[data-paleta="c"]{--ant-bg:#f6f5f2;--ant-line:#e4e1da;--ant-tinta:#17302f;--ant-muted:#5e6b69;--ant-icono:#0f6b6b;--ant-accent:#0f6b6b;--ant-hover:#0a5252;--ant-alerta:#c0392b;--kpi-borde:var(--ant-line);--kpi-ico:var(--ant-muted)}
-[data-paleta="c"][data-bs-theme="dark"]{--ant-bg:#0e1a1a;--ant-surface:#142524;--ant-line:#234040;--ant-tinta:#dcecea;--ant-muted:#8fa9a6;--ant-icono:#4fb8b3;--ant-accent:#2a8f8b;--ant-hover:#36a6a1;--ant-alerta:#ef7b6e}
+[data-paleta="c"]:not([data-bs-theme="dark"]){--ant-bg:#f6f5f2;--ant-line:#e4e1da;--ant-tinta:#17302f;--ant-muted:#5e6b69;--ant-icono:#0f6b6b;--ant-accent:#0f6b6b;--ant-hover:#0a5252;--ant-accent-fondo:#0f6b6b;--ant-accent-fondo-hover:#0a5252;--ant-alerta:#c0392b;--kpi-borde:var(--ant-line);--kpi-ico:var(--ant-muted)}
+[data-paleta="c"][data-bs-theme="dark"]{--ant-bg:#0e1a1a;--ant-surface:#142524;--ant-line:#234040;--ant-tinta:#dcecea;--ant-muted:#8fa9a6;--ant-icono:#4fb8b3;--ant-accent:#2a8f8b;--ant-hover:#36a6a1;--ant-accent-fondo:#1f7a76;--ant-accent-fondo-hover:#2a8f8b;--ant-alerta:#b3382b}
 /* D · Grafito: grises azulados, iconos apagados; el naranja queda SOLO en el botón principal */
-[data-paleta="d"]{--ant-bg:#f4f5f7;--ant-line:#e0e4e9;--ant-tinta:#1f2933;--ant-muted:#5a6775;--ant-icono:#3b556e;--ant-alerta:#c0392b;--kpi-borde:var(--ant-line);--kpi-ico:var(--ant-muted)}
-[data-paleta="d"][data-bs-theme="dark"]{--ant-icono:#8fb0cf;--ant-alerta:#ef7b6e}
+[data-paleta="d"]:not([data-bs-theme="dark"]){--ant-alerta:#c0392b;--ant-bg:#f4f5f7;--ant-line:#e0e4e9;--ant-tinta:#1f2933;--ant-muted:#5a6775;--ant-icono:#3b556e;--ant-alerta:#c0392b;--kpi-borde:var(--ant-line);--kpi-ico:var(--ant-muted)}
+[data-paleta="d"][data-bs-theme="dark"]{--ant-icono:#8fb0cf;--ant-alerta:#b3382b}
 [data-paleta="d"] .mod-fijo,[data-paleta="d"] .pestanas a[aria-current="page"],[data-paleta="d"] .mod-menu-pin[aria-pressed="true"]{color:var(--ant-icono);border-color:var(--ant-icono)}
 html{color-scheme:light dark}
 body{background:var(--ant-bg);color:var(--ant-tinta);font-size:14px;
@@ -43,7 +51,7 @@ body{background:var(--ant-bg);color:var(--ant-tinta);font-size:14px;
 h1,h2,h3,h4,.titulo{text-wrap:balance}
 p{text-wrap:pretty}
 .num{font-variant-numeric:tabular-nums}
-a{color:var(--ant-icono)}
+a{color:var(--ant-enlace,var(--ant-icono))}
 .text-muted,.form-text{color:var(--ant-muted)!important}
 
 /* ============ Cabecera clara (antes: vidrio marino de 56 px) ============ */
@@ -87,9 +95,10 @@ kbd{background:var(--ant-surface);color:var(--ant-muted);border:1px solid var(--
 .panel{background:var(--ant-surface);border:1px solid var(--ant-line);border-radius:var(--ant-r-m);box-shadow:var(--ant-s1)}
 .form-control,.form-select{border:1px solid var(--ant-line);background-color:var(--ant-bg);color:var(--ant-tinta);min-height:40px;box-shadow:none}
 .form-control:focus,.form-select:focus{background-color:var(--ant-surface);color:var(--ant-tinta);border-color:var(--ant-icono);box-shadow:0 0 0 3px color-mix(in srgb,var(--ant-icono) 25%,transparent)}
-.btn-accent{background:var(--ant-accent);border:0;color:#fff;font-weight:600;min-height:40px;padding:0 1rem;border-radius:var(--ant-r-s)}
-.btn-accent:hover{background:var(--ant-hover);color:#fff}
+.btn-accent{background:var(--ant-accent-fondo);border:0;color:#fff;font-weight:600;min-height:40px;padding:0 1rem;border-radius:var(--ant-r-s)}
+.btn-accent:hover{background:var(--ant-accent-fondo-hover);color:#fff}
 .btn-accent:disabled{opacity:.6}
+.btn-accent.btn-wa{background:#146c43}.btn-accent.btn-wa:hover{background:#0f5a37}   /* verde de WhatsApp con texto blanco ≥ 5:1 */
 .btn-accent.fin{border-radius:0 var(--ant-r-s) var(--ant-r-s) 0}
 .modal-content{background:var(--ant-surface);border:1px solid var(--ant-line);border-radius:var(--ant-r-m);color:var(--ant-tinta)}
 .modal-header,.modal-footer{border-color:var(--ant-line)}
@@ -123,7 +132,15 @@ a.kpi:hover{box-shadow:var(--ant-s2);color:inherit}
 
 /* --- Bento de grupos: grupos grandes y chicos se acomodan juntos en filas de 9 unidades (6 en tablet, 1 en móvil) --- */
 #grupos{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));grid-auto-flow:dense;gap:12px;align-items:stretch}
-.grupo{padding:12px;min-width:0;grid-column:span var(--s9,3)}
+.grupo,.cluster{min-width:0;order:var(--o9,0);grid-column:span var(--s9,3)}
+.grupo{padding:12px}
+/* Grupos chicos (1–2 módulos): una sola columna, varios lado a lado dentro de un bloque («cluster») */
+.cluster{display:grid;grid-template-columns:repeat(var(--k,3),minmax(0,1fr));gap:12px}
+.cluster>.grupo{grid-column:auto;order:0}   /* --s9/--s6 se heredan del bloque: sin esto cada panel pedía el ancho del bloque entero */
+.grupo.chico .tiles{grid-template-columns:minmax(0,1fr)}
+.grupo.chico .grupo-h{flex-wrap:wrap;gap:.1rem .4rem;letter-spacing:.03em;font-size:11px;line-height:1.25;align-items:flex-start}
+.grupo.chico .grupo-h i{margin-top:1px}
+.grupo.chico .grupo-h .n{margin-left:auto}
 .grupo-h{display:flex;align-items:center;gap:.5rem;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ant-muted);margin:0 0 10px}
 .grupo-h i{color:var(--ant-icono);font-size:1rem}
 .grupo-h .n{font-weight:500;letter-spacing:0;text-transform:none;margin-left:auto;font-size:11.5px}
@@ -193,19 +210,29 @@ table.t{width:100%;border-collapse:collapse}
 .t .num{text-align:right}
 .t tbody tr:hover td{background:color-mix(in srgb,var(--ant-icono) 5%,transparent)}
 .sub{display:block;font-size:12px;color:var(--ant-muted)}
-.estado{font-size:12px;font-weight:600;padding:2px 8px;border-radius:99px;background:color-mix(in srgb,var(--c) 14%,transparent);color:var(--c);white-space:nowrap}
+.estado{font-size:12px;font-weight:600;padding:2px 8px;border-radius:99px;background:color-mix(in srgb,var(--c) 14%,transparent);color:color-mix(in srgb,var(--c) var(--txt-mezcla,70%),#000);white-space:nowrap}
 .pie-tabla{display:flex;justify-content:space-between;align-items:center;gap:.5rem;flex-wrap:wrap;padding:10px 12px;border-top:1px solid var(--ant-line);color:var(--ant-muted)}
 .pasos{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;margin-bottom:12px}
 .paso{padding:0;overflow:hidden}
-.paso h3{font-size:13px;font-weight:700;margin:0;padding:10px 14px;border-bottom:1px solid var(--ant-line);display:flex;gap:.5rem;align-items:center;flex-wrap:wrap}
+.paso .paso-t{font-size:13px;font-weight:700;margin:0;padding:10px 14px;border-bottom:1px solid var(--ant-line);display:flex;gap:.5rem;align-items:center;flex-wrap:wrap}
 .paso .cuerpo{padding:12px 14px}
-.paso h3 i{color:var(--ant-icono)}
+.paso .paso-t i{color:var(--ant-icono)}
 .fila-dato{display:flex;justify-content:space-between;gap:1rem;padding:6px 0;border-bottom:1px solid var(--ant-line)}
 .fila-dato:last-child{border:0}
 
 /* skeleton: solo si la carga pasa de 300 ms, con las mismas columnas que la tabla real (en producción ya existe como [data-esqueleto]) */
 .sk-b{height:1em;border-radius:6px;background:linear-gradient(90deg,var(--ant-line),color-mix(in srgb,var(--ant-line) 50%,var(--ant-surface)),var(--ant-line));background-size:200% 100%;animation:sk 1.2s linear infinite}
 @keyframes sk{to{background-position:-200% 0}}
+
+code{color:var(--ant-tinta);background:color-mix(in srgb,var(--ant-icono) 10%,transparent);padding:0 .25rem;border-radius:4px;font-size:.85em}
+
+/* ============ Estados vacío y de error (un solo componente: icono, una frase, una acción) ============ */
+.estado-vacio{display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;padding:28px 16px;color:var(--ant-muted)}
+.estado-vacio>i{font-size:1.6rem;color:var(--ant-icono);width:52px;height:52px;border-radius:50%;display:grid;place-items:center;background:color-mix(in srgb,var(--ant-icono) 10%,transparent)}
+.estado-vacio.error>i{color:var(--t-bad);background:color-mix(in srgb,var(--c-bad) 10%,transparent)}
+.estado-vacio strong{color:var(--ant-tinta);font-size:1rem}
+.estado-vacio p{margin:0;max-width:44ch}
+.estado-vacio .btn-ghost{margin-top:6px}
 
 /* ============ Command menu ============ */
 dialog.cmd{border:1px solid var(--ant-line);border-radius:var(--ant-r-m);padding:0;width:min(560px,calc(100vw - 24px));margin:12vh auto 0;background:var(--ant-surface);color:var(--ant-tinta);box-shadow:0 20px 60px rgba(1,30,57,.3)}
@@ -241,7 +268,7 @@ body.tiene-sabio .wrap{padding-bottom:96px}
 @media (max-width:1240px){.marca small{display:none}}
 @media (max-width:1180px){
   #grupos{grid-template-columns:repeat(6,minmax(0,1fr))}
-  .grupo{grid-column:span var(--s6,3)}
+  .grupo,.cluster{grid-column:span var(--s6,3);order:var(--o6,0)}
   .sec-1100{display:none}
 }
 @media (max-width:860px){
@@ -250,8 +277,9 @@ body.tiene-sabio .wrap{padding-bottom:96px}
   .btn-ghost{padding:0 .6rem}
 }
 @media (max-width:760px){
-  #grupos,#grupos.compacta{grid-template-columns:1fr}.grupo{grid-column:auto}
-  .tiles{grid-template-columns:repeat(3,minmax(0,1fr))}
+  #grupos,#grupos.compacta{grid-template-columns:1fr}.grupo,.cluster{grid-column:auto;order:var(--o0,0)}
+  .cluster{grid-template-columns:1fr}
+  .tiles,.grupo.chico .tiles{grid-template-columns:repeat(3,minmax(0,1fr))}
   .compacta .tiles{grid-template-columns:1fr}
   .solo-desk,#sabio .saludo-b{display:none}
 }
@@ -259,7 +287,6 @@ body.tiene-sabio .wrap{padding-bottom:96px}
   *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
   ::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none!important}
 }
-
 /* ===== Estilos compartidos por las vistas sueltas (gráficos, Cardinal OS, barras de avance) ===== */
 .tip{position:fixed;z-index:3000;pointer-events:none;background:var(--ant-tinta);color:var(--ant-surface);font-size:12px;padding:6px 9px;border-radius:8px;box-shadow:var(--ant-s2);max-width:260px;opacity:0;transition:opacity .1s}
 .tip.on{opacity:1}
@@ -289,7 +316,7 @@ body.tiene-sabio .wrap{padding-bottom:96px}
 .hb b{font-variant-numeric:tabular-nums;font-weight:600;white-space:nowrap}
 .t td.barra-celda{background:linear-gradient(90deg,color-mix(in srgb,var(--ant-icono) 14%,transparent) var(--w,0%),transparent var(--w,0%))}
 .cumpl{white-space:nowrap;font-variant-numeric:tabular-nums;font-weight:600}
-.cumpl.mal{color:var(--c-bad)}.cumpl.med{color:var(--c-warn)}.cumpl.bien{color:var(--c-ok)}
+.cumpl.mal{color:var(--t-bad)}.cumpl.med{color:var(--t-warn)}.cumpl.bien{color:var(--t-ok)}
 .nota-pie{font-size:12px;color:var(--ant-muted);padding:10px 14px;border-top:1px solid var(--ant-line)}
 .estado-sync{font-size:12px;color:var(--ant-muted);text-align:right}
 
@@ -324,7 +351,7 @@ body.tiene-sabio .wrap{padding-bottom:96px}
 .cli-datos{display:flex;gap:6px 14px;flex-wrap:wrap;font-size:12.5px;color:var(--ant-muted)}
 .cli-datos span{display:inline-flex;align-items:center;gap:.3rem;white-space:nowrap}
 .cli-datos b{color:var(--ant-tinta);font-variant-numeric:tabular-nums}
-.cli-datos .debe{color:var(--c-bad);font-weight:600}
+.cli-datos .debe{color:var(--t-bad);font-weight:600}
 .prob{height:6px;border-radius:4px;background:var(--ant-bg);overflow:hidden}
 .prob i{display:block;height:100%;background:var(--ant-icono)}
 .cli-pistas{margin:0;padding-left:1.1rem;font-size:12.5px}
@@ -343,7 +370,7 @@ body.tiene-sabio .wrap{padding-bottom:96px}
 .vend{display:flex;gap:10px;align-items:center;min-width:170px}
 .vend b{display:block}.vend small{color:var(--ant-muted);font-size:11.5px}
 .grande{font-size:1.5rem;font-weight:700;line-height:1;font-variant-numeric:tabular-nums}
-.insignia{display:inline-flex;align-items:center;gap:.25rem;font-size:11.5px;font-weight:700;padding:1px 8px;border-radius:99px;margin-top:4px;background:color-mix(in srgb,var(--c) 14%,transparent);color:var(--c)}
+.insignia{display:inline-flex;align-items:center;gap:.25rem;font-size:11.5px;font-weight:700;padding:1px 8px;border-radius:99px;margin-top:4px;background:color-mix(in srgb,var(--c) 14%,transparent);color:color-mix(in srgb,var(--c) var(--txt-mezcla,70%),#000)}
 .meta-barra{position:relative;height:8px;background:var(--ant-bg);border-radius:4px;min-width:160px}
 .meta-barra i{display:block;height:100%;border-radius:4px;background:var(--c)}
 .meta-barra u{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--ant-tinta);text-decoration:none}
@@ -351,10 +378,10 @@ body.tiene-sabio .wrap{padding-bottom:96px}
 .terreno{font-size:12px;line-height:1.35}
 .terreno .pto{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px;background:var(--c-neutro)}
 .terreno .pto.ok{background:var(--c-ok)}
-.terreno .lejos{color:var(--c-bad);font-weight:600}
+.terreno .lejos{color:var(--t-bad);font-weight:600}
 .aviso-sge{max-width:760px}
-.cero-rojo{color:var(--c-bad);font-weight:700}
-.sub-rojo{display:block;font-size:11.5px;color:var(--c-bad)}
+.cero-rojo{color:var(--t-bad);font-weight:700}
+.sub-rojo{display:block;font-size:11.5px;color:var(--t-bad)}
 
 /* ===== Panel de Ventas: lateral y avisos ===== */
 .nota-venta{font-size:12.5px;color:var(--ant-muted);margin:0 0 12px}
@@ -367,9 +394,9 @@ body.tiene-sabio .wrap{padding-bottom:96px}
   <div class="sistema d-none d-xl-block">RAPHAEL<span>OS</span></div>
   <div class="top-der">
     <a class="btn-ghost solo-desk" href="../index.html" title="Portal maestro"><i class="bi bi-house-door"></i><span class="hide-sm">Portal</span></a>
-    <a class="btn-ghost" href="../index.html#clientes" title="Maestro de clientes"><i class="bi bi-person-rolodex"></i><span class="hide-sm">Clientes</span></a>
+    <a class="btn-ghost" href="../index.html#clientes" title="Maestro de clientes" aria-label="Clientes"><i class="bi bi-person-rolodex"></i><span class="hide-sm">Clientes</span></a>
     <div class="dropdown">
-      <button class="btn-ghost" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false"><i class="bi bi-grid-3x3-gap"></i><span class="hide-sm">Módulos</span><i class="bi bi-chevron-down small hide-sm"></i></button>
+      <button class="btn-ghost" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false" aria-label="Módulos"><i class="bi bi-grid-3x3-gap"></i><span class="hide-sm">Módulos</span><i class="bi bi-chevron-down small hide-sm"></i></button>
       <div class="dropdown-menu dropdown-menu-end p-0 mod-menu">
         <div class="mod-menu-busca"><i class="bi bi-search" aria-hidden="true"></i><input type="search" class="form-control form-control-sm" placeholder="Buscar módulo" aria-label="Buscar módulo" autocomplete="off" id="menuBusca"></div>
         <ul class="mod-menu-lista" id="menuLista"></ul>
@@ -383,6 +410,7 @@ body.tiene-sabio .wrap{padding-bottom:96px}
       <ul class="dropdown-menu dropdown-menu-end">
         <li class="dropdown-header">Nombre Apellido<br><small class="text-muted">Usuario</small></li><li><hr class="dropdown-divider"></li>
         <li><a class="dropdown-item" href="#"><i class="bi bi-person-gear"></i>Mi perfil</a></li>
+        <li><a class="dropdown-item" href="guia-de-estilo.html"><i class="bi bi-palette2"></i>Guía de estilo</a></li>
         <li><button class="dropdown-item" id="btnTema"><i class="bi bi-circle-half"></i>Tema: <span id="temaTxt">automático</span></button></li>
         <li class="dropdown-header pb-0">Paleta</li>
         <li><button class="dropdown-item" data-paleta-op="a"><i class="bi bi-circle-fill" style="color:#e85215"></i>A · Actual (marino + naranja)</button></li>
@@ -521,7 +549,7 @@ body.tiene-sabio .wrap{padding-bottom:96px}
 
 
 
-<div id="sabio"><div class="saludo-b" id="sabioSaludo"><strong>Hola 👋</strong><br>¿Necesitas ayuda con esta pantalla?<button type="button" aria-label="Cerrar saludo" id="cierraSabio"><i class="bi bi-x-lg"></i></button></div><button class="boton" aria-label="Abrir asistente" id="btnSabio"><i class="bi bi-stars"></i></button></div>
+<aside id="sabio" aria-label="Asistente"><div class="saludo-b" id="sabioSaludo"><strong>Hola 👋</strong><br>¿Necesitas ayuda con esta pantalla?<button type="button" aria-label="Cerrar saludo" id="cierraSabio"><i class="bi bi-x-lg"></i></button></div><button class="boton" aria-label="Abrir asistente" id="btnSabio"><i class="bi bi-stars"></i></button></aside>
 <dialog class="cmd" id="cmd" aria-label="Buscar páginas y acciones"><input id="cmdQ" type="text" role="combobox" aria-expanded="true" aria-controls="cmdLista" aria-autocomplete="list" placeholder="Escribe una página o acción…" autocomplete="off"><ul id="cmdLista" role="listbox"></ul><div class="cmd-pie"><span><kbd>↑</kbd> <kbd>↓</kbd> navegar</span><span><kbd>↵</kbd> abrir</span><span><kbd>Esc</kbd> cerrar</span></div></dialog>
 <div id="toasts" role="status" aria-live="polite"></div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -570,8 +598,13 @@ ant.skeleton = function(tb, cols, filas, pintar, demora=900){
   setTimeout(() => { clearTimeout(t); if (tb._id !== id) return; tb.innerHTML = pintar(); if (caja) caja.setAttribute('aria-busy','false'); }, demora);
 };
 
+/* ---- estados vacío y de error (mismo componente en todo el sistema) ---- */
+ant.vacio = o => `<div class="estado-vacio${o.error ? ' error' : ''}"><i class="bi bi-${o.icono || 'inbox'}"></i><strong>${esc(o.titulo)}</strong><p>${esc(o.texto || '')}</p>${o.accionTxt ? `<button class="btn-ghost btn-borde" type="button" data-reintentar><i class="bi bi-${o.error ? 'arrow-repeat' : 'x-circle'}"></i>${esc(o.accionTxt)}</button>` : ''}</div>`;
+ant.errorTabla = (tb, cols, reintentar) => { tb.innerHTML = `<tr><td colspan="${cols}">${ant.vacio({error:true, icono:'wifi-off', titulo:'No se pudo cargar', texto:'El servidor no respondió. Tus filtros siguen aplicados.', accionTxt:'Reintentar'})}</td></tr>`; const b = tb.querySelector('[data-reintentar]'); if (b) b.onclick = reintentar; };
+
 /* ---- tooltips de gráficos: cualquier [data-tip] ---- */
-const tip = document.createElement('div'); tip.className = 'tip'; tip.setAttribute('role','tooltip'); document.body.appendChild(tip);
+const tip = document.createElement('div'); tip.className = 'tip'; tip.setAttribute('aria-hidden','true');   // solo visual: el mismo dato está en la tabla de al lado
+ document.body.appendChild(tip);
 function mostrar(e){ const el = e.target.closest && e.target.closest('[data-tip]'); if (!el) { tip.classList.remove('on'); return; }
   tip.innerHTML = el.dataset.tip; tip.classList.add('on'); const x = Math.min(e.clientX + 14, innerWidth - tip.offsetWidth - 8), y = Math.max(8, e.clientY - tip.offsetHeight - 10); tip.style.left = x + 'px'; tip.style.top = y + 'px'; }
 document.addEventListener('mousemove', mostrar); document.addEventListener('mouseleave', () => tip.classList.remove('on'));
@@ -642,6 +675,9 @@ cmd.addEventListener('click', e => { if (e.target === cmd) cmd.close(); });
 const escribiendo = el => el && (/^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName) || el.isContentEditable);
 addEventListener('keydown', e => { if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); cmd.open ? cmd.close() : abrirCmd(); return; }
   if (escribiendo(e.target) || e.metaKey || e.ctrlKey || e.altKey) return; if (e.key === '/') { const b = $('[data-buscar-atajo]'); if (b) { e.preventDefault(); b.focus(); } } });
+
+/* ---- regiones con scroll: enfocables por teclado y con nombre ---- */
+$$('.tabla-wrap').forEach((t, i) => { t.tabIndex = 0; t.setAttribute('role', 'region'); const c = t.querySelector('caption'); t.setAttribute('aria-label', c ? c.textContent : 'Tabla ' + (i + 1)); });
 
 /* ---- asistente flotante ---- */
 document.body.classList.add('tiene-sabio');

@@ -24,7 +24,12 @@
   --ant-r-s:10px; --ant-r-m:14px;
   --ant-s1:0 1px 2px rgba(1,30,57,.06),0 1px 3px rgba(1,30,57,.05);
   --ant-s2:0 2px 6px rgba(1,30,57,.07),0 10px 28px rgba(1,30,57,.11);
-  --ant-alerta:var(--ant-accent);       /* campana, avisos: en las paletas sobrias pasa a rojo y el naranja se retira */
+  --ant-accent-fondo:#c44010;           /* relleno de botones e insignias con texto blanco: #e85215 daba 3.7:1; este da 5.4:1 (AA) */
+  --ant-accent-fondo-hover:#a3360d;
+  --ant-alerta:var(--ant-accent-fondo); /* campana, avisos: en las paletas sobrias pasa a rojo y el naranja se retira */
+  /* texto de estado sobre su propio tinte al 14 %: el color base oscurecido 30 % (en oscuro se usa tal cual) */
+  --t-ok:color-mix(in srgb,var(--c-ok) 70%,#000);--t-warn:color-mix(in srgb,var(--c-warn) 62%,#000);--t-bad:color-mix(in srgb,var(--c-bad) 74%,#000);
+  --t-info:color-mix(in srgb,var(--c-info) 72%,#000);--t-neutro:color-mix(in srgb,var(--c-neutro) 65%,#000);--t-azul:color-mix(in srgb,var(--c-azul) 68%,#000);
   --c-warn:#b7791f; --c-bad:#c0392b; --c-ok:#198754; --c-info:#0b7285; --c-neutro:#6b7280; --c-azul:#2b6cb0;
   --bs-body-bg:var(--ant-bg); --bs-body-color:var(--ant-tinta);
 }
@@ -32,19 +37,22 @@
   --ant-tinta:#dbe7f3; --ant-icono:#4d9bd8; --ant-bg:#0a1626; --ant-surface:#10233a; --ant-line:#1f3550; --ant-muted:#93a6bc;
   --ant-s1:0 1px 2px rgba(0,0,0,.35); --ant-s2:0 2px 6px rgba(0,0,0,.35),0 8px 20px rgba(0,0,0,.30);
   --c-warn:#e0b04a; --c-bad:#ef7b6e; --c-ok:#4cc38a; --c-info:#4fc3d9; --c-neutro:#9aa8b8; --c-azul:#6aa8ee;
+  --ant-enlace:#6aa8ee;                 /* enlaces en oscuro: el celeste de iconos daba 4.49:1 sobre avisos tintados */
+  --txt-mezcla:100%;
+  --t-ok:var(--c-ok);--t-warn:var(--c-warn);--t-bad:var(--c-bad);--t-info:var(--c-info);--t-neutro:var(--c-neutro);--t-azul:var(--c-azul);
   --bs-body-bg:var(--ant-bg); --bs-body-color:var(--ant-tinta);
 }
 
 /* ============ Paletas alternativas (se eligen en el menú de usuario → Paleta). A = la actual, sin atributo. ============ */
 /* B · Marino sobrio: el naranja desaparece; el énfasis es el marino y el rojo queda solo para alertas */
-[data-paleta="b"]{--ant-accent:#0b3a66;--ant-hover:#062a4d;--ant-alerta:#c0392b;--kpi-borde:var(--ant-line);--kpi-ico:var(--ant-muted)}
-[data-paleta="b"][data-bs-theme="dark"]{--ant-accent:#2a6fb5;--ant-hover:#3b82c9;--ant-alerta:#ef7b6e}
+[data-paleta="b"]:not([data-bs-theme="dark"]){--ant-accent:#0b3a66;--ant-hover:#062a4d;--ant-accent-fondo:#0b3a66;--ant-accent-fondo-hover:#062a4d;--ant-alerta:#c0392b;--kpi-borde:var(--ant-line);--kpi-ico:var(--ant-muted)}
+[data-paleta="b"][data-bs-theme="dark"]{--ant-accent:#2a6fb5;--ant-hover:#3b82c9;--ant-accent-fondo:#2a6fb5;--ant-accent-fondo-hover:#3b82c9;--ant-alerta:#b3382b}
 /* C · Verde azulado y piedra: fondo cálido, acento teal */
-[data-paleta="c"]{--ant-bg:#f6f5f2;--ant-line:#e4e1da;--ant-tinta:#17302f;--ant-muted:#5e6b69;--ant-icono:#0f6b6b;--ant-accent:#0f6b6b;--ant-hover:#0a5252;--ant-alerta:#c0392b;--kpi-borde:var(--ant-line);--kpi-ico:var(--ant-muted)}
-[data-paleta="c"][data-bs-theme="dark"]{--ant-bg:#0e1a1a;--ant-surface:#142524;--ant-line:#234040;--ant-tinta:#dcecea;--ant-muted:#8fa9a6;--ant-icono:#4fb8b3;--ant-accent:#2a8f8b;--ant-hover:#36a6a1;--ant-alerta:#ef7b6e}
+[data-paleta="c"]:not([data-bs-theme="dark"]){--ant-bg:#f6f5f2;--ant-line:#e4e1da;--ant-tinta:#17302f;--ant-muted:#5e6b69;--ant-icono:#0f6b6b;--ant-accent:#0f6b6b;--ant-hover:#0a5252;--ant-accent-fondo:#0f6b6b;--ant-accent-fondo-hover:#0a5252;--ant-alerta:#c0392b;--kpi-borde:var(--ant-line);--kpi-ico:var(--ant-muted)}
+[data-paleta="c"][data-bs-theme="dark"]{--ant-bg:#0e1a1a;--ant-surface:#142524;--ant-line:#234040;--ant-tinta:#dcecea;--ant-muted:#8fa9a6;--ant-icono:#4fb8b3;--ant-accent:#2a8f8b;--ant-hover:#36a6a1;--ant-accent-fondo:#1f7a76;--ant-accent-fondo-hover:#2a8f8b;--ant-alerta:#b3382b}
 /* D · Grafito: grises azulados, iconos apagados; el naranja queda SOLO en el botón principal */
-[data-paleta="d"]{--ant-bg:#f4f5f7;--ant-line:#e0e4e9;--ant-tinta:#1f2933;--ant-muted:#5a6775;--ant-icono:#3b556e;--ant-alerta:#c0392b;--kpi-borde:var(--ant-line);--kpi-ico:var(--ant-muted)}
-[data-paleta="d"][data-bs-theme="dark"]{--ant-icono:#8fb0cf;--ant-alerta:#ef7b6e}
+[data-paleta="d"]:not([data-bs-theme="dark"]){--ant-alerta:#c0392b;--ant-bg:#f4f5f7;--ant-line:#e0e4e9;--ant-tinta:#1f2933;--ant-muted:#5a6775;--ant-icono:#3b556e;--ant-alerta:#c0392b;--kpi-borde:var(--ant-line);--kpi-ico:var(--ant-muted)}
+[data-paleta="d"][data-bs-theme="dark"]{--ant-icono:#8fb0cf;--ant-alerta:#b3382b}
 [data-paleta="d"] .mod-fijo,[data-paleta="d"] .pestanas a[aria-current="page"],[data-paleta="d"] .mod-menu-pin[aria-pressed="true"]{color:var(--ant-icono);border-color:var(--ant-icono)}
 html{color-scheme:light dark}
 body{background:var(--ant-bg);color:var(--ant-tinta);font-size:14px;
@@ -52,7 +60,7 @@ body{background:var(--ant-bg);color:var(--ant-tinta);font-size:14px;
 h1,h2,h3,h4,.titulo{text-wrap:balance}
 p{text-wrap:pretty}
 .num{font-variant-numeric:tabular-nums}
-a{color:var(--ant-icono)}
+a{color:var(--ant-enlace,var(--ant-icono))}
 .text-muted,.form-text{color:var(--ant-muted)!important}
 
 /* ============ Cabecera clara (antes: vidrio marino de 56 px) ============ */
@@ -96,9 +104,10 @@ kbd{background:var(--ant-surface);color:var(--ant-muted);border:1px solid var(--
 .panel{background:var(--ant-surface);border:1px solid var(--ant-line);border-radius:var(--ant-r-m);box-shadow:var(--ant-s1)}
 .form-control,.form-select{border:1px solid var(--ant-line);background-color:var(--ant-bg);color:var(--ant-tinta);min-height:40px;box-shadow:none}
 .form-control:focus,.form-select:focus{background-color:var(--ant-surface);color:var(--ant-tinta);border-color:var(--ant-icono);box-shadow:0 0 0 3px color-mix(in srgb,var(--ant-icono) 25%,transparent)}
-.btn-accent{background:var(--ant-accent);border:0;color:#fff;font-weight:600;min-height:40px;padding:0 1rem;border-radius:var(--ant-r-s)}
-.btn-accent:hover{background:var(--ant-hover);color:#fff}
+.btn-accent{background:var(--ant-accent-fondo);border:0;color:#fff;font-weight:600;min-height:40px;padding:0 1rem;border-radius:var(--ant-r-s)}
+.btn-accent:hover{background:var(--ant-accent-fondo-hover);color:#fff}
 .btn-accent:disabled{opacity:.6}
+.btn-accent.btn-wa{background:#146c43}.btn-accent.btn-wa:hover{background:#0f5a37}   /* verde de WhatsApp con texto blanco ≥ 5:1 */
 .btn-accent.fin{border-radius:0 var(--ant-r-s) var(--ant-r-s) 0}
 .modal-content{background:var(--ant-surface);border:1px solid var(--ant-line);border-radius:var(--ant-r-m);color:var(--ant-tinta)}
 .modal-header,.modal-footer{border-color:var(--ant-line)}
@@ -210,19 +219,29 @@ table.t{width:100%;border-collapse:collapse}
 .t .num{text-align:right}
 .t tbody tr:hover td{background:color-mix(in srgb,var(--ant-icono) 5%,transparent)}
 .sub{display:block;font-size:12px;color:var(--ant-muted)}
-.estado{font-size:12px;font-weight:600;padding:2px 8px;border-radius:99px;background:color-mix(in srgb,var(--c) 14%,transparent);color:var(--c);white-space:nowrap}
+.estado{font-size:12px;font-weight:600;padding:2px 8px;border-radius:99px;background:color-mix(in srgb,var(--c) 14%,transparent);color:color-mix(in srgb,var(--c) var(--txt-mezcla,70%),#000);white-space:nowrap}
 .pie-tabla{display:flex;justify-content:space-between;align-items:center;gap:.5rem;flex-wrap:wrap;padding:10px 12px;border-top:1px solid var(--ant-line);color:var(--ant-muted)}
 .pasos{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;margin-bottom:12px}
 .paso{padding:0;overflow:hidden}
-.paso h3{font-size:13px;font-weight:700;margin:0;padding:10px 14px;border-bottom:1px solid var(--ant-line);display:flex;gap:.5rem;align-items:center;flex-wrap:wrap}
+.paso .paso-t{font-size:13px;font-weight:700;margin:0;padding:10px 14px;border-bottom:1px solid var(--ant-line);display:flex;gap:.5rem;align-items:center;flex-wrap:wrap}
 .paso .cuerpo{padding:12px 14px}
-.paso h3 i{color:var(--ant-icono)}
+.paso .paso-t i{color:var(--ant-icono)}
 .fila-dato{display:flex;justify-content:space-between;gap:1rem;padding:6px 0;border-bottom:1px solid var(--ant-line)}
 .fila-dato:last-child{border:0}
 
 /* skeleton: solo si la carga pasa de 300 ms, con las mismas columnas que la tabla real (en producción ya existe como [data-esqueleto]) */
 .sk-b{height:1em;border-radius:6px;background:linear-gradient(90deg,var(--ant-line),color-mix(in srgb,var(--ant-line) 50%,var(--ant-surface)),var(--ant-line));background-size:200% 100%;animation:sk 1.2s linear infinite}
 @keyframes sk{to{background-position:-200% 0}}
+
+code{color:var(--ant-tinta);background:color-mix(in srgb,var(--ant-icono) 10%,transparent);padding:0 .25rem;border-radius:4px;font-size:.85em}
+
+/* ============ Estados vacío y de error (un solo componente: icono, una frase, una acción) ============ */
+.estado-vacio{display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;padding:28px 16px;color:var(--ant-muted)}
+.estado-vacio>i{font-size:1.6rem;color:var(--ant-icono);width:52px;height:52px;border-radius:50%;display:grid;place-items:center;background:color-mix(in srgb,var(--ant-icono) 10%,transparent)}
+.estado-vacio.error>i{color:var(--t-bad);background:color-mix(in srgb,var(--c-bad) 10%,transparent)}
+.estado-vacio strong{color:var(--ant-tinta);font-size:1rem}
+.estado-vacio p{margin:0;max-width:44ch}
+.estado-vacio .btn-ghost{margin-top:6px}
 
 /* ============ Command menu ============ */
 dialog.cmd{border:1px solid var(--ant-line);border-radius:var(--ant-r-m);padding:0;width:min(560px,calc(100vw - 24px));margin:12vh auto 0;background:var(--ant-surface);color:var(--ant-tinta);box-shadow:0 20px 60px rgba(1,30,57,.3)}
@@ -291,9 +310,9 @@ body.tiene-sabio .wrap{padding-bottom:96px}
     <div class="top-der">
       <button class="btn-ghost hide-sm" data-bs-toggle="modal" data-bs-target="#modalGuia" title="Cómo se usa esta pantalla"><i class="bi bi-question-circle"></i>Guía</button>
       <a class="btn-ghost solo-desk" href="#portal" data-ir="portal" title="Portal maestro"><i class="bi bi-house-door"></i><span class="hide-sm">Portal</span></a>
-      <a class="btn-ghost" href="#clientes" data-ir="clientes" title="Maestro de clientes"><i class="bi bi-person-rolodex"></i><span class="hide-sm">Clientes</span></a>
+      <a class="btn-ghost" href="#clientes" data-ir="clientes" title="Maestro de clientes" aria-label="Clientes"><i class="bi bi-person-rolodex"></i><span class="hide-sm">Clientes</span></a>
       <div class="dropdown">
-        <button class="btn-ghost" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false"><i class="bi bi-grid-3x3-gap"></i><span class="hide-sm">Módulos</span><i class="bi bi-chevron-down small hide-sm"></i></button>
+        <button class="btn-ghost" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false" aria-label="Módulos"><i class="bi bi-grid-3x3-gap"></i><span class="hide-sm">Módulos</span><i class="bi bi-chevron-down small hide-sm"></i></button>
         <div class="dropdown-menu dropdown-menu-end p-0 mod-menu">
           <div class="mod-menu-busca"><i class="bi bi-search" aria-hidden="true"></i><input type="search" class="form-control form-control-sm" placeholder="Buscar módulo" aria-label="Buscar módulo" autocomplete="off" id="menuBusca"></div>
           <ul class="mod-menu-lista" id="menuLista"></ul>
@@ -308,6 +327,7 @@ body.tiene-sabio .wrap{padding-bottom:96px}
           <li class="dropdown-header">Nombre Apellido<br><small class="text-muted">Usuario</small></li>
           <li><hr class="dropdown-divider"></li>
           <li><a class="dropdown-item" href="#"><i class="bi bi-person-gear"></i>Mi perfil</a></li>
+          <li><a class="dropdown-item" href="vistas/guia-de-estilo.html"><i class="bi bi-palette2"></i>Guía de estilo</a></li>
           <li><a class="dropdown-item" href="#clientes" data-ir="clientes"><i class="bi bi-person-rolodex"></i>Maestro de clientes</a></li>
           <li><button class="dropdown-item" id="btnTema"><i class="bi bi-circle-half"></i>Tema: <span id="temaTxt">automático</span></button></li>
           <li class="dropdown-header pb-0">Paleta</li>
@@ -332,7 +352,7 @@ body.tiene-sabio .wrap{padding-bottom:96px}
     <p>Bienvenido/a a Administración Antumalal. Selecciona un módulo o presiona <kbd data-atajo="K"></kbd>.</p>
   </div>
 
-  <form class="panel buscar-cliente" role="search" id="formCliente">
+  <form class="panel buscar-cliente" role="search" aria-label="Buscar un cliente" id="formCliente">
     <label for="qCliente"><i class="bi bi-person-rolodex text-muted"></i>Buscar un cliente</label>
     <div class="input-group">
       <input type="search" id="qCliente" class="form-control" placeholder="RUT o nombre del cliente" minlength="2" required autocomplete="off">
@@ -351,7 +371,7 @@ body.tiene-sabio .wrap{padding-bottom:96px}
   </div>
 
   <div class="portal-barra">
-    <div class="portal-buscar" role="search">
+    <div class="portal-buscar" role="search" aria-label="Buscar módulo">
       <i class="bi bi-search" aria-hidden="true"></i>
       <input type="search" id="qMod" class="form-control" placeholder="Buscar módulo…" aria-label="Buscar módulo" autocomplete="off">
     </div>
@@ -371,6 +391,7 @@ body.tiene-sabio .wrap{padding-bottom:96px}
             <div class="form-check"><input class="form-check-input" type="radio" name="vista" id="vcompacta" value="compacta"><label class="form-check-label small" for="vcompacta">Lista compacta</label></div>
           </div>
           <div class="form-text">La lista compacta muestra más módulos sin bajar la pantalla.</div>
+          <div class="form-check mt-2"><input class="form-check-input" type="checkbox" id="chkUso"><label class="form-check-label small" for="chkUso">Dentro de cada grupo, poner primero los que más uso</label></div>
         </div>
         <div class="col-12 col-md-4">
           <label class="small fw-semibold mb-1" for="selInicio">Al iniciar sesión, llévame a</label>
@@ -389,7 +410,7 @@ body.tiene-sabio .wrap{padding-bottom:96px}
   <p class="ayuda-linea">En <i class="bi bi-three-dots"></i> de cada módulo puedes fijarlo arriba <i class="bi bi-pin-angle"></i>, moverlo <i class="bi bi-arrows-move"></i> o ver qué hace <i class="bi bi-question-lg"></i>. <span class="d-none d-md-inline">Es tu vista personal: no le cambia el portal a nadie más.</span></p>
 
   <div id="grupos"></div>
-  <p class="sin-res" id="sinRes" hidden>Ningún módulo coincide con tu búsqueda.</p>
+  <div class="estado-vacio" id="sinRes" hidden><i class="bi bi-search"></i><strong>Ningún módulo coincide</strong><p>Prueba con otra palabra o quita el filtro de área.</p><button class="btn-ghost btn-borde" id="limpiarFiltros"><i class="bi bi-x-circle"></i>Quitar filtros</button></div>
 </section>
 
 <!-- ==================================================== PANEL DE VENTAS ==================================================== -->
@@ -554,23 +575,23 @@ body.tiene-sabio .wrap{padding-bottom:96px}
   <div class="aviso bad"><i class="bi bi-x-circle-fill"></i><div><div class="small text-muted">¿A dónde le llega el código hoy?</div><strong class="fs-6">A ninguna parte: este cliente no puede recibir el código</strong></div></div>
 
   <div class="pasos">
-    <div class="panel paso"><h3><i class="bi bi-person-check"></i>Para verificar que hablas con el cliente</h3><div class="cuerpo">
+    <div class="panel paso"><h2 class="paso-t"><i class="bi bi-person-check"></i>Para verificar que hablas con el cliente</h2><div class="cuerpo">
       <p class="text-muted small">El cliente de verdad sabe cuánto debe. Pregúntaselo antes de mandar nada a un correo nuevo.</p>
       <div class="fila-dato"><span>Deuda vigente</span><strong class="num">$00</strong></div><div class="fila-dato"><span>De eso, vencido</span><strong class="num">$00</strong></div><div class="fila-dato"><span>Cuotas pendientes</span><strong class="num">0</strong></div></div></div>
-    <div class="panel paso"><h3><i class="bi bi-clock-history"></i>¿De verdad intentó entrar?</h3><div class="cuerpo">
+    <div class="panel paso"><h2 class="paso-t"><i class="bi bi-clock-history"></i>¿De verdad intentó entrar?</h2><div class="cuerpo">
       <div class="aviso mb-0"><i class="bi bi-exclamation-triangle"></i><div><strong>No hay ningún intento registrado.</strong> Quien está escribiendo ni siquiera ha probado a entrar al portal. Vale la pena preguntar por qué antes de mandarle un código.</div></div></div></div>
   </div>
   <div class="pasos">
-    <div class="panel paso"><h3><i class="bi bi-envelope-plus"></i>2 · Enviar a un correo nuevo</h3><div class="cuerpo">
+    <div class="panel paso"><h2 class="paso-t"><i class="bi bi-envelope-plus"></i>2 · Enviar a un correo nuevo</h2><div class="cuerpo">
       <label class="small" for="pg1">Correo que entregó el cliente</label><input id="pg1" class="form-control mb-2" placeholder="nuevo@empresa.cl">
       <label class="small" for="pg2">Cómo verificaste su identidad <span style="color:var(--c-bad)">*</span></label><textarea id="pg2" class="form-control" rows="2" placeholder="Ej: llamé al fijo del ERP y confirmó el monto de la deuda"></textarea>
       <div class="form-text mb-2">Queda con tu nombre. Es lo único que quedará escrito de por qué confiaste.</div>
       <button class="btn-accent w-100"><i class="bi bi-send me-1"></i>Verificar y enviar</button></div></div>
-    <div class="panel paso"><h3><i class="bi bi-whatsapp"></i>3 · Por WhatsApp</h3><div class="cuerpo d-flex flex-column gap-3">
+    <div class="panel paso"><h2 class="paso-t"><i class="bi bi-whatsapp"></i>3 · Por WhatsApp</h2><div class="cuerpo d-flex flex-column gap-3">
       <p class="text-muted small mb-0">Va <strong>solo al móvil que ya está en el ERP</strong> (<span class="num">000000000</span>). Un número dictado por quien escribe se rechaza: sería entregarle el código a quien lo pide.</p>
-      <button class="btn-accent mt-auto" style="background:var(--c-ok)"><i class="bi bi-whatsapp me-1"></i>Preparar mensaje</button></div></div>
+      <button class="btn-accent btn-wa mt-auto"><i class="bi bi-whatsapp me-1"></i>Preparar mensaje</button></div></div>
   </div>
-  <div class="panel paso mb-3"><h3><i class="bi bi-pin-angle"></i>Fijar el correo de este cliente <span class="text-muted fw-normal">— para siempre, no sólo esta vez</span></h3><div class="cuerpo">
+  <div class="panel paso mb-3"><h2 class="paso-t"><i class="bi bi-pin-angle"></i>Fijar el correo de este cliente <span class="text-muted fw-normal">— para siempre, no sólo esta vez</span></h2><div class="cuerpo">
     <p class="text-muted small">Enviar a un correo nuevo (arriba) manda el código <strong>una vez</strong>: el cliente vuelve a quedar bloqueado en su siguiente intento. Esto en cambio queda guardado y <strong>entra solo la próxima vez</strong>, hasta que alguien lo cambie.</p>
     <div class="row g-3"><div class="col-md-6"><label class="small" for="pg3">Correo nuevo</label><input id="pg3" class="form-control" placeholder="pagos@empresa.cl"></div>
       <div class="col-md-6"><div class="small mb-1">¿Por qué se cambia?</div>
@@ -590,10 +611,10 @@ body.tiene-sabio .wrap{padding-bottom:96px}
 </main>
 
 <!-- Asistente flotante -->
-<div id="sabio">
+<aside id="sabio" aria-label="Asistente">
   <div class="saludo-b" id="sabioSaludo"><strong>Hola 👋</strong><br>¿Necesitas ayuda con esta pantalla?<button type="button" aria-label="Cerrar saludo" id="cierraSabio"><i class="bi bi-x-lg"></i></button></div>
   <button class="boton" aria-label="Abrir asistente" id="btnSabio"><i class="bi bi-stars"></i></button>
-</div>
+</aside>
 
 <dialog class="cmd" id="cmd" aria-label="Buscar páginas y acciones">
   <input id="cmdQ" type="text" role="combobox" aria-expanded="true" aria-controls="cmdLista" aria-autocomplete="list" placeholder="Escribe una página o acción…" autocomplete="off">
@@ -647,14 +668,14 @@ const todosMods = () => GRUPOS.flatMap(g => g.mods.map(m => ({g, nombre:m[0], ic
 
 /* ---------------- Estado personal (en producción: /portal/fijar, /portal/orden, /portal/preferencias) ---------------- */
 const store = { get(k,d){ const v = safe(() => JSON.parse(localStorage.getItem(k))); return v == null ? d : v; }, set(k,v){ safe(() => localStorage.setItem(k, JSON.stringify(v))); } };
-const estado = { fijados:new Set(store.get('ant.fijados',[])), ocultos:new Set(store.get('ant.ocultos',[])), orden:store.get('ant.orden',{}), vista:store.get('ant.vista','tarjetas') };
-const guardar = () => { store.set('ant.fijados',[...estado.fijados]); store.set('ant.ocultos',[...estado.ocultos]); store.set('ant.orden',estado.orden); store.set('ant.vista',estado.vista); };
-const instantanea = () => JSON.stringify({f:[...estado.fijados],o:[...estado.ocultos],r:estado.orden,v:estado.vista});
-const restaurar = s => { const d = JSON.parse(s); estado.fijados = new Set(d.f); estado.ocultos = new Set(d.o); estado.orden = d.r; estado.vista = d.v; guardar(); renderTodo(); };
+const estado = { porUso:store.get('ant.porUso',false), uso:store.get('ant.uso',{}), fijados:new Set(store.get('ant.fijados',[])), ocultos:new Set(store.get('ant.ocultos',[])), orden:store.get('ant.orden',{}), vista:store.get('ant.vista','tarjetas') };
+const guardar = () => { store.set('ant.fijados',[...estado.fijados]); store.set('ant.ocultos',[...estado.ocultos]); store.set('ant.orden',estado.orden); store.set('ant.vista',estado.vista); store.set('ant.porUso',estado.porUso); store.set('ant.uso',estado.uso); };
+const instantanea = () => JSON.stringify({f:[...estado.fijados],o:[...estado.ocultos],r:estado.orden,v:estado.vista,u:estado.porUso});
+const restaurar = s => { const d = JSON.parse(s); estado.fijados = new Set(d.f); estado.ocultos = new Set(d.o); estado.orden = d.r; estado.vista = d.v; estado.porUso = !!d.u; guardar(); renderTodo(); };
 
 /* ---------------- Utilidades de UI ---------------- */
 $$('[data-atajo]').forEach(k => k.textContent = (esMac ? '⌘' : 'Ctrl') + ' ' + k.dataset.atajo);
-function transicion(fn){ if (!reduce && document.startViewTransition) document.startViewTransition(fn); else fn(); }
+function transicion(fn){ if (!reduce && document.startViewTransition) { const t = document.startViewTransition(fn); [t.ready, t.finished].forEach(x => x.catch(() => {})); } else fn(); }   // si llega otra transición, la anterior se salta: no es un error
 function toast(msg, onUndo, ms=8000){
   const t = document.createElement('div'); t.className = 'toast-u';
   const s = document.createElement('span'); s.textContent = msg; t.appendChild(s); let hecho = false;
@@ -690,6 +711,7 @@ function modulosDe(g, q){
   const orden = estado.orden[g.id] || [];
   const mods = g.mods.filter(m => !estado.ocultos.has(g.id+':'+m[0]) && (!q || norm(m[0]).includes(q)));
   mods.sort((a,b) => (orden.indexOf(a[0]) + 1 || 99) - (orden.indexOf(b[0]) + 1 || 99));
+  if (estado.porUso) mods.sort((a,b) => (estado.uso[g.id+':'+b[0]] || 0) - (estado.uso[g.id+':'+a[0]] || 0));   // opcional: más usados primero
   return mods.sort((a,b) => estado.fijados.has(g.id+':'+b[0]) - estado.fijados.has(g.id+':'+a[0]));   // fijados primero
 }
 function tarjeta(g, m){
@@ -734,6 +756,7 @@ function renderModulos(){
 $('#chips').innerHTML = [['todos','Todos']].concat(GRUPOS.map(g => [g.id, g.nombre])).map(([id,n]) => `<button class="chip" data-g="${id}" aria-pressed="${id==='todos'}">${n}</button>`).join('');
 $('#chips').addEventListener('click', e => { const b = e.target.closest('[data-g]'); if (!b) return; filtroGrupo = b.dataset.g; $$('#chips .chip').forEach(c => c.setAttribute('aria-pressed', c === b)); transicion(renderModulos); });
 $('#qMod').addEventListener('input', e => { texto = e.target.value; renderModulos(); });
+$('#limpiarFiltros').onclick = () => { texto = ''; filtroGrupo = 'todos'; $('#qMod').value = ''; $$('#chips .chip').forEach(c => c.setAttribute('aria-pressed', c.dataset.g === 'todos')); renderModulos(); $('#qMod').focus(); };
 
 /* Acciones de módulo (tarjeta y menú de la barra): se aplican al instante y se pueden deshacer; sin diálogo de confirmación */
 function cambiar(msg, fn){ const antes = instantanea(); fn(); guardar(); renderTodo(); toast(msg, () => restaurar(antes), 7000); }
@@ -748,10 +771,14 @@ document.addEventListener('click', e => {
   } else if (a.dataset.acc === 'ayuda') toast(nombre + ': descripción breve del módulo (texto de ejemplo).', null, 5000);
 });
 
+/* Uso personal: cuenta aperturas por módulo (solo en este navegador; en producción sería una métrica por usuario) */
+document.addEventListener('click', e => { const a = e.target.closest('.mod-nombre'); if (!a) return; const k = a.closest('.mod').querySelector('[data-key]').dataset.key; estado.uso[k] = (estado.uso[k] || 0) + 1; guardar(); });
+$('#chkUso').addEventListener('change', e => { estado.porUso = e.target.checked; guardar(); transicion(renderModulos); });
+
 /* Personalizar */
 $$('input[name="vista"]').forEach(r => r.addEventListener('change', () => { estado.vista = r.value; guardar(); transicion(renderModulos); }));
 $('#btnGuardarPref').onclick = () => { $('#ordenMsg').textContent = 'Preferencias guardadas'; setTimeout(() => $('#ordenMsg').textContent = '', 3000); };
-$('#btnRestablecer').onclick = () => { const antes = instantanea(); estado.fijados = new Set(); estado.ocultos = new Set(); estado.orden = {}; estado.vista = 'tarjetas'; guardar(); renderTodo(); toast('Tu vista quedó como viene de fábrica', () => restaurar(antes), 8000); };
+$('#btnRestablecer').onclick = () => { const antes = instantanea(); estado.fijados = new Set(); estado.ocultos = new Set(); estado.orden = {}; estado.vista = 'tarjetas'; estado.porUso = false; guardar(); renderTodo(); toast('Tu vista quedó como viene de fábrica', () => restaurar(antes), 8000); };
 $('#selInicio').innerHTML = '<option>El portal (esta pantalla)</option>' + todosMods().map(m => `<option>${esc(m.nombre)}</option>`).join('');
 
 /* ---------------- Menú «Módulos» de la barra ---------------- */
@@ -865,7 +892,9 @@ addEventListener('keydown', e => {
   if (e.key === '/') { e.preventDefault(); $('#qMod').focus(); }
 });
 
-function renderTodo(){ $$('input[name="vista"]').forEach(r => r.checked = r.value === estado.vista); renderModulos(); renderMenu(); }
+function renderTodo(){ $$('input[name="vista"]').forEach(r => r.checked = r.value === estado.vista); $('#chkUso').checked = estado.porUso; renderModulos(); renderMenu(); }
+/* regiones con scroll: enfocables por teclado y con nombre */
+$$('.tabla-wrap').forEach((t, i) => { t.tabIndex = 0; t.setAttribute('role', 'region'); const c = t.querySelector('caption'); t.setAttribute('aria-label', c ? c.textContent : 'Tabla ' + (i + 1)); });
 renderTodo();
 ir(location.hash.slice(1) || 'portal');
 })();

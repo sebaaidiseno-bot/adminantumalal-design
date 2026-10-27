@@ -24,7 +24,9 @@ Reglas:
 | `prototipo/vistas/cardinal-cartera.html` | Cardinal OS · Cartera |
 | `prototipo/vistas/cardinal-gerencia.html` | Cardinal OS · Gerencia |
 | `prototipo/vistas/portal-pagos.html` | Portal de Pagos «no me llegó el código» |
-| `prototipo/src/` + `build.py` | Fuente compartida de las vistas sueltas (`python3 prototipo/build.py`) |
+| `prototipo/vistas/guia-de-estilo.html` | **Guía de estilo viva**: tokens con contraste calculado en vivo, componentes, estados (cargando / vacío / error), gráficos, reglas y tabla «antes → después» |
+| `prototipo/pruebas/visual.js` | Pruebas visuales + accesibilidad (ver §11b) |
+| `prototipo/src/` + `build.py` | Fuente de las vistas sueltas; el CSS sale del `<style>` de `index.html` (única fuente). `python3 prototipo/build.py` |
 
 En todas, menú de usuario → **Paleta** cambia entre 4 propuestas de color y **Tema** entre automático/claro/oscuro. Úsalo para revisar contrastes. El prototipo es la **referencia visual**; el CSS real debe escribirse sobre los tokens y componentes existentes del repo.
 
@@ -37,6 +39,7 @@ En todas, menú de usuario → **Paleta** cambia entre 4 propuestas de color y *
 ## 3. Fase 1 — Fundamentos
 
 1. **Tokens.** No crees tokens si ya existen. Agrega solo los que falten: `--ant-linea` (borde de 1 px, `#dfe6ee` / oscuro `#1f3550`), `--ant-fondo-pagina` (plano `#f2f5f9` / oscuro `#0a1626`), `--ant-apoyo` (texto secundario `#566a80` / oscuro `#93a6bc`), `--ant-alerta` (campana y avisos), y tonos de estado `--c-ok/--c-warn/--c-bad/--c-info/--c-neutro` con variante oscura. Todo color nuevo vive **en un solo bloque `:root` + `[data-bs-theme="dark"]`**, no repartido por plantillas.
+   **Hallazgo de accesibilidad (medido con axe):** el texto blanco sobre `--ant-accent #e85215` da **3,7:1** (falla AA 4,5:1) en botones primarios e insignias. Agregar `--ant-accent-fondo:#c44010` (5,4:1) y `--ant-accent-fondo-hover:#a3360d` para **rellenos con texto blanco**; `--ant-accent` queda para foco, subrayado de pestaña e iconos (que exigen 3:1). Igual con los **textos de estado** (verde `#198754`, ámbar `#b7791f`, rojo `#c0392b` sobre su tinte al 14 % daban 3,1–4,4:1): usar el color base **oscurecido ~30 %** como texto (`color-mix(in srgb, var(--c) 70%, #000)`; en oscuro, el color base) y dejar el color puro para puntos y bordes. Enlaces en oscuro: `--ant-enlace:#6aa8ee`. WhatsApp: relleno `#146c43`. La guía de estilo calcula todos estos contrastes en vivo.
 2. **Fondo.** Hoy el «cielo» (manchas naranjas y azules) y el vidrio restan contraste y se ven pesados (en los PDF exportados aparecen como grandes manchas naranja/negras detrás de las tablas). Pasar a **fondo plano `--ant-fondo-pagina`**; vidrio solo, si se quiere, en la cabecera. Conservar la regla del repo de no usar `backdrop-filter` sin `@supports`.
 3. **Superficies.** Tarjetas y paneles: fondo `--bs-body-bg` claro/oscuro, **borde de 1 px `--ant-linea`**, sombra `--ant-s1` en reposo y `--ant-s2` en hover. Quitar sombras pesadas. Hover de tarjeta: `translateY(-1px)` (hoy −3px con `--ant-s3`).
 4. **Radios y esquinas.** Mantener `--ant-r-s/m`. Agregar `corner-shape: squircle` junto al `border-radius` en tarjetas y botones (mejora progresiva: solo Chromium la dibuja).
@@ -72,6 +75,8 @@ El grupo vacío por permisos/filtros no se muestra. Orden de grupos y módulos: 
 - **≤760 px:** una columna, orden original (`--o0`), tarjetas de 3 por fila.
 - **Con filtro de texto o chip de área** el bento se mantiene pero solo con los grupos que tienen resultados.
 - **Lista compacta** (opción actual de Personalizar): misma estructura, una fila por módulo, cada grupo ocupa 3 unidades.
+- **Orden por uso (opcional, en Personalizar):** casilla «Dentro de cada grupo, poner primero los que más uso». Prioridad: fijados → más usados → orden personal. En el prototipo cuenta aperturas en el navegador; en producción sería una métrica por usuario (backend) o un contador ya existente. No reordena los grupos entre sí.
+- **Sin resultados** (filtro de texto o chip): estado vacío con icono, una frase y botón «Quitar filtros» (componente `.estado-vacio`, §13b).
 - Encima del bento: **chips de área** (Todos + un chip por grupo, `aria-pressed`) y el buscador de módulos actual (misma normalización sin tildes).
 
 ### 4.4 Tarjeta de módulo
@@ -172,9 +177,17 @@ El destacado actual (naranja `--ant-accent`) aparece en muchos lugares (campana,
 5. Fijar/ocultar/mover un módulo es inmediato, con «Deshacer» de 6–8 s y reversión si el servidor falla.
 6. Tablas con números tabulares, columnas secundarias ocultas bajo 1180 px y esqueleto con las mismas columnas.
 7. Los gráficos cumplen §7 (sin doble eje, sin donut con muchas porciones, con tabla y tooltip).
-8. Modo oscuro, `prefers-reduced-motion` y contraste AA verificados en las pantallas tocadas.
+8. Modo oscuro, `prefers-reduced-motion` y contraste AA verificados en las pantallas tocadas. **0 violaciones de axe (WCAG 2.1 AA)** en claro y oscuro, a 390 / 1100 / 1360 px, con cada paleta propuesta.
 9. Todo control táctil ≥44×44 px; foco visible; `aria-*` en botones de icono; `skip-link` intacto.
 10. Reporte final con los 20 puntos, capturas antes/después de: Portal, Panel de Ventas, Clientes, Cardinal Cartera, Cardinal Gerencia y Portal de Pagos, y lista de pendientes de backend.
+
+## 11b. Pruebas visuales y de accesibilidad (obligatorias antes de cada PR)
+
+`prototipo/pruebas/visual.js` es un ejemplo funcional, sin dependencias nuevas (solo `playwright`; `axe-core` opcional). Adáptalo a las pantallas reales (cambia `BASE`/`PANTALLAS` y usa `storageState` para la sesión):
+- `node visual.js --baseline` guarda capturas de referencia **antes** de empezar (no se versionan: `.gitignore`).
+- `node visual.js` recaptura y compara; falla (código 1) si hay **desborde horizontal**, **errores de consola**, **violaciones de axe** o más de 0,5 % de píxeles distintos (`UMBRAL=…`). 7 pantallas × 3 anchos × claro/oscuro = 42 capturas.
+- Úsalo en CI y revisa a mano cada diferencia antes de aceptarla como nueva referencia.
+- Qué detectó en el prototipo (y debes vigilar en producción): botón `Módulos` sin nombre accesible a 390 px (solo icono), `<code>` con contraste insuficiente, texto blanco sobre naranja, `h3` tras `h1` (orden de encabezados), regiones con scroll sin `tabindex`/nombre, `role="tooltip"` vacío, paneles de contenido fuera de landmarks (asistente flotante, barra de Cardinal), dos `role="search"` sin nombre.
 
 ## 12. Pendientes de backend (reportar, no improvisar)
 
@@ -189,11 +202,18 @@ El destacado actual (naranja `--ant-accent`) aparece en muchos lugares (campana,
 
 Cambios de reglas de negocio, nuevas dependencias, migración de framework, rediseño del flujo de seguridad del Portal de Pagos, y las pantallas que no se entregaron como referencia (Importaciones, Tareas, Mermas, Morosidad, Taller, Inventario y similares): aplicarles solo tokens, tablas, menús y filtros de este documento, sin rediseñarlas.
 
-## 14. Sugerencias opcionales (después de lo anterior, una por una y con aprobación)
+## 13b. Componentes únicos y estados (aplicado en el prototipo; replicar)
 
-1. **Pruebas visuales automáticas:** capturas con Playwright de las 6 pantallas a 390 / 1100 / 1360 px, en claro y oscuro, comparadas contra las de referencia, para que un cambio de CSS no rompa otra pantalla sin que nadie lo note.
-2. **Componentes únicos:** unificar en una sola clase cada patrón repetido (KPI, panel, píldora de estado, tabla de datos, aviso, barra de avance) y eliminar los `style=""` inline y los colores sueltos que detecta el «detector de diseño» del repo.
-3. **Estados vacíos y de error** con el mismo estilo (icono, una frase, una acción) en lugar de textos sueltos o tablas vacías.
-4. **Orden de grupos por uso:** si hay telemetría de clics, ordenar los grupos del portal por uso personal sin perder los fijados.
-5. **Auditoría de accesibilidad** con herramienta automática (axe/Lighthouse) en las pantallas tocadas, con corrección de contraste, nombres accesibles y orden de foco.
-6. **Guía de estilo viva:** una página interna con tokens, componentes y reglas de este documento, para que las pantallas nuevas nazcan con el mismo lenguaje.
+- **Componentes con una sola clase cada uno**, sin `style=""` inline ni colores sueltos: `.panel` (superficie), `.kpi` (+ `.cero`), `.estado` / `.insignia` (píldora con `--c`), `.aviso` (`.info`, `.bad`), `.pestanas`, `.pildoras`, `.segmento`, `.mod` + `.grupo`/`.cluster`, `.meta-barra` (con marca de ritmo), `.t` + `.barra-celda`, `.btn-accent` / `.btn-ghost` / `.btn-borde`, `.estado-vacio`. Si algo se repite en 3 pantallas, es un componente. La tabla «antes → después» está en la guía de estilo.
+- **Tres estados siempre definidos** para toda lista, tabla o gráfico: **cargando** (esqueleto existente, mismas columnas), **vacío** (`.estado-vacio`: icono, una frase, una acción útil como «Quitar filtros» o un mensaje positivo como «Nadie para cobrar hoy») y **error** (`.estado-vacio.error` con «No se pudo cargar», «Tus filtros siguen aplicados» y botón **Reintentar**). Nunca una tabla en blanco ni un texto suelto.
+
+## 14. Sugerencias opcionales y siguientes pasos
+
+Las seis sugerencias originales ya están **aplicadas en el prototipo** (pruebas visuales §11b, componentes y estados §13b, orden por uso §4.3, auditoría axe y guía de estilo). Lo que queda para la plataforma real, una por una y con aprobación:
+1. Portar `visual.js` a las pantallas reales y engancharlo a CI.
+2. Migrar las plantillas a los componentes únicos y borrar los `style=""` inline y los colores sueltos que detecta el «detector de diseño» del repo.
+3. Aplicar los tres estados (cargando / vacío / error) a toda lista, tabla y gráfico.
+4. Decidir si el orden por uso se guarda en servidor (hoy, en el prototipo, vive en el navegador).
+5. Correr axe sobre **todas** las pantallas (no solo las siete de referencia) y corregir.
+6. Publicar la guía de estilo como página interna (p. ej. `/guia-de-estilo`) y mantenerla junto a `app.css`.
+7. Medir rendimiento percibido (INP/LCP con el beacon que ya existe) antes y después, y revisar que las `view-transition` no retrasen el primer contenido.

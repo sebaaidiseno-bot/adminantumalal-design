@@ -27,7 +27,7 @@
 .hb b{font-variant-numeric:tabular-nums;font-weight:600;white-space:nowrap}
 .t td.barra-celda{background:linear-gradient(90deg,color-mix(in srgb,var(--ant-icono) 14%,transparent) var(--w,0%),transparent var(--w,0%))}
 .cumpl{white-space:nowrap;font-variant-numeric:tabular-nums;font-weight:600}
-.cumpl.mal{color:var(--c-bad)}.cumpl.med{color:var(--c-warn)}.cumpl.bien{color:var(--c-ok)}
+.cumpl.mal{color:var(--t-bad)}.cumpl.med{color:var(--t-warn)}.cumpl.bien{color:var(--t-ok)}
 .nota-pie{font-size:12px;color:var(--ant-muted);padding:10px 14px;border-top:1px solid var(--ant-line)}
 .estado-sync{font-size:12px;color:var(--ant-muted);text-align:right}
 
@@ -62,7 +62,7 @@
 .cli-datos{display:flex;gap:6px 14px;flex-wrap:wrap;font-size:12.5px;color:var(--ant-muted)}
 .cli-datos span{display:inline-flex;align-items:center;gap:.3rem;white-space:nowrap}
 .cli-datos b{color:var(--ant-tinta);font-variant-numeric:tabular-nums}
-.cli-datos .debe{color:var(--c-bad);font-weight:600}
+.cli-datos .debe{color:var(--t-bad);font-weight:600}
 .prob{height:6px;border-radius:4px;background:var(--ant-bg);overflow:hidden}
 .prob i{display:block;height:100%;background:var(--ant-icono)}
 .cli-pistas{margin:0;padding-left:1.1rem;font-size:12.5px}
@@ -81,7 +81,7 @@
 .vend{display:flex;gap:10px;align-items:center;min-width:170px}
 .vend b{display:block}.vend small{color:var(--ant-muted);font-size:11.5px}
 .grande{font-size:1.5rem;font-weight:700;line-height:1;font-variant-numeric:tabular-nums}
-.insignia{display:inline-flex;align-items:center;gap:.25rem;font-size:11.5px;font-weight:700;padding:1px 8px;border-radius:99px;margin-top:4px;background:color-mix(in srgb,var(--c) 14%,transparent);color:var(--c)}
+.insignia{display:inline-flex;align-items:center;gap:.25rem;font-size:11.5px;font-weight:700;padding:1px 8px;border-radius:99px;margin-top:4px;background:color-mix(in srgb,var(--c) 14%,transparent);color:color-mix(in srgb,var(--c) var(--txt-mezcla,70%),#000)}
 .meta-barra{position:relative;height:8px;background:var(--ant-bg);border-radius:4px;min-width:160px}
 .meta-barra i{display:block;height:100%;border-radius:4px;background:var(--c)}
 .meta-barra u{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--ant-tinta);text-decoration:none}
@@ -89,10 +89,10 @@
 .terreno{font-size:12px;line-height:1.35}
 .terreno .pto{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px;background:var(--c-neutro)}
 .terreno .pto.ok{background:var(--c-ok)}
-.terreno .lejos{color:var(--c-bad);font-weight:600}
+.terreno .lejos{color:var(--t-bad);font-weight:600}
 .aviso-sge{max-width:760px}
-.cero-rojo{color:var(--c-bad);font-weight:700}
-.sub-rojo{display:block;font-size:11.5px;color:var(--c-bad)}
+.cero-rojo{color:var(--t-bad);font-weight:700}
+.sub-rojo{display:block;font-size:11.5px;color:var(--t-bad)}
 
 /* ===== Panel de Ventas: lateral y avisos ===== */
 .nota-venta{font-size:12.5px;color:var(--ant-muted);margin:0 0 12px}

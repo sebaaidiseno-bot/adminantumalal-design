@@ -17,23 +17,23 @@
   <div class="aviso bad"><i class="bi bi-x-circle-fill"></i><div><div class="small text-muted">¿A dónde le llega el código hoy?</div><strong class="fs-6">A ninguna parte: este cliente no puede recibir el código</strong></div></div>
 
   <div class="pasos">
-    <div class="panel paso"><h3><i class="bi bi-person-check"></i>Para verificar que hablas con el cliente</h3><div class="cuerpo">
+    <div class="panel paso"><h2 class="paso-t"><i class="bi bi-person-check"></i>Para verificar que hablas con el cliente</h2><div class="cuerpo">
       <p class="text-muted small">El cliente de verdad sabe cuánto debe. Pregúntaselo antes de mandar nada a un correo nuevo.</p>
       <div class="fila-dato"><span>Deuda vigente</span><strong class="num">$00</strong></div><div class="fila-dato"><span>De eso, vencido</span><strong class="num">$00</strong></div><div class="fila-dato"><span>Cuotas pendientes</span><strong class="num">0</strong></div></div></div>
-    <div class="panel paso"><h3><i class="bi bi-clock-history"></i>¿De verdad intentó entrar?</h3><div class="cuerpo">
+    <div class="panel paso"><h2 class="paso-t"><i class="bi bi-clock-history"></i>¿De verdad intentó entrar?</h2><div class="cuerpo">
       <div class="aviso mb-0"><i class="bi bi-exclamation-triangle"></i><div><strong>No hay ningún intento registrado.</strong> Quien está escribiendo ni siquiera ha probado a entrar al portal. Vale la pena preguntar por qué antes de mandarle un código.</div></div></div></div>
   </div>
   <div class="pasos">
-    <div class="panel paso"><h3><i class="bi bi-envelope-plus"></i>2 · Enviar a un correo nuevo</h3><div class="cuerpo">
+    <div class="panel paso"><h2 class="paso-t"><i class="bi bi-envelope-plus"></i>2 · Enviar a un correo nuevo</h2><div class="cuerpo">
       <label class="small" for="pg1">Correo que entregó el cliente</label><input id="pg1" class="form-control mb-2" placeholder="nuevo@empresa.cl">
       <label class="small" for="pg2">Cómo verificaste su identidad <span style="color:var(--c-bad)">*</span></label><textarea id="pg2" class="form-control" rows="2" placeholder="Ej: llamé al fijo del ERP y confirmó el monto de la deuda"></textarea>
       <div class="form-text mb-2">Queda con tu nombre. Es lo único que quedará escrito de por qué confiaste.</div>
       <button class="btn-accent w-100"><i class="bi bi-send me-1"></i>Verificar y enviar</button></div></div>
-    <div class="panel paso"><h3><i class="bi bi-whatsapp"></i>3 · Por WhatsApp</h3><div class="cuerpo d-flex flex-column gap-3">
+    <div class="panel paso"><h2 class="paso-t"><i class="bi bi-whatsapp"></i>3 · Por WhatsApp</h2><div class="cuerpo d-flex flex-column gap-3">
       <p class="text-muted small mb-0">Va <strong>solo al móvil que ya está en el ERP</strong> (<span class="num">000000000</span>). Un número dictado por quien escribe se rechaza: sería entregarle el código a quien lo pide.</p>
-      <button class="btn-accent mt-auto" style="background:var(--c-ok)"><i class="bi bi-whatsapp me-1"></i>Preparar mensaje</button></div></div>
+      <button class="btn-accent btn-wa mt-auto"><i class="bi bi-whatsapp me-1"></i>Preparar mensaje</button></div></div>
   </div>
-  <div class="panel paso mb-3"><h3><i class="bi bi-pin-angle"></i>Fijar el correo de este cliente <span class="text-muted fw-normal">— para siempre, no sólo esta vez</span></h3><div class="cuerpo">
+  <div class="panel paso mb-3"><h2 class="paso-t"><i class="bi bi-pin-angle"></i>Fijar el correo de este cliente <span class="text-muted fw-normal">— para siempre, no sólo esta vez</span></h2><div class="cuerpo">
     <p class="text-muted small">Enviar a un correo nuevo (arriba) manda el código <strong>una vez</strong>: el cliente vuelve a quedar bloqueado en su siguiente intento. Esto en cambio queda guardado y <strong>entra solo la próxima vez</strong>, hasta que alguien lo cambie.</p>
     <div class="row g-3"><div class="col-md-6"><label class="small" for="pg3">Correo nuevo</label><input id="pg3" class="form-control" placeholder="pagos@empresa.cl"></div>
       <div class="col-md-6"><div class="small mb-1">¿Por qué se cambia?</div>

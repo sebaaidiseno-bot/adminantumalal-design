@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f2f5f9"><title>Guía de estilo · Propuesta</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<script>(function(){var t=null;try{t=localStorage.getItem('ant.tema')}catch(e){}if(!t&&matchMedia('(prefers-color-scheme: dark)').matches)t='dark';if(t)document.documentElement.setAttribute('data-bs-theme',t);var p=null;try{p=localStorage.getItem('ant.paleta')}catch(e){}if(p)document.documentElement.setAttribute('data-paleta',p);})();</script>
+<style>
+/* ============ Tokens (mismos nombres y valores que app.css cuando existen) ============ */
+:root{
+  --ant-dark:#011e39; --ant-dark-2:#062a4d; --ant-accent:#e85215; --ant-hover:#c44010;
+  --ant-tinta:#011e39;                 /* texto marino; se invierte en oscuro */
+  --ant-icono:#1b5b95;                 /* = --imp-azul: iconos y enlaces */
+  --ant-bg:#f2f5f9; --ant-surface:#fff; --ant-line:#dfe6ee; --ant-muted:#566a80;   /* nuevos: fondo plano, borde de 1 px, texto de apoyo */
+  --ant-r-s:10px; --ant-r-m:14px;
+  --ant-s1:0 1px 2px rgba(1,30,57,.06),0 1px 3px rgba(1,30,57,.05);
+  --ant-s2:0 2px 6px rgba(1,30,57,.07),0 10px 28px rgba(1,30,57,.11);
+  --ant-accent-fondo:#c44010;           /* relleno de botones e insignias con texto blanco: #e85215 daba 3.7:1; este da 5.4:1 (AA) */
+  --ant-accent-fondo-hover:#a3360d;
+  --ant-alerta:var(--ant-accent-fondo); /* campana, avisos: en las paletas sobrias pasa a rojo y el naranja se retira */
+  /* texto de estado sobre su propio tinte al 14 %: el color base oscurecido 30 % (en oscuro se usa tal cual) */
+  --t-ok:color-mix(in srgb,var(--c-ok) 70%,#000);--t-warn:color-mix(in srgb,var(--c-warn) 62%,#000);--t-bad:color-mix(in srgb,var(--c-bad) 74%,#000);
+  --t-info:color-mix(in srgb,var(--c-info) 72%,#000);--t-neutro:color-mix(in srgb,var(--c-neutro) 65%,#000);--t-azul:color-mix(in srgb,var(--c-azul) 68%,#000);
+  --c-warn:#b7791f; --c-bad:#c0392b; --c-ok:#198754; --c-info:#0b7285; --c-neutro:#6b7280; --c-azul:#2b6cb0;
+  --bs-body-bg:var(--ant-bg); --bs-body-color:var(--ant-tinta);
+}
+[data-bs-theme="dark"]{
+  --ant-tinta:#dbe7f3; --ant-icono:#4d9bd8; --ant-bg:#0a1626; --ant-surface:#10233a; --ant-line:#1f3550; --ant-muted:#93a6bc;
+  --ant-s1:0 1px 2px rgba(0,0,0,.35); --ant-s2:0 2px 6px rgba(0,0,0,.35),0 8px 20px rgba(0,0,0,.30);
+  --c-warn:#e0b04a; --c-bad:#ef7b6e; --c-ok:#4cc38a; --c-info:#4fc3d9; --c-neutro:#9aa8b8; --c-azul:#6aa8ee;
+  --ant-enlace:#6aa8ee;                 /* enlaces en oscuro: el celeste de iconos daba 4.49:1 sobre avisos tintados */
+  --txt-mezcla:100%;
+  --t-ok:var(--c-ok);--t-warn:var(--c-warn);--t-bad:var(--c-bad);--t-info:var(--c-info);--t-neutro:var(--c-neutro);--t-azul:var(--c-azul);
+  --bs-body-bg:var(--ant-bg); --bs-body-color:var(--ant-tinta);
+}
+
+/* ============ Paletas alternativas (se eligen en el menú de usuario → Paleta). A = la actual, sin atributo. ============ */
+/* B · Marino sobrio: el naranja desaparece; el énfasis es el marino y el rojo queda solo para alertas */
+[data-paleta="b"]:not([data-bs-theme="dark"]){--ant-accent:#0b3a66;--ant-hover:#062a4d;--ant-accent-fondo:#0b3a66;--ant-accent-fondo-hover:#062a4d;--ant-alerta:#c0392b;--kpi-borde:var(--ant-line);--kpi-ico:var(--ant-muted)}
+[data-paleta="b"][data-bs-theme="dark"]{--ant-accent:#2a6fb5;--ant-hover:#3b82c9;--ant-accent-fondo:#2a6fb5;--ant-accent-fondo-hover:#3b82c9;--ant-alerta:#b3382b}
+/* C · Verde azulado y piedra: fondo cálido, acento teal */
+[data-paleta="c"]:not([data-bs-theme="dark"]){--ant-bg:#f6f5f2;--ant-line:#e4e1da;--ant-tinta:#17302f;--ant-muted:#5e6b69;--ant-icono:#0f6b6b;--ant-accent:#0f6b6b;--ant-hover:#0a5252;--ant-accent-fondo:#0f6b6b;--ant-accent-fondo-hover:#0a5252;--ant-alerta:#c0392b;--kpi-borde:var(--ant-line);--kpi-ico:var(--ant-muted)}
+[data-paleta="c"][data-bs-theme="dark"]{--ant-bg:#0e1a1a;--ant-surface:#142524;--ant-line:#234040;--ant-tinta:#dcecea;--ant-muted:#8fa9a6;--ant-icono:#4fb8b3;--ant-accent:#2a8f8b;--ant-hover:#36a6a1;--ant-accent-fondo:#1f7a76;--ant-accent-fondo-hover:#2a8f8b;--ant-alerta:#b3382b}
+/* D · Grafito: grises azulados, iconos apagados; el naranja queda SOLO en el botón principal */
+[data-paleta="d"]:not([data-bs-theme="dark"]){--ant-alerta:#c0392b;--ant-bg:#f4f5f7;--ant-line:#e0e4e9;--ant-tinta:#1f2933;--ant-muted:#5a6775;--ant-icono:#3b556e;--ant-alerta:#c0392b;--kpi-borde:var(--ant-line);--kpi-ico:var(--ant-muted)}
+[data-paleta="d"][data-bs-theme="dark"]{--ant-icono:#8fb0cf;--ant-alerta:#b3382b}
+[data-paleta="d"] .mod-fijo,[data-paleta="d"] .pestanas a[aria-current="page"],[data-paleta="d"] .mod-menu-pin[aria-pressed="true"]{color:var(--ant-icono);border-color:var(--ant-icono)}
+html{color-scheme:light dark}
+body{background:var(--ant-bg);color:var(--ant-tinta);font-size:14px;
+  padding-inline:env(safe-area-inset-left) env(safe-area-inset-right);padding-bottom:env(safe-area-inset-bottom)}
+h1,h2,h3,h4,.titulo{text-wrap:balance}
+p{text-wrap:pretty}
+.num{font-variant-numeric:tabular-nums}
+a{color:var(--ant-enlace,var(--ant-icono))}
+.text-muted,.form-text{color:var(--ant-muted)!important}
+
+/* ============ Cabecera clara (antes: vidrio marino de 56 px) ============ */
+.top{position:sticky;top:0;z-index:1030;background:var(--ant-surface);border-bottom:1px solid var(--ant-line);padding-top:env(safe-area-inset-top)}
+.top-in{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:.5rem;height:52px;max-width:1360px;margin:auto;padding-inline:16px}
+.top-izq{display:flex;align-items:center;gap:.6rem;min-width:0}
+.top-der{display:flex;align-items:center;gap:2px;justify-self:end}
+.marca{font-weight:800;letter-spacing:.04em;color:var(--ant-tinta);text-decoration:none;display:flex;align-items:center;gap:.5rem;white-space:nowrap}
+.marca i{color:var(--ant-accent);font-size:1.3rem}
+.marca small{font-weight:500;letter-spacing:0;color:var(--ant-muted);overflow:hidden;text-overflow:ellipsis}
+.sistema{font-weight:700;letter-spacing:.28em;font-size:.8rem;color:var(--ant-tinta)}
+.sistema span{font-weight:400;color:var(--ant-muted);margin-left:.3em}
+.btn-ghost,.btn-accent{white-space:nowrap}
+.btn-ghost{display:inline-flex;align-items:center;gap:.4rem;min-height:40px;padding:0 .7rem;border:0;background:transparent;color:var(--ant-tinta);
+  border-radius:var(--ant-r-s);text-decoration:none;font-weight:500;position:relative}
+.btn-ghost:hover{background:color-mix(in srgb,var(--ant-icono) 10%,transparent);color:var(--ant-tinta)}
+.btn-borde{border:1px solid var(--ant-line);background:var(--ant-surface)}
+kbd{background:var(--ant-surface);color:var(--ant-muted);border:1px solid var(--ant-line);border-bottom-width:2px;border-radius:5px;padding:0 .35rem;font:600 11px/1.6 system-ui;box-shadow:none}
+.badge-n{background:var(--ant-alerta);color:#fff;border-radius:99px;font-size:10px;font-weight:700;padding:1px 6px;position:absolute;top:2px;right:0}
+.dropdown-menu{--bs-dropdown-border-color:var(--ant-line);--bs-dropdown-bg:var(--ant-surface);--bs-dropdown-link-color:var(--ant-tinta);
+  --bs-dropdown-link-hover-bg:color-mix(in srgb,var(--ant-icono) 10%,transparent);--bs-dropdown-link-hover-color:var(--ant-tinta);
+  --bs-dropdown-border-radius:var(--ant-r-m);--bs-dropdown-padding-y:.35rem;font-size:13px;box-shadow:var(--ant-s2);color:var(--ant-tinta)}
+.dropdown-item{display:flex;align-items:center;gap:.5rem;min-height:36px;border-radius:6px;margin-inline:.25rem;width:auto}
+.dropdown-item i{color:var(--ant-icono)}
+/* menú Módulos */
+.mod-menu{width:min(22rem,calc(100vw - 1.5rem));overflow:hidden}
+.mod-menu-busca{position:relative;padding:.55rem .6rem;border-bottom:1px solid var(--ant-line)}
+.mod-menu-busca>i{position:absolute;left:1.25rem;top:50%;transform:translateY(-50%);color:var(--ant-muted)}
+.mod-menu-busca input{padding-left:2rem;min-height:38px}
+.mod-menu-lista{max-height:min(62vh,30rem);overflow-y:auto;overscroll-behavior:contain;padding:.3rem 0;margin:0;list-style:none}
+.mod-menu-titulo{padding:.5rem 1rem .15rem;font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ant-muted)}
+.mod-menu-item{display:flex;align-items:center}
+.mod-menu-item .dropdown-item{flex:1}
+.mod-menu-pin{border:0;background:none;min-width:40px;min-height:36px;color:var(--ant-muted);border-radius:6px}
+.mod-menu-pin[aria-pressed="true"]{color:var(--ant-accent)}
+.mod-menu-pie{display:block;padding:.6rem 1rem;border-top:1px solid var(--ant-line);font-size:12px;text-decoration:none}
+
+.wrap{max-width:1360px;margin:auto;padding:16px}
+
+/* ============ Superficies ============ */
+.panel{background:var(--ant-surface);border:1px solid var(--ant-line);border-radius:var(--ant-r-m);box-shadow:var(--ant-s1)}
+.form-control,.form-select{border:1px solid var(--ant-line);background-color:var(--ant-bg);color:var(--ant-tinta);min-height:40px;box-shadow:none}
+.form-control:focus,.form-select:focus{background-color:var(--ant-surface);color:var(--ant-tinta);border-color:var(--ant-icono);box-shadow:0 0 0 3px color-mix(in srgb,var(--ant-icono) 25%,transparent)}
+.btn-accent{background:var(--ant-accent-fondo);border:0;color:#fff;font-weight:600;min-height:40px;padding:0 1rem;border-radius:var(--ant-r-s)}
+.btn-accent:hover{background:var(--ant-accent-fondo-hover);color:#fff}
+.btn-accent:disabled{opacity:.6}
+.btn-accent.btn-wa{background:#146c43}.btn-accent.btn-wa:hover{background:#0f5a37}   /* verde de WhatsApp con texto blanco ≥ 5:1 */
+.btn-accent.fin{border-radius:0 var(--ant-r-s) var(--ant-r-s) 0}
+.modal-content{background:var(--ant-surface);border:1px solid var(--ant-line);border-radius:var(--ant-r-m);color:var(--ant-tinta)}
+.modal-header,.modal-footer{border-color:var(--ant-line)}
+[data-bs-theme="dark"] .btn-close{filter:invert(1)}
+.nav-tabs{--bs-nav-tabs-border-color:var(--ant-line);--bs-nav-tabs-link-active-bg:var(--ant-surface);--bs-nav-tabs-link-active-color:var(--ant-tinta);--bs-nav-tabs-link-active-border-color:var(--ant-line) var(--ant-line) var(--ant-surface)}
+.nav-tabs .nav-link{color:var(--ant-muted)}
+
+/* ============ Portal ============ */
+.saludo{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:.25rem 1rem;margin-bottom:12px}
+.saludo h1{font-size:1.25rem;font-weight:700;margin:0}
+.saludo p{margin:0;color:var(--ant-muted)}
+.buscar-cliente{padding:12px 14px;margin-bottom:12px}
+.buscar-cliente label{font-weight:600;display:flex;align-items:center;gap:.4rem;margin-bottom:6px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(168px,1fr));gap:10px;margin:0 0 20px}
+.kpi{padding:10px 12px;display:flex;flex-direction:column;gap:2px;text-decoration:none;color:inherit;min-width:0;border-left:3px solid var(--kpi-borde,var(--c,var(--ant-icono)))}
+a.kpi:hover{box-shadow:var(--ant-s2);color:inherit}
+.kpi-t{font-size:12px;color:var(--ant-muted);display:flex;align-items:flex-start;gap:.4rem;justify-content:space-between;text-wrap:balance}
+.kpi-t i{color:var(--kpi-ico,var(--c,var(--ant-icono)));font-size:.95rem;flex:none}
+.kpi-valor{font-size:1.5rem;font-weight:700;line-height:1.15;white-space:nowrap}
+.kpi.cero .kpi-valor{color:var(--ant-muted);font-weight:600}   /* el valor en cero se apaga: lo que importa destaca */
+
+.portal-barra{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;justify-content:space-between;margin-bottom:6px}
+.portal-buscar{position:relative;flex:1 1 14rem;max-width:26rem}
+.portal-buscar>.bi{position:absolute;left:.85rem;top:50%;transform:translateY(-50%);color:var(--ant-muted);pointer-events:none}
+.portal-buscar .form-control{padding-left:2.4rem;min-height:44px;border-radius:var(--ant-r-s)}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 4px}
+.chip{border:1px solid var(--ant-line);background:var(--ant-surface);color:var(--ant-tinta);border-radius:99px;min-height:34px;padding:0 .8rem;font-weight:500}
+.chip[aria-pressed="true"]{background:var(--ant-tinta);color:var(--ant-surface);border-color:var(--ant-tinta)}
+.ayuda-linea{font-size:12.5px;color:var(--ant-muted);margin:6px 0 12px}
+.ayuda-linea i{color:var(--ant-icono)}
+
+/* --- Bento de grupos: grupos grandes y chicos se acomodan juntos en filas de 9 unidades (6 en tablet, 1 en móvil) --- */
+#grupos{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));grid-auto-flow:dense;gap:12px;align-items:stretch}
+.grupo,.cluster{min-width:0;order:var(--o9,0);grid-column:span var(--s9,3)}
+.grupo{padding:12px}
+/* Grupos chicos (1–2 módulos): una sola columna, varios lado a lado dentro de un bloque («cluster») */
+.cluster{display:grid;grid-template-columns:repeat(var(--k,3),minmax(0,1fr));gap:12px}
+.cluster>.grupo{grid-column:auto;order:0}   /* --s9/--s6 se heredan del bloque: sin esto cada panel pedía el ancho del bloque entero */
+.grupo.chico .tiles{grid-template-columns:minmax(0,1fr)}
+.grupo.chico .grupo-h{flex-wrap:wrap;gap:.1rem .4rem;letter-spacing:.03em;font-size:11px;line-height:1.25;align-items:flex-start}
+.grupo.chico .grupo-h i{margin-top:1px}
+.grupo.chico .grupo-h .n{margin-left:auto}
+.grupo-h{display:flex;align-items:center;gap:.5rem;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ant-muted);margin:0 0 10px}
+.grupo-h i{color:var(--ant-icono);font-size:1rem}
+.grupo-h .n{font-weight:500;letter-spacing:0;text-transform:none;margin-left:auto;font-size:11.5px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(108px,1fr));gap:8px}
+.mod{position:relative;border:1px solid var(--ant-line);border-radius:var(--ant-r-m);corner-shape:squircle;background:var(--ant-bg);
+  min-height:104px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:14px 6px 10px;text-align:center;
+  transition:box-shadow .18s,border-color .18s,background .18s,transform .18s}
+.mod:hover,.mod:focus-within{background:var(--ant-surface);box-shadow:var(--ant-s2);border-color:color-mix(in srgb,var(--ant-icono) 40%,var(--ant-line))}
+.mod:hover{transform:translateY(-1px)}                    /* antes -3px con sombra grande */
+.mod-icono{font-size:2.5rem;line-height:1;color:var(--ant-icono)}   /* sin cuadro de fondo: el icono ES el color */
+.mod-nombre{font-weight:600;font-size:12.5px;line-height:1.22;color:var(--ant-tinta);text-decoration:none;text-wrap:balance;overflow-wrap:anywhere}
+.mod-nombre::after{content:"";position:absolute;inset:0;border-radius:inherit}
+.mod-nivel,.mod-fijo{position:absolute;top:9px;left:9px;font-size:11px;color:var(--ant-muted)}
+.mod-fijo{color:var(--ant-accent)}
+.mod>.dropdown{position:static}          /* Bootstrap pone position:relative y el ⋯ se centraba sobre el icono */
+.mod-mas{position:absolute;top:0;right:0;z-index:2;min-width:44px;min-height:44px;display:grid;place-items:center;border:0;background:none;color:var(--ant-muted);border-radius:var(--ant-r-s);opacity:0;transition:opacity .15s}
+.mod:hover .mod-mas,.mod:focus-within .mod-mas,.mod-mas[aria-expanded="true"]{opacity:1}
+@media (hover:none){.mod-mas{opacity:1}}
+.mod-mas:hover{background:color-mix(in srgb,var(--ant-icono) 10%,transparent);color:var(--ant-tinta)}
+/* Lista compacta: una fila por módulo */
+.compacta .tiles{grid-template-columns:1fr;gap:2px}
+.compacta .mod{flex-direction:row;justify-content:flex-start;min-height:48px;padding:4px 48px 4px 12px;gap:12px;text-align:left;border-color:transparent;background:transparent}
+.compacta .mod:hover{background:var(--ant-bg);border-color:var(--ant-line);transform:none;box-shadow:none}
+.compacta .mod-icono{font-size:1.5rem;width:1.75rem;text-align:center}
+.compacta .mod-nivel,.compacta .mod-fijo{position:static;order:3;margin-left:auto}
+.compacta .mod-mas{top:2px;opacity:1}
+.sin-res{padding:24px;text-align:center;color:var(--ant-muted)}
+
+/* ============ Menús: pestañas con «Más» (sin scroll lateral), píldoras y migas ============ */
+.migas{display:flex;align-items:center;gap:.4rem;color:var(--ant-muted);font-size:13px;margin-bottom:8px;flex-wrap:wrap}
+.pestanas{display:flex;flex-wrap:wrap;gap:2px;border-bottom:1px solid var(--ant-line);margin-bottom:12px;align-items:center}
+.pestanas>a,.pestanas button{border:0;background:none;padding:0 .9rem;min-height:42px;display:flex;align-items:center;gap:.4rem;color:var(--ant-muted);text-decoration:none;font-weight:500;border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap}
+.pestanas>a:hover,.pestanas button:hover{color:var(--ant-tinta)}
+.pestanas a[aria-current="page"]{color:var(--ant-tinta);border-color:var(--ant-accent);font-weight:600}
+.pildoras{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.pildoras a{padding:0 .8rem;min-height:34px;display:flex;align-items:center;border-radius:99px;border:1px solid var(--ant-line);background:var(--ant-surface);color:var(--ant-tinta);text-decoration:none;font-size:13px}
+.pildoras a[aria-current="page"]{background:var(--ant-tinta);color:var(--ant-surface);border-color:var(--ant-tinta)}
+
+/* ============ Pantalla interna con lateral ============ */
+.shell{display:grid;grid-template-columns:232px minmax(0,1fr);gap:16px;align-items:start}
+.lateral{position:sticky;top:68px;padding:8px;max-height:calc(100vh - 84px);overflow:auto}
+.lateral details{border-bottom:1px solid var(--ant-line);padding:2px 0}
+.lateral details:last-child{border:0}
+.lateral summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;min-height:38px;padding:0 8px;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ant-muted);border-radius:6px}
+.lateral summary::-webkit-details-marker{display:none}
+.lateral summary::after{content:"\F282";font-family:bootstrap-icons;transition:transform .2s}
+.lateral details[open] summary::after{transform:rotate(180deg)}
+.lateral a{display:flex;align-items:center;gap:.5rem;min-height:38px;padding:0 8px;border-radius:6px;color:var(--ant-tinta);text-decoration:none}
+.lateral a i{color:var(--ant-icono)}
+.lateral a:hover{background:color-mix(in srgb,var(--ant-icono) 8%,transparent)}
+.lateral a[aria-current="page"]{background:color-mix(in srgb,var(--ant-icono) 14%,transparent);font-weight:600}
+.segmento{display:inline-flex;flex-wrap:wrap;border:1px solid var(--ant-line);border-radius:var(--ant-r-s);background:var(--ant-surface);padding:2px;gap:2px}
+.segmento button{border:0;background:none;min-height:34px;padding:0 .8rem;border-radius:8px;color:var(--ant-muted);font-weight:500;display:flex;align-items:center;gap:.4rem}
+.segmento button[aria-pressed="true"]{background:var(--ant-tinta);color:var(--ant-surface)}
+.filtros{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;padding:12px;margin-bottom:12px}
+.filtros label{font-size:12px;color:var(--ant-muted);margin-bottom:2px;display:block}
+.aviso{display:flex;gap:.6rem;align-items:flex-start;padding:10px 12px;border:1px solid color-mix(in srgb,var(--c-warn) 40%,var(--ant-line));background:color-mix(in srgb,var(--c-warn) 9%,var(--ant-surface));border-radius:var(--ant-r-m);margin-bottom:12px}
+.aviso i{color:var(--c-warn);margin-top:2px}
+.aviso.bad{border-color:color-mix(in srgb,var(--c-bad) 40%,var(--ant-line));background:color-mix(in srgb,var(--c-bad) 8%,var(--ant-surface))}.aviso.bad i{color:var(--c-bad)}
+.aviso.info{border-color:var(--ant-line);background:var(--ant-surface)}.aviso.info i{color:var(--ant-icono)}
+.tabla-wrap{overflow:auto;position:relative}   /* position:relative evita que los .visually-hidden de las cabeceras ensanchen la página */
+table.t{width:100%;border-collapse:collapse}
+.t th{font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--ant-muted);font-weight:600;padding:10px 12px;border-bottom:1px solid var(--ant-line);white-space:nowrap;background:var(--ant-surface)}
+.t td{white-space:nowrap;padding:10px 12px;border-bottom:1px solid var(--ant-line);vertical-align:middle;color:var(--ant-tinta)}
+.t tr:last-child td{border:0}
+.t td:first-child{white-space:normal;min-width:170px}
+.t .num{text-align:right}
+.t tbody tr:hover td{background:color-mix(in srgb,var(--ant-icono) 5%,transparent)}
+.sub{display:block;font-size:12px;color:var(--ant-muted)}
+.estado{font-size:12px;font-weight:600;padding:2px 8px;border-radius:99px;background:color-mix(in srgb,var(--c) 14%,transparent);color:color-mix(in srgb,var(--c) var(--txt-mezcla,70%),#000);white-space:nowrap}
+.pie-tabla{display:flex;justify-content:space-between;align-items:center;gap:.5rem;flex-wrap:wrap;padding:10px 12px;border-top:1px solid var(--ant-line);color:var(--ant-muted)}
+.pasos{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;margin-bottom:12px}
+.paso{padding:0;overflow:hidden}
+.paso .paso-t{font-size:13px;font-weight:700;margin:0;padding:10px 14px;border-bottom:1px solid var(--ant-line);display:flex;gap:.5rem;align-items:center;flex-wrap:wrap}
+.paso .cuerpo{padding:12px 14px}
+.paso .paso-t i{color:var(--ant-icono)}
+.fila-dato{display:flex;justify-content:space-between;gap:1rem;padding:6px 0;border-bottom:1px solid var(--ant-line)}
+.fila-dato:last-child{border:0}
+
+/* skeleton: solo si la carga pasa de 300 ms, con las mismas columnas que la tabla real (en producción ya existe como [data-esqueleto]) */
+.sk-b{height:1em;border-radius:6px;background:linear-gradient(90deg,var(--ant-line),color-mix(in srgb,var(--ant-line) 50%,var(--ant-surface)),var(--ant-line));background-size:200% 100%;animation:sk 1.2s linear infinite}
+@keyframes sk{to{background-position:-200% 0}}
+
+code{color:var(--ant-tinta);background:color-mix(in srgb,var(--ant-icono) 10%,transparent);padding:0 .25rem;border-radius:4px;font-size:.85em}
+
+/* ============ Estados vacío y de error (un solo componente: icono, una frase, una acción) ============ */
+.estado-vacio{display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;padding:28px 16px;color:var(--ant-muted)}
+.estado-vacio>i{font-size:1.6rem;color:var(--ant-icono);width:52px;height:52px;border-radius:50%;display:grid;place-items:center;background:color-mix(in srgb,var(--ant-icono) 10%,transparent)}
+.estado-vacio.error>i{color:var(--t-bad);background:color-mix(in srgb,var(--c-bad) 10%,transparent)}
+.estado-vacio strong{color:var(--ant-tinta);font-size:1rem}
+.estado-vacio p{margin:0;max-width:44ch}
+.estado-vacio .btn-ghost{margin-top:6px}
+
+/* ============ Command menu ============ */
+dialog.cmd{border:1px solid var(--ant-line);border-radius:var(--ant-r-m);padding:0;width:min(560px,calc(100vw - 24px));margin:12vh auto 0;background:var(--ant-surface);color:var(--ant-tinta);box-shadow:0 20px 60px rgba(1,30,57,.3)}
+dialog.cmd::backdrop{background:rgba(1,30,57,.45)}
+.cmd input{width:100%;border:0;border-bottom:1px solid var(--ant-line);padding:14px 16px;font-size:15px;background:transparent;color:inherit;outline:none}
+.cmd ul{list-style:none;margin:0;padding:6px;max-height:50vh;overflow:auto}
+.cmd li{display:flex;align-items:center;gap:.6rem;min-height:40px;padding:0 10px;border-radius:8px;cursor:pointer}
+.cmd li i{color:var(--ant-icono);font-size:1.1rem}
+.cmd li small{margin-left:auto;color:var(--ant-muted)}
+.cmd li[aria-selected="true"]{background:color-mix(in srgb,var(--ant-icono) 14%,transparent)}
+.cmd-pie{display:flex;gap:12px;padding:8px 14px;border-top:1px solid var(--ant-line);color:var(--ant-muted);font-size:12px}
+
+/* ============ Toast con Deshacer ============ */
+#toasts{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom));z-index:2000;display:grid;gap:8px;width:max-content;max-width:calc(100vw - 24px)}
+.toast-u{display:flex;align-items:center;gap:12px;background:#011e39;color:#fff;padding:8px 8px 8px 16px;border-radius:var(--ant-r-m);box-shadow:0 8px 24px rgba(1,30,57,.3);animation:in .2s ease-out;border:1px solid rgba(255,255,255,.12)}
+.toast-u button{border:0;background:none;color:#ffb48f;font-weight:700;min-height:40px;padding:0 .8rem;border-radius:8px}
+.toast-u button:hover{background:rgba(255,255,255,.1)}
+@keyframes in{from{opacity:0;transform:translateY(8px)}}
+
+/* ============ Asistente flotante (antes 96 px; aquí 56 px y respeta el safe-area) ============ */
+#sabio{position:fixed;right:max(16px,env(safe-area-inset-right));bottom:max(16px,env(safe-area-inset-bottom));z-index:1040}
+#sabio .boton{width:56px;height:56px;border-radius:50%;border:2px solid var(--ant-icono);background:var(--ant-dark-2);color:#fff;font-size:1.5rem;display:grid;place-items:center;box-shadow:var(--ant-s2)}
+#sabio .saludo-b{position:absolute;right:66px;bottom:8px;width:210px;background:var(--ant-dark);color:#fff;border:1px solid var(--ant-icono);border-radius:var(--ant-r-m);padding:8px 28px 8px 12px;box-shadow:var(--ant-s2);font-size:13px}
+#sabio .saludo-b button{position:absolute;top:0;right:0;min-width:36px;min-height:36px;border:0;background:none;color:#9fb6cd}
+body.tiene-sabio .wrap{padding-bottom:96px}
+
+.vista[hidden]{display:none}
+@view-transition{navigation:auto}
+::view-transition-group(*){animation-duration:.2s}
+:focus-visible{outline:3px solid color-mix(in srgb,var(--ant-accent) 70%,transparent);outline-offset:2px}
+.skip{position:absolute;left:-999px}.skip:focus{left:8px;top:8px;z-index:3000;background:#fff;color:#000;padding:8px}
+
+@media (max-width:1240px){.marca small{display:none}}
+@media (max-width:1180px){
+  #grupos{grid-template-columns:repeat(6,minmax(0,1fr))}
+  .grupo,.cluster{grid-column:span var(--s6,3);order:var(--o6,0)}
+  .sec-1100{display:none}
+}
+@media (max-width:860px){
+  .shell{grid-template-columns:minmax(0,1fr)}.lateral{position:static;max-height:none}
+  .top-in{grid-template-columns:1fr auto;padding-inline:8px}.sistema,.hide-sm,.btn-cmd .txt{display:none}
+  .btn-ghost{padding:0 .6rem}
+}
+@media (max-width:760px){
+  #grupos,#grupos.compacta{grid-template-columns:1fr}.grupo,.cluster{grid-column:auto;order:var(--o0,0)}
+  .cluster{grid-template-columns:1fr}
+  .tiles,.grupo.chico .tiles{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .compacta .tiles{grid-template-columns:1fr}
+  .solo-desk,#sabio .saludo-b{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+  ::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none!important}
+}
+/* ===== Estilos compartidos por las vistas sueltas (gráficos, Cardinal OS, barras de avance) ===== */
+.tip{position:fixed;z-index:3000;pointer-events:none;background:var(--ant-tinta);color:var(--ant-surface);font-size:12px;padding:6px 9px;border-radius:8px;box-shadow:var(--ant-s2);max-width:260px;opacity:0;transition:opacity .1s}
+.tip.on{opacity:1}
+.tip b{font-variant-numeric:tabular-nums}
+.titulo-panel{font-size:13px;font-weight:700;margin:0;display:flex;align-items:center;gap:.5rem;flex-wrap:wrap}
+.titulo-panel i{color:var(--ant-icono)}
+.titulo-panel small{font-weight:400;color:var(--ant-muted)}
+.panel-cab{display:flex;align-items:center;justify-content:space-between;gap:.5rem;flex-wrap:wrap;padding:10px 14px;border-bottom:1px solid var(--ant-line)}
+.panel-cuerpo{padding:12px 14px}
+.rejilla-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-bottom:12px}
+@media (max-width:1100px){.rejilla-2{grid-template-columns:minmax(0,1fr)}}
+
+/* gráficos (una sola serie: azul de iconos; el estado va en texto + flecha, no solo en color) */
+.chart svg{display:block;width:100%;height:auto;overflow:visible}
+.chart .eje text{fill:var(--ant-muted);font-size:10.5px;font-variant-numeric:tabular-nums}
+.chart .rej line{stroke:var(--ant-line);stroke-width:1}
+.chart .barra{fill:var(--ant-icono)}
+.chart .barra:hover{fill:var(--ant-tinta)}
+.chart .linea{fill:none;stroke:var(--c-info);stroke-width:2;stroke-linejoin:round}
+.chart .punto{fill:var(--c-info);stroke:var(--ant-surface);stroke-width:2}
+.chart-leyenda{display:flex;gap:14px;font-size:12px;color:var(--ant-muted);margin-top:4px;flex-wrap:wrap}
+.chart-leyenda i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.hb{display:grid;grid-template-columns:minmax(80px,140px) 1fr auto;gap:10px;align-items:center;margin:5px 0;font-size:12.5px}
+.hb-t{background:var(--ant-bg);height:12px;border-radius:6px;position:relative}
+.hb-t i{display:block;height:100%;background:var(--ant-icono);border-radius:0 4px 4px 0;min-width:2px}
+.hb-t u{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--ant-tinta);text-decoration:none}
+.hb b{font-variant-numeric:tabular-nums;font-weight:600;white-space:nowrap}
+.t td.barra-celda{background:linear-gradient(90deg,color-mix(in srgb,var(--ant-icono) 14%,transparent) var(--w,0%),transparent var(--w,0%))}
+.cumpl{white-space:nowrap;font-variant-numeric:tabular-nums;font-weight:600}
+.cumpl.mal{color:var(--t-bad)}.cumpl.med{color:var(--t-warn)}.cumpl.bien{color:var(--t-ok)}
+.nota-pie{font-size:12px;color:var(--ant-muted);padding:10px 14px;border-top:1px solid var(--ant-line)}
+.estado-sync{font-size:12px;color:var(--ant-muted);text-align:right}
+
+/* ===== Cardinal OS ===== */
+.cardinal{background:var(--ant-surface);border-bottom:1px solid var(--ant-line)}
+.cardinal-in{max-width:1360px;margin:auto;padding:10px 16px 0}
+.cardinal-fila{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:6px}
+.cardinal-marca{display:flex;align-items:center;gap:.5rem;font-family:Georgia,serif;font-weight:700;font-size:1.15rem;color:var(--ant-tinta);text-decoration:none;white-space:nowrap}
+.cardinal-marca i{color:var(--ant-icono);font-size:1.4rem}
+.cardinal-marca span{font:600 10px system-ui;border:1px solid var(--ant-line);border-radius:5px;padding:0 4px;color:var(--ant-muted)}
+.cardinal-buscar{position:relative;flex:1 1 280px}
+.cardinal-buscar>i{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--ant-muted)}
+.cardinal-buscar input{padding-left:36px;min-height:42px;border-radius:99px}
+.cardinal .pestanas{border:0;margin:0}
+.cardinal .pestanas>a,.cardinal .pestanas button{min-height:40px}
+.cardinal .pestanas a[aria-current="page"]{border-bottom-color:var(--ant-accent)}
+.vendedor-aviso{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;padding:10px 14px;border:1px solid var(--ant-line);background:color-mix(in srgb,var(--ant-icono) 8%,var(--ant-surface));border-radius:var(--ant-r-m);margin-bottom:12px}
+.vendedor-aviso i{color:var(--ant-icono)}
+.chips-sec{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
+.chip-sec{border:1px solid var(--ant-line);background:var(--ant-surface);color:var(--ant-tinta);border-radius:99px;min-height:36px;padding:0 .85rem;display:inline-flex;align-items:center;gap:.4rem;font-size:13px;text-decoration:none;white-space:nowrap}
+.chip-sec .n{font-variant-numeric:tabular-nums;color:var(--ant-muted);font-weight:600}
+.chip-sec[aria-pressed="true"]{background:var(--ant-tinta);color:var(--ant-surface);border-color:var(--ant-tinta)}
+.chip-sec[aria-pressed="true"] .n{color:inherit}
+.lista-cli{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media (max-width:1100px){.lista-cli{grid-template-columns:minmax(0,1fr)}}
+.cli{padding:14px;display:flex;flex-direction:column;gap:8px}
+.cli-cab{display:flex;gap:10px;align-items:flex-start}
+.cli-n{flex:none;width:26px;height:26px;border-radius:50%;background:var(--ant-tinta);color:var(--ant-surface);font:600 12px/26px system-ui;text-align:center}
+.cli-nombre{font-weight:700;margin:0;font-size:14.5px;text-wrap:balance}
+.cli-lugar{font-size:12px;color:var(--ant-muted)}
+.cli-etq{margin-left:auto;flex:none}
+.cli-datos{display:flex;gap:6px 14px;flex-wrap:wrap;font-size:12.5px;color:var(--ant-muted)}
+.cli-datos span{display:inline-flex;align-items:center;gap:.3rem;white-space:nowrap}
+.cli-datos b{color:var(--ant-tinta);font-variant-numeric:tabular-nums}
+.cli-datos .debe{color:var(--t-bad);font-weight:600}
+.prob{height:6px;border-radius:4px;background:var(--ant-bg);overflow:hidden}
+.prob i{display:block;height:100%;background:var(--ant-icono)}
+.cli-pistas{margin:0;padding-left:1.1rem;font-size:12.5px}
+.cli-pistas li{margin:2px 0}
+.gestion{font-size:12.5px;padding:6px 10px;border-radius:8px;background:color-mix(in srgb,var(--c-ok) 10%,var(--ant-surface));display:flex;gap:.5rem;align-items:flex-start}
+.gestion i{color:var(--c-ok);margin-top:2px}
+.cli-acc{display:flex;gap:8px;flex-wrap:wrap;margin-top:auto}
+.cli-acc .btn-accent{flex:1 1 140px}
+.cli-acc .btn-ghost{flex:1 1 90px;justify-content:center;border:1px solid var(--ant-line)}
+.cli-acc .wa{color:var(--c-ok);border-color:color-mix(in srgb,var(--c-ok) 45%,var(--ant-line))}
+
+/* ===== Gerencia ===== */
+.tarea-nav{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:10px 0}
+.fecha-nav{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.avatar{width:36px;height:36px;border-radius:50%;background:var(--ant-tinta);color:var(--ant-surface);font:700 12px/36px system-ui;text-align:center;flex:none}
+.vend{display:flex;gap:10px;align-items:center;min-width:170px}
+.vend b{display:block}.vend small{color:var(--ant-muted);font-size:11.5px}
+.grande{font-size:1.5rem;font-weight:700;line-height:1;font-variant-numeric:tabular-nums}
+.insignia{display:inline-flex;align-items:center;gap:.25rem;font-size:11.5px;font-weight:700;padding:1px 8px;border-radius:99px;margin-top:4px;background:color-mix(in srgb,var(--c) 14%,transparent);color:color-mix(in srgb,var(--c) var(--txt-mezcla,70%),#000)}
+.meta-barra{position:relative;height:8px;background:var(--ant-bg);border-radius:4px;min-width:160px}
+.meta-barra i{display:block;height:100%;border-radius:4px;background:var(--c)}
+.meta-barra u{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--ant-tinta);text-decoration:none}
+.meta-txt{font-size:11.5px;color:var(--ant-muted);margin-top:5px}
+.terreno{font-size:12px;line-height:1.35}
+.terreno .pto{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px;background:var(--c-neutro)}
+.terreno .pto.ok{background:var(--c-ok)}
+.terreno .lejos{color:var(--t-bad);font-weight:600}
+.aviso-sge{max-width:760px}
+.cero-rojo{color:var(--t-bad);font-weight:700}
+.sub-rojo{display:block;font-size:11.5px;color:var(--t-bad)}
+
+/* ===== Panel de Ventas: lateral y avisos ===== */
+.nota-venta{font-size:12.5px;color:var(--ant-muted);margin:0 0 12px}
+
+</style></head>
+<body>
+<a class="skip" href="#main">Saltar al contenido</a>
+<header class="top"><div class="top-in">
+  <div class="top-izq"><a class="marca" href="../index.html"><i class="bi bi-gear-wide-connected"></i><span>ANTUMALAL</span><small class="hide-sm">Administración Antumalal</small></a></div>
+  <div class="sistema d-none d-xl-block">RAPHAEL<span>OS</span></div>
+  <div class="top-der">
+    <a class="btn-ghost solo-desk" href="../index.html" title="Portal maestro"><i class="bi bi-house-door"></i><span class="hide-sm">Portal</span></a>
+    <a class="btn-ghost" href="../index.html#clientes" title="Maestro de clientes" aria-label="Clientes"><i class="bi bi-person-rolodex"></i><span class="hide-sm">Clientes</span></a>
+    <div class="dropdown">
+      <button class="btn-ghost" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false" aria-label="Módulos"><i class="bi bi-grid-3x3-gap"></i><span class="hide-sm">Módulos</span><i class="bi bi-chevron-down small hide-sm"></i></button>
+      <div class="dropdown-menu dropdown-menu-end p-0 mod-menu">
+        <div class="mod-menu-busca"><i class="bi bi-search" aria-hidden="true"></i><input type="search" class="form-control form-control-sm" placeholder="Buscar módulo" aria-label="Buscar módulo" autocomplete="off" id="menuBusca"></div>
+        <ul class="mod-menu-lista" id="menuLista"></ul>
+        <a class="mod-menu-pie" href="../index.html"><i class="bi bi-arrows-move me-1"></i>Ordenar a mi gusto en el Portal</a>
+      </div>
+    </div>
+    <button class="btn-ghost btn-cmd" id="abrirCmd" aria-haspopup="dialog" title="Buscar páginas y acciones"><i class="bi bi-search"></i><span class="txt"><kbd data-atajo="K"></kbd></span></button>
+    <a class="btn-ghost" href="#" aria-label="Notificaciones, 60 sin leer"><i class="bi bi-bell"></i><span class="badge-n">60</span></a>
+    <div class="dropdown">
+      <button class="btn-ghost" data-bs-toggle="dropdown" aria-label="Menú de usuario"><i class="bi bi-person-circle"></i><span class="hide-sm">Nombre</span><i class="bi bi-chevron-down small hide-sm"></i></button>
+      <ul class="dropdown-menu dropdown-menu-end">
+        <li class="dropdown-header">Nombre Apellido<br><small class="text-muted">Usuario</small></li><li><hr class="dropdown-divider"></li>
+        <li><a class="dropdown-item" href="#"><i class="bi bi-person-gear"></i>Mi perfil</a></li>
+        <li><a class="dropdown-item" href="guia-de-estilo.html"><i class="bi bi-palette2"></i>Guía de estilo</a></li>
+        <li><button class="dropdown-item" id="btnTema"><i class="bi bi-circle-half"></i>Tema: <span id="temaTxt">automático</span></button></li>
+        <li class="dropdown-header pb-0">Paleta</li>
+        <li><button class="dropdown-item" data-paleta-op="a"><i class="bi bi-circle-fill" style="color:#e85215"></i>A · Actual (marino + naranja)</button></li>
+        <li><button class="dropdown-item" data-paleta-op="b"><i class="bi bi-circle-fill" style="color:#0b3a66"></i>B · Marino sobrio</button></li>
+        <li><button class="dropdown-item" data-paleta-op="c"><i class="bi bi-circle-fill" style="color:#0f6b6b"></i>C · Verde azulado y piedra</button></li>
+        <li><button class="dropdown-item" data-paleta-op="d"><i class="bi bi-circle-fill" style="color:#3b556e"></i>D · Grafito</button></li>
+        <li><hr class="dropdown-divider"></li><li><a class="dropdown-item" href="#"><i class="bi bi-box-arrow-right"></i>Salir</a></li>
+      </ul>
+    </div>
+  </div></div></header>
+
+<main id="main" class="wrap">
+  <div class="migas"><a href="../index.html">Portal</a><i class="bi bi-chevron-right small"></i><strong class="text-body">Guía de estilo</strong></div>
+  <h1 class="h3 m-0">Guía de estilo · Raphael OS</h1>
+  <p class="text-muted mt-1" style="max-width:70ch">Tokens, componentes y reglas del rediseño. Cada pieza de esta página es la misma que usan las pantallas: si cambias la paleta o el tema desde el menú de usuario, todo se actualiza. Las cifras de contraste se calculan en vivo.</p>
+  <nav class="pildoras" aria-label="Secciones de la guía"><a href="#tokens">Tokens</a><a href="#tipo">Tipografía</a><a href="#comp">Componentes</a><a href="#estados">Estados</a><a href="#graficos">Gráficos</a><a href="#reglas">Reglas</a><a href="#mapa">Antes → después</a></nav>
+
+  <section id="tokens" class="mb-4"><h2 class="h5">1 · Tokens de color</h2>
+    <p class="text-muted small">Definidos una sola vez en <code>:root</code> y <code>[data-bs-theme="dark"]</code>. Una pantalla nunca escribe un color a mano: usa el token.</p>
+    <div class="rejilla-tokens" id="swatches"></div>
+    <h3 class="h6 mt-3">Contraste en vivo (mínimo AA: 4.5:1 texto, 3:1 iconos y bordes de controles)</h3>
+    <div class="panel tabla-wrap"><table class="t"><caption class="visually-hidden">Pares de color y su contraste</caption><thead><tr><th>Par</th><th>Muestra</th><th class="num">Contraste</th><th>Resultado</th></tr></thead><tbody id="tbContraste"></tbody></table></div>
+  </section>
+
+  <section id="tipo" class="mb-4"><h2 class="h5">2 · Tipografía y números</h2>
+    <div class="panel p-3">
+      <h3 class="h4 m-0">Título de pantalla con text-wrap: balance para que no quede una palabra sola</h3>
+      <p class="mt-2 mb-3" style="max-width:62ch">Párrafo con <code>text-wrap: pretty</code>: evita líneas huérfanas y se lee mejor en pantallas angostas. El texto de apoyo usa <span class="text-muted">el color secundario</span>.</p>
+      <div class="d-flex flex-wrap gap-4"><div><div class="small text-muted">Con <code>.num</code> (tabulares)</div><div class="num fs-4 fw-bold">$ 1.111.111<br>$ 8.888.888</div></div><div><div class="small text-muted">Sin <code>.num</code></div><div class="fs-4 fw-bold" style="font-variant-numeric:proportional-nums">$ 1.111.111<br>$ 8.888.888</div></div></div>
+    </div>
+  </section>
+
+  <section id="comp" class="mb-4"><h2 class="h5">3 · Componentes</h2>
+    <h3 class="h6">Botones</h3>
+    <div class="d-flex flex-wrap gap-2 mb-3"><button class="btn-accent"><i class="bi bi-search me-1"></i>Acción principal</button><button class="btn-accent btn-wa"><i class="bi bi-whatsapp me-1"></i>WhatsApp</button><button class="btn-ghost btn-borde"><i class="bi bi-arrow-repeat"></i>Secundario</button><button class="btn-ghost">Terciario</button><button class="btn-accent" disabled>Deshabilitado / enviando</button></div>
+    <h3 class="h6">Indicadores (KPI)</h3>
+    <div class="kpis"><div class="panel kpi" style="--c:var(--c-azul)"><span class="kpi-t">Con valor<i class="bi bi-cash-stack"></i></span><span class="kpi-valor num">00</span></div><div class="panel kpi cero" style="--c:var(--c-warn)"><span class="kpi-t">En cero (se apaga)<i class="bi bi-hourglass-split"></i></span><span class="kpi-valor num">0</span></div></div>
+    <h3 class="h6">Estados (texto + color + icono; nunca solo color)</h3>
+    <div class="d-flex flex-wrap gap-2 mb-3"><span class="estado" style="--c:var(--c-ok)"><i class="bi bi-check-circle"></i> En meta</span><span class="estado" style="--c:var(--c-warn)"><i class="bi bi-dash-circle"></i> En riesgo</span><span class="estado" style="--c:var(--c-bad)"><i class="bi bi-x-circle"></i> Bajo meta</span><span class="estado" style="--c:var(--c-azul)"><i class="bi bi-stars"></i> Nuevo</span><span class="estado" style="--c:var(--c-neutro)"><i class="bi bi-moon"></i> Dormido</span><span class="insignia" style="--c:var(--c-bad)"><i class="bi bi-arrow-down-right"></i>Atrasado</span></div>
+    <h3 class="h6">Avisos</h3>
+    <div class="aviso info"><i class="bi bi-info-circle"></i><div>Informativo: contexto que ayuda a leer la pantalla.</div></div><div class="aviso"><i class="bi bi-exclamation-triangle"></i><div>Atención: algo requiere revisión, pero no bloquea.</div></div><div class="aviso bad"><i class="bi bi-x-circle-fill"></i><div>Problema: no se puede continuar sin resolverlo.</div></div>
+    <h3 class="h6 mt-3">Pestañas con «Más» (nunca scroll lateral) y píldoras</h3>
+    <nav class="pestanas" aria-label="Ejemplo"><a href="#comp" aria-current="page">Resumen</a><a href="#comp">Por vendedor</a><a href="#comp">Por sucursal</a><div class="dropdown"><button data-bs-toggle="dropdown" aria-expanded="false"><i class="bi bi-three-dots"></i>Más</button><ul class="dropdown-menu"><li><a class="dropdown-item" href="#comp">Mes a mes</a></li><li><a class="dropdown-item" href="#comp">Marcas</a></li></ul></div></nav>
+    <div class="pildoras"><a href="#comp" aria-current="page">Activa</a><a href="#comp">Otra</a><a href="#comp">Otra más</a></div>
+    <div class="segmento mb-3" role="group" aria-label="Ejemplo"><button aria-pressed="true">Toda la empresa</button><button aria-pressed="false">Distribución</button><button aria-pressed="false">Servicio</button></div>
+    <h3 class="h6">Tarjeta de módulo (icono azul sin fondo) y grupo chico en una sola columna</h3>
+    <div class="d-flex flex-wrap gap-3 align-items-start"><div class="panel p-2" style="width:140px"><div class="mod" style="min-height:104px"><i class="bi bi-shield-lock mod-nivel" role="img" aria-label="Solo administradores"></i><i class="bi bi-bar-chart-line mod-icono" aria-hidden="true"></i><a class="mod-nombre" href="#comp">Panel de Ventas</a></div></div>
+      <section class="panel grupo chico" style="width:150px"><h2 class="grupo-h"><i class="bi bi-box-seam"></i>Abastecimiento<span class="n">2</span></h2><div class="tiles"><div class="mod"><i class="bi bi-box-seam mod-icono"></i><a class="mod-nombre" href="#comp">Importaciones</a></div><div class="mod"><i class="bi bi-truck mod-icono"></i><a class="mod-nombre" href="#comp">Proveedores</a></div></div></section></div>
+    <h3 class="h6 mt-3">Barra de avance con marca de ritmo y barra incrustada</h3>
+    <div class="row g-3"><div class="col-md-6"><div class="meta-barra" style="--c:var(--c-bad)" role="img" aria-label="45 % de la meta; ritmo esperado 81 %"><i style="width:45%"></i><u style="left:81%"></u></div><div class="meta-txt"><b>45 % de la meta</b> · la marca negra es el ritmo esperado (81 %)</div></div>
+      <div class="col-md-6"><div class="panel tabla-wrap"><table class="t"><caption class="visually-hidden">Ejemplo de barra incrustada</caption><thead><tr><th>Marca</th><th class="num">Venta</th></tr></thead><tbody><tr><td>Marca 01</td><td class="num barra-celda" style="--w:90%">$230.000.000</td></tr><tr><td>Marca 02</td><td class="num barra-celda" style="--w:70%">$180.000.000</td></tr></tbody></table></div></div></div>
+  </section>
+
+  <section id="estados" class="mb-4"><h2 class="h5">4 · Estados: cargando, vacío y error</h2>
+    <div class="rejilla-2">
+      <div class="panel" aria-busy="true"><div class="panel-cab"><h3 class="titulo-panel">Cargando (esqueleto, solo si pasa de 300 ms)</h3></div><div class="tabla-wrap"><table class="t"><caption class="visually-hidden">Ejemplo de esqueleto</caption><tbody id="demoSk"></tbody></table></div></div>
+      <div class="panel"><div class="panel-cab"><h3 class="titulo-panel">Vacío</h3></div><div id="demoVacio"></div></div>
+      <div class="panel"><div class="panel-cab"><h3 class="titulo-panel">Error con reintento</h3></div><div class="tabla-wrap"><table class="t"><caption class="visually-hidden">Ejemplo de error</caption><tbody id="demoError"></tbody></table></div></div>
+      <div class="panel p-3"><h3 class="titulo-panel mb-2">Aviso con «Deshacer» (6–8 s, role=status)</h3><p class="text-muted small">Para acciones reversibles. Las irreversibles o financieras conservan su confirmación.</p><button class="btn-ghost btn-borde" id="demoToast"><i class="bi bi-eye-slash"></i>Ocultar un módulo (prueba)</button></div>
+    </div></section>
+
+  <section id="graficos" class="mb-4"><h2 class="h5">5 · Gráficos</h2>
+    <div class="rejilla-2"><div class="panel"><div class="panel-cab"><h3 class="titulo-panel"><i class="bi bi-bar-chart"></i>Una serie, un color <small>pasa el mouse o enfoca con Tab</small></h3></div><div class="panel-cuerpo chart"><div id="demoBarras"></div></div></div>
+      <div class="panel p-3"><ul class="m-0 ps-3"><li>Nunca dos escalas en un mismo gráfico: se parten en dos con el mismo eje.</li><li>Pocas porciones o nada de donut: para 8+ categorías, tabla con barra incrustada.</li><li>El estado va en <strong>texto + icono + color</strong>.</li><li>Cada gráfico tiene su tabla al lado y tooltip con mouse y teclado.</li><li>Marcas finas, cuadrícula recesiva, etiquetas solo donde ayudan.</li></ul></div></div></section>
+
+  <section id="reglas" class="mb-4"><h2 class="h5">6 · Reglas</h2>
+    <div class="rejilla-2"><div class="panel p-3"><h3 class="h6">Forma</h3><ul class="m-0 ps-3"><li>Radios: 10 px (controles) y 14 px (paneles). <code>corner-shape: squircle</code> como mejora.</li><li>Borde de 1 px <code>--ant-linea</code>; sombra <code>--ant-s1</code> en reposo y <code>--ant-s2</code> en hover.</li><li>Espaciado base 4 px; separación entre paneles 12 px; dentro del panel 12–14 px.</li><li>Tarjeta de módulo: 104 px de alto; icono 2.5 rem.</li></ul></div>
+      <div class="panel p-3"><h3 class="h6">Interacción y accesibilidad</h3><ul class="m-0 ps-3"><li>Todo control táctil ≥ 44×44 px; foco visible; <code>aria-*</code> en botones de icono.</li><li>Sin scroll horizontal en menús; tablas con columnas secundarias ocultas bajo 1180 px.</li><li>Movimiento &lt; 300 ms y anulado con <code>prefers-reduced-motion</code>.</li><li>Atajos con ⌘/Ctrl; no se disparan al escribir en un campo.</li><li>Regiones con scroll: <code>tabindex="0"</code>, <code>role="region"</code> y nombre.</li></ul></div></div></section>
+
+  <section id="mapa" class="mb-4"><h2 class="h5">7 · Qué reemplaza a qué</h2>
+    <div class="panel tabla-wrap"><table class="t"><caption class="visually-hidden">Clases anteriores y su reemplazo</caption><thead><tr><th>Antes</th><th>Ahora</th></tr></thead><tbody>
+      <tr><td><code>.portal-hero</code> (bloque marino con saludo)</td><td>Línea de saludo + pista de ⌘/Ctrl K</td></tr>
+      <tr><td><code>.card.border-start.border-4.border-warning</code> (indicador)</td><td><code>.panel.kpi</code> con <code>--c</code>; el cero se apaga con <code>.cero</code></td></tr>
+      <tr><td><code>.module-icon</code> con <code>background-color</code> inline</td><td>Icono azul <code>.mod-icono</code> a 2.5 rem, sin fondo</td></tr>
+      <tr><td><code>.portal-acciones</code> (4 botones que tapan la tarjeta)</td><td><code>.mod-mas</code> + <code>dropdown-menu</code></td></tr>
+      <tr><td><code>.portal-grid</code> (flex centrado)</td><td><code>#grupos</code> bento de 9 unidades con <code>.grupo</code> y <code>.cluster</code></td></tr>
+      <tr><td><code>.app-topbar</code> (vidrio marino 56 px)</td><td><code>.top</code> clara de 52 px</td></tr>
+      <tr><td>Fondo «cielo» + vidrio</td><td>Fondo plano <code>--ant-bg</code></td></tr>
+      <tr><td>Doble eje barras + línea</td><td>Dos gráficos con el mismo eje de días</td></tr>
+      <tr><td>Botón naranja con texto blanco (3.7:1)</td><td><code>--ant-accent-fondo</code> (5.4:1)</td></tr>
+    </tbody></table></div></section>
+</main>
+
+<style>
+.rejilla-tokens{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.sw{border:1px solid var(--ant-line);border-radius:var(--ant-r-m);overflow:hidden;background:var(--ant-surface)}
+.sw i{display:block;height:44px;border-bottom:1px solid var(--ant-line)}
+.sw div{padding:6px 8px;font-size:12px}.sw code{display:block;font-size:11px;color:var(--ant-muted)}
+.pase{font-weight:700}.pase.ok{color:var(--t-ok)}.pase.mal{color:var(--t-bad)}
+</style>
+
+
+<aside id="sabio" aria-label="Asistente"><div class="saludo-b" id="sabioSaludo"><strong>Hola 👋</strong><br>¿Necesitas ayuda con esta pantalla?<button type="button" aria-label="Cerrar saludo" id="cierraSabio"><i class="bi bi-x-lg"></i></button></div><button class="boton" aria-label="Abrir asistente" id="btnSabio"><i class="bi bi-stars"></i></button></aside>
+<dialog class="cmd" id="cmd" aria-label="Buscar páginas y acciones"><input id="cmdQ" type="text" role="combobox" aria-expanded="true" aria-controls="cmdLista" aria-autocomplete="list" placeholder="Escribe una página o acción…" autocomplete="off"><ul id="cmdLista" role="listbox"></ul><div class="cmd-pie"><span><kbd>↑</kbd> <kbd>↓</kbd> navegar</span><span><kbd>↵</kbd> abrir</span><span><kbd>Esc</kbd> cerrar</span></div></dialog>
+<div id="toasts" role="status" aria-live="polite"></div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+/* Utilidades compartidas por las vistas sueltas: tema, paleta, menú Módulos, ⌘/Ctrl K, avisos con Deshacer, tooltips y skeleton */
+(function(){
+'use strict';
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const esMac = /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent);
+const $ = (s, r=document) => r.querySelector(s);
+const $$ = (s, r=document) => [...r.querySelectorAll(s)];
+const safe = fn => { try { return fn(); } catch(e) { return null; } };
+const norm = s => String(s).normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase();
+const fmt = new Intl.NumberFormat('es-CL');
+const esc = v => String(v == null ? '' : v).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const money = n => '$' + fmt.format(Math.round(n));
+const pct = (n, d=0) => n.toFixed(d).replace('.', ',') + ' %';
+const BASE = window.ANT_BASE || '../';
+const RUTA = { 'Panel de Ventas':'panel-ventas.html', 'Portal de Pagos':'portal-pagos.html', 'Cardinal OS':'cardinal-cartera.html' };
+const href = n => RUTA[n] ? RUTA[n] : BASE + 'index.html' + (n === 'Clientes' ? '#clientes' : '');
+const GRUPOS = [
+  ['Ventas', [['Panel de Ventas','bar-chart-line'],['Pedidos de repuesto','cart-plus'],['Taller: órdenes de trabajo y repuestos','wrench-adjustable'],['Descuentos y Plazos','percent'],['Control de Notas de Venta','shield-exclamation']]],
+  ['Cobranza y Finanzas', [['Portal de Pagos','credit-card-2-front'],['Solicitudes de Pago','cash-coin'],['Conciliación de Ingresos','shield-check'],['Morosidad Empresarial','graph-down-arrow'],['Protestos','file-earmark-x'],['Talonario Digital','receipt-cutoff'],['Cumplimiento Forma de Pago','clipboard2-check'],['Importación de Facturas','file-earmark-arrow-up']]],
+  ['Bodega y Logística', [['Bodega','boxes'],['Toma de Inventario','upc-scan'],['Mermas y Logística','clipboard2-x'],['Pedidos de mercadería','clipboard-data'],['Maestro de Productos','database']]],
+  ['Abastecimiento', [['Importaciones','box-seam'],['Proveedores','truck']]],
+  ['Clientes y Marketing', [['Raphael Chat','chat-dots'],['Clientes','person-vcard']]],
+  ['Gestión', [['Tareas y Recordatorios','check2-square'],['Cardinal OS','signpost-split']]]
+];
+window.ant = { $, $$, safe, norm, fmt, esc, money, pct, reduce, BASE };
+
+/* ---- atajos con ⌘ o Ctrl ---- */
+$$('[data-atajo]').forEach(k => k.textContent = (esMac ? '⌘' : 'Ctrl') + ' ' + k.dataset.atajo);
+
+/* ---- aviso con Deshacer (role=status en el contenedor) ---- */
+ant.toast = function(msg, onUndo, ms=7000){
+  const t = document.createElement('div'); t.className = 'toast-u';
+  const s = document.createElement('span'); s.textContent = msg; t.appendChild(s); let hecho = false;
+  if (onUndo) { const b = document.createElement('button'); b.type = 'button'; b.textContent = 'Deshacer'; b.onclick = () => { hecho = true; onUndo(); t.remove(); }; t.appendChild(b); }
+  $('#toasts').appendChild(t); setTimeout(() => { if (!hecho) t.remove(); }, ms);
+};
+
+/* ---- skeleton: aparece solo si la carga pasa de 300 ms, con las mismas columnas que la tabla real ---- */
+ant.skeleton = function(tb, cols, filas, pintar, demora=900){
+  const caja = tb.closest('.panel'), id = (tb._id = (tb._id || 0) + 1); if (caja) caja.setAttribute('aria-busy','true');
+  const t = setTimeout(() => { if (tb._id === id) tb.innerHTML = Array.from({length:filas}, (_, i) => '<tr>' + Array.from({length:cols}, (_, j) => `<td><div class="sk-b" style="width:${40+((i*7+j*13)%50)}%"></div></td>`).join('') + '</tr>').join(''); }, 300);
+  setTimeout(() => { clearTimeout(t); if (tb._id !== id) return; tb.innerHTML = pintar(); if (caja) caja.setAttribute('aria-busy','false'); }, demora);
+};
+
+/* ---- estados vacío y de error (mismo componente en todo el sistema) ---- */
+ant.vacio = o => `<div class="estado-vacio${o.error ? ' error' : ''}"><i class="bi bi-${o.icono || 'inbox'}"></i><strong>${esc(o.titulo)}</strong><p>${esc(o.texto || '')}</p>${o.accionTxt ? `<button class="btn-ghost btn-borde" type="button" data-reintentar><i class="bi bi-${o.error ? 'arrow-repeat' : 'x-circle'}"></i>${esc(o.accionTxt)}</button>` : ''}</div>`;
+ant.errorTabla = (tb, cols, reintentar) => { tb.innerHTML = `<tr><td colspan="${cols}">${ant.vacio({error:true, icono:'wifi-off', titulo:'No se pudo cargar', texto:'El servidor no respondió. Tus filtros siguen aplicados.', accionTxt:'Reintentar'})}</td></tr>`; const b = tb.querySelector('[data-reintentar]'); if (b) b.onclick = reintentar; };
+
+/* ---- tooltips de gráficos: cualquier [data-tip] ---- */
+const tip = document.createElement('div'); tip.className = 'tip'; tip.setAttribute('aria-hidden','true');   // solo visual: el mismo dato está en la tabla de al lado
+ document.body.appendChild(tip);
+function mostrar(e){ const el = e.target.closest && e.target.closest('[data-tip]'); if (!el) { tip.classList.remove('on'); return; }
+  tip.innerHTML = el.dataset.tip; tip.classList.add('on'); const x = Math.min(e.clientX + 14, innerWidth - tip.offsetWidth - 8), y = Math.max(8, e.clientY - tip.offsetHeight - 10); tip.style.left = x + 'px'; tip.style.top = y + 'px'; }
+document.addEventListener('mousemove', mostrar); document.addEventListener('mouseleave', () => tip.classList.remove('on'));
+document.addEventListener('focusin', e => { const el = e.target.closest('[data-tip]'); if (el) { const r = el.getBoundingClientRect(); tip.innerHTML = el.dataset.tip; tip.classList.add('on'); tip.style.left = Math.max(8, r.left) + 'px'; tip.style.top = Math.max(8, r.top - tip.offsetHeight - 8) + 'px'; } });
+document.addEventListener('focusout', () => tip.classList.remove('on'));
+
+/* ---- gráficos SVG simples ---- */
+ant.barras = function(el, datos, o={}){            // datos: [{l, v, tip}]
+  const W = 640, H = o.alto || 190, m = {t:8, r:6, b:22, l:44}, max = o.max || Math.max(...datos.map(d => d.v)) * 1.1, n = datos.length;
+  const x = i => m.l + (W - m.l - m.r) * (i + .5) / n, bw = Math.max(4, (W - m.l - m.r) / n * .62), y = v => m.t + (H - m.t - m.b) * (1 - v / max);
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(o.aria || 'Gráfico de barras')}">`;
+  for (let k = 0; k <= 3; k++) { const v = max * k / 3; s += `<g class="rej"><line x1="${m.l}" x2="${W-m.r}" y1="${y(v)}" y2="${y(v)}"/></g><g class="eje"><text x="${m.l-6}" y="${y(v)+3}" text-anchor="end">${o.fmtY ? o.fmtY(v) : fmt.format(Math.round(v))}</text></g>`; }
+  datos.forEach((d, i) => { const h = y(0) - y(d.v); s += `<path class="barra" tabindex="0" data-tip="${esc(d.tip || d.l + ': <b>' + d.v + '</b>')}" d="M${x(i)-bw/2},${y(0)}V${y(d.v)+4}a4,4 0 0 1 4,-4h${bw-8}a4,4 0 0 1 4,4V${y(0)}Z"/>`;
+    if (!o.cadaEtq || i % o.cadaEtq === 0) s += `<g class="eje"><text x="${x(i)}" y="${H-6}" text-anchor="middle">${esc(d.l)}</text></g>`; });
+  el.innerHTML = s + '</svg>';
+};
+ant.linea = function(el, datos, o={}){             // datos: [{l, v, tip}]
+  const W = 640, H = o.alto || 110, m = {t:10, r:6, b:20, l:44}, mx = o.max || Math.max(...datos.map(d => d.v)), mn = o.min != null ? o.min : 0, n = datos.length;
+  const x = i => m.l + (W - m.l - m.r) * (i + .5) / n, y = v => m.t + (H - m.t - m.b) * (1 - (v - mn) / (mx - mn));
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(o.aria || 'Gráfico de línea')}">`;
+  for (let k = 0; k <= 2; k++) { const v = mn + (mx - mn) * k / 2; s += `<g class="rej"><line x1="${m.l}" x2="${W-m.r}" y1="${y(v)}" y2="${y(v)}"/></g><g class="eje"><text x="${m.l-6}" y="${y(v)+3}" text-anchor="end">${o.fmtY ? o.fmtY(v) : Math.round(v)}</text></g>`; }
+  s += `<path class="linea" d="${datos.map((d, i) => (i ? 'L' : 'M') + x(i) + ',' + y(d.v)).join('')}"/>`;
+  datos.forEach((d, i) => { s += `<circle class="punto" r="${o.r || 3.5}" cx="${x(i)}" cy="${y(d.v)}" tabindex="0" data-tip="${esc(d.tip || d.l + ': <b>' + d.v + '</b>')}"/>`; if (!o.cadaEtq || i % o.cadaEtq === 0) s += `<g class="eje"><text x="${x(i)}" y="${H-5}" text-anchor="middle">${esc(d.l)}</text></g>`; });
+  el.innerHTML = s + '</svg>';
+};
+ant.hbarras = function(el, datos, o={}){           // datos: [{l, v, txt, meta}]
+  const max = o.max || Math.max(...datos.map(d => Math.max(d.v, d.meta || 0))) * 1.05;
+  el.innerHTML = datos.map(d => `<div class="hb"><span>${esc(d.l)}</span><div class="hb-t"><i tabindex="0" style="width:${d.v/max*100}%" data-tip="${esc(d.tip || d.l + ': <b>' + (d.txt || d.v) + '</b>')}"></i>${d.meta ? `<u style="left:${d.meta/max*100}%" title="Meta"></u>` : ''}</div><b>${esc(d.txt || d.v)}</b></div>`).join('');
+};
+
+/* ---- tema y paleta ---- */
+const temaTxt = () => { const t = safe(() => localStorage.getItem('ant.tema')); const el = $('#temaTxt'); if (el) el.textContent = t === 'dark' ? 'oscuro' : t === 'light' ? 'claro' : 'automático'; };
+const bt = $('#btnTema'); if (bt) bt.onclick = e => { e.stopPropagation(); const t = safe(() => localStorage.getItem('ant.tema')), sig = !t ? 'light' : t === 'light' ? 'dark' : null;
+  safe(() => sig ? localStorage.setItem('ant.tema', sig) : localStorage.removeItem('ant.tema'));
+  document.documentElement.setAttribute('data-bs-theme', sig || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')); temaTxt(); };
+temaTxt();
+$$('[data-paleta-op]').forEach(b => b.onclick = e => { e.stopPropagation(); const v = b.dataset.paletaOp;
+  if (v === 'a') { document.documentElement.removeAttribute('data-paleta'); safe(() => localStorage.removeItem('ant.paleta')); } else { document.documentElement.setAttribute('data-paleta', v); safe(() => localStorage.setItem('ant.paleta', v)); }
+  $$('[data-paleta-op]').forEach(x => x.classList.toggle('active', x === b)); });
+{ const a = document.documentElement.getAttribute('data-paleta') || 'a', b = $(`[data-paleta-op="${a}"]`); if (b) b.classList.add('active'); }
+
+/* ---- menú «Módulos» ---- */
+function pintarMenu(){
+  const q = norm(($('#menuBusca') || {value:''}).value.trim()); let h = '';
+  if (!q) h += `<li><a class="dropdown-item" href="${BASE}index.html"><i class="bi bi-house-door"></i>Portal</a></li>`;
+  GRUPOS.forEach(([g, mods]) => { const l = mods.filter(m => !q || norm(m[0]).includes(q)); if (l.length) h += `<li class="mod-menu-titulo">${g}</li>` + l.map(m => `<li><a class="dropdown-item" href="${href(m[0])}"><i class="bi bi-${m[1]}"></i>${esc(m[0])}</a></li>`).join(''); });
+  const ul = $('#menuLista'); if (ul) ul.innerHTML = h || '<li class="p-3 text-muted">Ningún módulo con ese nombre.</li>';
+}
+const mb = $('#menuBusca'); if (mb) { mb.addEventListener('input', pintarMenu); mb.addEventListener('keydown', e => { if (e.key === 'Enter') { const a = $('#menuLista .dropdown-item[href]:not([href$="index.html"])'); if (a) location.href = a.href; } }); }
+pintarMenu();
+
+/* ---- ⌘/Ctrl K ---- */
+const cmd = $('#cmd'), cq = $('#cmdQ'), cl = $('#cmdLista'); let items = [], sel = 0;
+const paginas = [['Portal',BASE+'index.html','house-door','Página'],['Panel de Ventas','panel-ventas.html','bar-chart-line','Página'],['Cardinal OS · Cartera','cardinal-cartera.html','compass','Página'],['Cardinal OS · Gerencia','cardinal-gerencia.html','building','Página'],['Portal de Pagos · «no me llegó el código»','portal-pagos.html','headset','Página'],['Clientes',BASE+'index.html#clientes','person-vcard','Página']];
+function pintarCmd(){
+  const q = norm(cq.value.trim()), mods = GRUPOS.flatMap(([g, ms]) => ms.map(m => [m[0], href(m[0]), m[1], g]));
+  const vistos = new Set(); items = paginas.concat(mods).filter(i => { const k = i[1] + i[0]; if (vistos.has(k)) return false; vistos.add(k); return !q || norm(i[0]).includes(q) || norm(i[3]).includes(q); }).slice(0, 30); sel = 0;
+  cl.innerHTML = items.length ? items.map((i, n) => `<li role="option" id="op${n}" aria-selected="${n===0}" data-n="${n}"><i class="bi bi-${i[2]}"></i>${esc(i[0])}<small>${i[3]}</small></li>`).join('') : '<li class="text-muted" role="option" aria-disabled="true">Sin resultados</li>';
+  cq.setAttribute('aria-activedescendant', items.length ? 'op0' : '');
+}
+function marcar(n){ if (!items.length) return; sel = (n + items.length) % items.length; $$('li', cl).forEach((li, i) => li.setAttribute('aria-selected', i === sel)); cq.setAttribute('aria-activedescendant', 'op' + sel); $$('li', cl)[sel].scrollIntoView({block:'nearest'}); }
+const abrirCmd = () => { cq.value = ''; pintarCmd(); cmd.showModal(); cq.focus(); };
+const bc = $('#abrirCmd'); if (bc) bc.onclick = abrirCmd;
+cq.addEventListener('input', pintarCmd);
+cq.addEventListener('keydown', e => { if (e.key === 'ArrowDown') { e.preventDefault(); marcar(sel + 1); } else if (e.key === 'ArrowUp') { e.preventDefault(); marcar(sel - 1); } else if (e.key === 'Enter') { e.preventDefault(); if (items[sel]) location.href = items[sel][1]; } });
+cl.addEventListener('click', e => { const li = e.target.closest('li[data-n]'); if (li) location.href = items[+li.dataset.n][1]; });
+cmd.addEventListener('click', e => { if (e.target === cmd) cmd.close(); });
+const escribiendo = el => el && (/^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName) || el.isContentEditable);
+addEventListener('keydown', e => { if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); cmd.open ? cmd.close() : abrirCmd(); return; }
+  if (escribiendo(e.target) || e.metaKey || e.ctrlKey || e.altKey) return; if (e.key === '/') { const b = $('[data-buscar-atajo]'); if (b) { e.preventDefault(); b.focus(); } } });
+
+/* ---- regiones con scroll: enfocables por teclado y con nombre ---- */
+$$('.tabla-wrap').forEach((t, i) => { t.tabIndex = 0; t.setAttribute('role', 'region'); const c = t.querySelector('caption'); t.setAttribute('aria-label', c ? c.textContent : 'Tabla ' + (i + 1)); });
+
+/* ---- asistente flotante ---- */
+document.body.classList.add('tiene-sabio');
+setTimeout(() => { const sa = $('#sabioSaludo'); if (sa) sa.remove(); }, 7000);   // el saludo se retira solo: hoy tapa contenido
+const cs = $('#cierraSabio'); if (cs) cs.onclick = () => $('#sabioSaludo').remove();
+const bs = $('#btnSabio'); if (bs) bs.onclick = () => ant.toast('Aquí abre el asistente (maqueta).', null, 3000);
+})();
+
+</script>
+<script>
+(function(){
+const { $, $$, esc } = ant;
+const raiz = () => getComputedStyle(document.documentElement);
+const TOK = [['--ant-bg','Fondo de página'],['--ant-surface','Superficie'],['--ant-line','Borde 1 px'],['--ant-tinta','Texto'],['--ant-muted','Texto de apoyo'],['--ant-icono','Icono y enlace'],['--ant-accent','Acento (foco, pestaña)'],['--ant-accent-fondo','Relleno de botón'],['--ant-alerta','Alerta (campana)'],['--c-ok','Estado: bien'],['--c-warn','Estado: atención'],['--c-bad','Estado: mal'],['--c-info','Información'],['--c-azul','Serie / azul'],['--c-neutro','Neutro']];
+function a_rgb(c){ const e = document.createElement('i'); e.style.color = c; document.body.appendChild(e); const m = getComputedStyle(e).color.match(/[\d.]+/g).map(Number); e.remove(); return m; }
+const lum = ([r, g, b]) => { const f = v => { v /= 255; return v <= .03928 ? v / 12.92 : Math.pow((v + .055) / 1.055, 2.4); }; return .2126 * f(r) + .7152 * f(g) + .0722 * f(b); };
+const ratio = (a, b) => { const x = lum(a_rgb(a)), y = lum(a_rgb(b)); return (Math.max(x, y) + .05) / (Math.min(x, y) + .05); };
+function pintar(){
+  const r = raiz();
+  $('#swatches').innerHTML = TOK.map(([t, n]) => `<div class="sw"><i style="background:var(${t})"></i><div><strong>${n}</strong><code>${t} · ${r.getPropertyValue(t).trim()}</code></div></div>`).join('');
+  const PARES = [['Texto sobre superficie','--ant-tinta','--ant-surface',4.5],['Texto de apoyo sobre superficie','--ant-muted','--ant-surface',4.5],['Texto de apoyo sobre fondo','--ant-muted','--ant-bg',4.5],['Enlace sobre superficie','--ant-enlace','--ant-surface',4.5],['Icono sobre superficie','--ant-icono','--ant-surface',3],['Texto blanco sobre botón','#ffffff','--ant-accent-fondo',4.5],['Texto blanco sobre alerta','#ffffff','--ant-alerta',4.5],['Borde sobre superficie','--ant-line','--ant-surface',1.2]];
+  $('#tbContraste').innerHTML = PARES.map(([n, f, b, min]) => { const fc = f.startsWith('--') ? (r.getPropertyValue(f).trim() || r.getPropertyValue('--ant-icono').trim()) : f, bc = b.startsWith('--') ? r.getPropertyValue(b).trim() : b; const c = ratio(fc, bc), ok = c >= min;
+    const muestra = min < 3 ? `<span style="display:inline-block;width:70px;border-top:2px solid ${fc};vertical-align:middle"></span>` : `<span style="display:inline-block;padding:2px 10px;border-radius:6px;background:${bc};color:${fc};border:1px solid var(--ant-line)">Aa texto</span>`;
+    return `<tr><td>${n}</td><td>${muestra}</td><td class="num">${c.toFixed(2).replace('.', ',')}:1</td><td><span class="pase ${ok ? 'ok' : 'mal'}">${ok ? '✓ cumple' : '✗ no cumple'} (mín. ${String(min).replace('.', ',')}:1)</span></td></tr>`; }).join('');
+}
+pintar(); new MutationObserver(pintar).observe(document.documentElement, {attributes:true, attributeFilter:['data-bs-theme','data-paleta']});
+
+$('#demoSk').innerHTML = Array.from({length:4}, (_, i) => '<tr>' + Array.from({length:4}, (_, j) => `<td><div class="sk-b" style="width:${45 + ((i * 7 + j * 13) % 45)}%"></div></td>`).join('') + '</tr>').join('');
+$('#demoVacio').innerHTML = ant.vacio({icono:'search', titulo:'Ningún cliente coincide', texto:'Cambia el filtro o la búsqueda para ver clientes.', accionTxt:'Quitar filtros'});
+const err = () => ant.errorTabla($('#demoError'), 1, () => { $('#demoError').innerHTML = '<tr><td><div class="sk-b" style="width:60%"></div></td></tr>'; setTimeout(err, 900); });
+err();
+$('#demoToast').onclick = () => ant.toast('«Panel de Ventas» oculto de tu vista', () => ant.toast('Vuelve a estar visible', null, 2500), 7000);
+ant.barras($('#demoBarras'), ['Ene','Feb','Mar','Abr','May','Jun'].map((l, i) => ({ l, v: 40 + i * 9 + (i % 2) * 7, tip: `${l}: <b>${40 + i * 9 + (i % 2) * 7}</b>` })), { aria: 'Ejemplo de barras', alto: 150 });
+})();
+</script>
+</body></html>

@@ -42,8 +42,13 @@ ant.skeleton = function(tb, cols, filas, pintar, demora=900){
   setTimeout(() => { clearTimeout(t); if (tb._id !== id) return; tb.innerHTML = pintar(); if (caja) caja.setAttribute('aria-busy','false'); }, demora);
 };
 
+/* ---- estados vacío y de error (mismo componente en todo el sistema) ---- */
+ant.vacio = o => `<div class="estado-vacio${o.error ? ' error' : ''}"><i class="bi bi-${o.icono || 'inbox'}"></i><strong>${esc(o.titulo)}</strong><p>${esc(o.texto || '')}</p>${o.accionTxt ? `<button class="btn-ghost btn-borde" type="button" data-reintentar><i class="bi bi-${o.error ? 'arrow-repeat' : 'x-circle'}"></i>${esc(o.accionTxt)}</button>` : ''}</div>`;
+ant.errorTabla = (tb, cols, reintentar) => { tb.innerHTML = `<tr><td colspan="${cols}">${ant.vacio({error:true, icono:'wifi-off', titulo:'No se pudo cargar', texto:'El servidor no respondió. Tus filtros siguen aplicados.', accionTxt:'Reintentar'})}</td></tr>`; const b = tb.querySelector('[data-reintentar]'); if (b) b.onclick = reintentar; };
+
 /* ---- tooltips de gráficos: cualquier [data-tip] ---- */
-const tip = document.createElement('div'); tip.className = 'tip'; tip.setAttribute('role','tooltip'); document.body.appendChild(tip);
+const tip = document.createElement('div'); tip.className = 'tip'; tip.setAttribute('aria-hidden','true');   // solo visual: el mismo dato está en la tabla de al lado
+ document.body.appendChild(tip);
 function mostrar(e){ const el = e.target.closest && e.target.closest('[data-tip]'); if (!el) { tip.classList.remove('on'); return; }
   tip.innerHTML = el.dataset.tip; tip.classList.add('on'); const x = Math.min(e.clientX + 14, innerWidth - tip.offsetWidth - 8), y = Math.max(8, e.clientY - tip.offsetHeight - 10); tip.style.left = x + 'px'; tip.style.top = y + 'px'; }
 document.addEventListener('mousemove', mostrar); document.addEventListener('mouseleave', () => tip.classList.remove('on'));
@@ -114,6 +119,9 @@ cmd.addEventListener('click', e => { if (e.target === cmd) cmd.close(); });
 const escribiendo = el => el && (/^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName) || el.isContentEditable);
 addEventListener('keydown', e => { if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); cmd.open ? cmd.close() : abrirCmd(); return; }
   if (escribiendo(e.target) || e.metaKey || e.ctrlKey || e.altKey) return; if (e.key === '/') { const b = $('[data-buscar-atajo]'); if (b) { e.preventDefault(); b.focus(); } } });
+
+/* ---- regiones con scroll: enfocables por teclado y con nombre ---- */
+$$('.tabla-wrap').forEach((t, i) => { t.tabIndex = 0; t.setAttribute('role', 'region'); const c = t.querySelector('caption'); t.setAttribute('aria-label', c ? c.textContent : 'Tabla ' + (i + 1)); });
 
 /* ---- asistente flotante ---- */
 document.body.classList.add('tiene-sabio');

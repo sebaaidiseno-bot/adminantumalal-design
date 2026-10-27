@@ -43,10 +43,11 @@ function pintar(){
     <div class="prob" role="img" aria-label="${c.p} % de probabilidad de compra en 2 semanas"><i style="width:${c.p}%"></i></div>
     <ul class="cli-pistas"><li>${c.p} % de probabilidad de que compre en las próximas 2 semanas; cuando compra, suele ser ${money(c.ventaTipica)}</li><li>Compra ${money(c.mes)} al mes en promedio</li><li>${c.pistas}</li></ul>
     ${c.gestion ? `<div class="gestion"><i class="bi bi-check-circle-fill"></i><span>${esc(c.gestion)}</span></div>` : ''}
-    <div class="cli-acc"><button class="btn-accent"><i class="bi bi-lightbulb me-1"></i>Qué venderle</button><button class="btn-ghost"><i class="bi bi-telephone"></i>Llamar</button><button class="btn-ghost wa"><i class="bi bi-whatsapp"></i>WhatsApp</button></div></article>`; }).join('') : '<p class="text-muted p-4">Ningún cliente coincide.</p>';
+    <div class="cli-acc"><button class="btn-accent"><i class="bi bi-lightbulb me-1"></i>Qué venderle</button><button class="btn-ghost"><i class="bi bi-telephone"></i>Llamar</button><button class="btn-ghost wa"><i class="bi bi-whatsapp"></i>WhatsApp</button></div></article>`; }).join('') : `<div class="panel" style="grid-column:1/-1">${ant.vacio(filtro === 'cobrar' ? {icono:'check2-circle', titulo:'Nadie para cobrar hoy', texto:'Ningún cliente de tu cartera tiene deuda vencida que gestionar.'} : {icono:'search', titulo:'Ningún cliente coincide', texto:'Cambia el filtro o la búsqueda para ver clientes.', accionTxt:'Quitar filtros'})}</div>`;
 }
 $('#chipsCli').addEventListener('click', e => { const b = e.target.closest('[data-f]'); if (!b) return; filtro = b.dataset.f; $$('#chipsCli .chip-sec').forEach(c => c.setAttribute('aria-pressed', c === b)); pintar(); });
 $('#qCli').addEventListener('input', e => { q = norm(e.target.value.trim()); pintar(); });
 pintar();
+document.addEventListener('click', e => { if (e.target.closest('[data-reintentar]') && !$('#listaCli .cli')) { filtro = 'con'; q = ''; $('#qCli').value = ''; $$('#chipsCli .chip-sec').forEach(c => c.setAttribute('aria-pressed', c.dataset.f === 'con')); pintar(); } });
 })();
 </script>
