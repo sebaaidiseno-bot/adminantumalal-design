@@ -11,7 +11,8 @@
 /* Igual que el sitio real: sin tema elegido se sigue al sistema; va arriba para no parpadear en blanco */
 (function(){var t=null;try{t=localStorage.getItem('ant.tema')}catch(e){}
  if(!t&&matchMedia('(prefers-color-scheme: dark)').matches)t='dark';
- if(t)document.documentElement.setAttribute('data-bs-theme',t);})();
+ if(t)document.documentElement.setAttribute('data-bs-theme',t);
+ var pl=null;try{pl=localStorage.getItem('ant.paleta')}catch(e){} if(pl)document.documentElement.setAttribute('data-paleta',pl);})();
 </script>
 <style>
 /* ============ Tokens (mismos nombres y valores que app.css cuando existen) ============ */
@@ -23,6 +24,7 @@
   --ant-r-s:10px; --ant-r-m:14px;
   --ant-s1:0 1px 2px rgba(1,30,57,.06),0 1px 3px rgba(1,30,57,.05);
   --ant-s2:0 2px 6px rgba(1,30,57,.07),0 10px 28px rgba(1,30,57,.11);
+  --ant-alerta:var(--ant-accent);       /* campana, avisos: en las paletas sobrias pasa a rojo y el naranja se retira */
   --c-warn:#b7791f; --c-bad:#c0392b; --c-ok:#198754; --c-info:#0b7285; --c-neutro:#6b7280; --c-azul:#2b6cb0;
   --bs-body-bg:var(--ant-bg); --bs-body-color:var(--ant-tinta);
 }
@@ -32,6 +34,18 @@
   --c-warn:#e0b04a; --c-bad:#ef7b6e; --c-ok:#4cc38a; --c-info:#4fc3d9; --c-neutro:#9aa8b8; --c-azul:#6aa8ee;
   --bs-body-bg:var(--ant-bg); --bs-body-color:var(--ant-tinta);
 }
+
+/* ============ Paletas alternativas (se eligen en el menú de usuario → Paleta). A = la actual, sin atributo. ============ */
+/* B · Marino sobrio: el naranja desaparece; el énfasis es el marino y el rojo queda solo para alertas */
+[data-paleta="b"]{--ant-accent:#0b3a66;--ant-hover:#062a4d;--ant-alerta:#c0392b;--kpi-borde:var(--ant-line);--kpi-ico:var(--ant-muted)}
+[data-paleta="b"][data-bs-theme="dark"]{--ant-accent:#2a6fb5;--ant-hover:#3b82c9;--ant-alerta:#ef7b6e}
+/* C · Verde azulado y piedra: fondo cálido, acento teal */
+[data-paleta="c"]{--ant-bg:#f6f5f2;--ant-line:#e4e1da;--ant-tinta:#17302f;--ant-muted:#5e6b69;--ant-icono:#0f6b6b;--ant-accent:#0f6b6b;--ant-hover:#0a5252;--ant-alerta:#c0392b;--kpi-borde:var(--ant-line);--kpi-ico:var(--ant-muted)}
+[data-paleta="c"][data-bs-theme="dark"]{--ant-bg:#0e1a1a;--ant-surface:#142524;--ant-line:#234040;--ant-tinta:#dcecea;--ant-muted:#8fa9a6;--ant-icono:#4fb8b3;--ant-accent:#2a8f8b;--ant-hover:#36a6a1;--ant-alerta:#ef7b6e}
+/* D · Grafito: grises azulados, iconos apagados; el naranja queda SOLO en el botón principal */
+[data-paleta="d"]{--ant-bg:#f4f5f7;--ant-line:#e0e4e9;--ant-tinta:#1f2933;--ant-muted:#5a6775;--ant-icono:#3b556e;--ant-alerta:#c0392b;--kpi-borde:var(--ant-line);--kpi-ico:var(--ant-muted)}
+[data-paleta="d"][data-bs-theme="dark"]{--ant-icono:#8fb0cf;--ant-alerta:#ef7b6e}
+[data-paleta="d"] .mod-fijo,[data-paleta="d"] .pestanas a[aria-current="page"],[data-paleta="d"] .mod-menu-pin[aria-pressed="true"]{color:var(--ant-icono);border-color:var(--ant-icono)}
 html{color-scheme:light dark}
 body{background:var(--ant-bg);color:var(--ant-tinta);font-size:14px;
   padding-inline:env(safe-area-inset-left) env(safe-area-inset-right);padding-bottom:env(safe-area-inset-bottom)}
@@ -57,7 +71,7 @@ a{color:var(--ant-icono)}
 .btn-ghost:hover{background:color-mix(in srgb,var(--ant-icono) 10%,transparent);color:var(--ant-tinta)}
 .btn-borde{border:1px solid var(--ant-line);background:var(--ant-surface)}
 kbd{background:var(--ant-surface);color:var(--ant-muted);border:1px solid var(--ant-line);border-bottom-width:2px;border-radius:5px;padding:0 .35rem;font:600 11px/1.6 system-ui;box-shadow:none}
-.badge-n{background:var(--ant-accent);color:#fff;border-radius:99px;font-size:10px;font-weight:700;padding:1px 6px;position:absolute;top:2px;right:0}
+.badge-n{background:var(--ant-alerta);color:#fff;border-radius:99px;font-size:10px;font-weight:700;padding:1px 6px;position:absolute;top:2px;right:0}
 .dropdown-menu{--bs-dropdown-border-color:var(--ant-line);--bs-dropdown-bg:var(--ant-surface);--bs-dropdown-link-color:var(--ant-tinta);
   --bs-dropdown-link-hover-bg:color-mix(in srgb,var(--ant-icono) 10%,transparent);--bs-dropdown-link-hover-color:var(--ant-tinta);
   --bs-dropdown-border-radius:var(--ant-r-m);--bs-dropdown-padding-y:.35rem;font-size:13px;box-shadow:var(--ant-s2);color:var(--ant-tinta)}
@@ -99,10 +113,10 @@ kbd{background:var(--ant-surface);color:var(--ant-muted);border:1px solid var(--
 .buscar-cliente{padding:12px 14px;margin-bottom:12px}
 .buscar-cliente label{font-weight:600;display:flex;align-items:center;gap:.4rem;margin-bottom:6px}
 .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(168px,1fr));gap:10px;margin:0 0 20px}
-.kpi{padding:10px 12px;display:flex;flex-direction:column;gap:2px;text-decoration:none;color:inherit;min-width:0;border-left:3px solid var(--c,var(--ant-icono))}
+.kpi{padding:10px 12px;display:flex;flex-direction:column;gap:2px;text-decoration:none;color:inherit;min-width:0;border-left:3px solid var(--kpi-borde,var(--c,var(--ant-icono)))}
 a.kpi:hover{box-shadow:var(--ant-s2);color:inherit}
 .kpi-t{font-size:12px;color:var(--ant-muted);display:flex;align-items:flex-start;gap:.4rem;justify-content:space-between;text-wrap:balance}
-.kpi-t i{color:var(--c,var(--ant-icono));font-size:.95rem;flex:none}
+.kpi-t i{color:var(--kpi-ico,var(--c,var(--ant-icono)));font-size:.95rem;flex:none}
 .kpi-valor{font-size:1.5rem;font-weight:700;line-height:1.15;white-space:nowrap}
 .kpi.cero .kpi-valor{color:var(--ant-muted);font-weight:600}   /* el valor en cero se apaga: lo que importa destaca */
 
@@ -286,6 +300,11 @@ body.tiene-sabio .wrap{padding-bottom:96px}
           <li><a class="dropdown-item" href="#"><i class="bi bi-person-gear"></i>Mi perfil</a></li>
           <li><a class="dropdown-item" href="#clientes" data-ir="clientes"><i class="bi bi-person-rolodex"></i>Maestro de clientes</a></li>
           <li><button class="dropdown-item" id="btnTema"><i class="bi bi-circle-half"></i>Tema: <span id="temaTxt">automático</span></button></li>
+          <li class="dropdown-header pb-0">Paleta</li>
+          <li><button class="dropdown-item" data-paleta-op="a"><i class="bi bi-circle-fill" style="color:#e85215"></i>A · Actual (marino + naranja)</button></li>
+          <li><button class="dropdown-item" data-paleta-op="b"><i class="bi bi-circle-fill" style="color:#0b3a66"></i>B · Marino sobrio</button></li>
+          <li><button class="dropdown-item" data-paleta-op="c"><i class="bi bi-circle-fill" style="color:#0f6b6b"></i>C · Verde azulado y piedra</button></li>
+          <li><button class="dropdown-item" data-paleta-op="d"><i class="bi bi-circle-fill" style="color:#3b556e"></i>D · Grafito</button></li>
           <li><hr class="dropdown-divider"></li>
           <li><a class="dropdown-item" href="#"><i class="bi bi-box-arrow-right"></i>Salir</a></li>
         </ul>
@@ -776,6 +795,13 @@ $('#btnTema').onclick = e => { e.stopPropagation(); const t = safe(() => localSt
   document.documentElement.setAttribute('data-bs-theme', sig || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')); temaTxt(); };
 temaTxt();
 
+/* ---------------- Paleta (solo para comparar propuestas) ---------------- */
+$$('[data-paleta-op]').forEach(b => b.onclick = e => { e.stopPropagation(); const v = b.dataset.paletaOp;
+  if (v === 'a') { document.documentElement.removeAttribute('data-paleta'); safe(() => localStorage.removeItem('ant.paleta')); }
+  else { document.documentElement.setAttribute('data-paleta', v); safe(() => localStorage.setItem('ant.paleta', v)); }
+  $$('[data-paleta-op]').forEach(x => x.classList.toggle('active', x === b)); });
+{ const a = document.documentElement.getAttribute('data-paleta') || 'a'; const b = $(`[data-paleta-op="${a}"]`); if (b) b.classList.add('active'); }
+
 /* ---------------- Asistente flotante ---------------- */
 document.body.classList.add('tiene-sabio');
 $('#cierraSabio').onclick = () => $('#sabioSaludo').remove();
@@ -785,14 +811,14 @@ $('#btnSabio').onclick = () => toast('Aquí abre el asistente (maqueta).', null,
 const cmd = $('#cmd'), cq = $('#cmdQ'), cl = $('#cmdLista'); let items = [], sel = 0;
 function pintarCmd(){
   const q = norm(cq.value.trim());
-  const base = [['Ir al Portal','house-door','portal','Página'],['Ir a Clientes','person-vcard','clientes','Página'],['Ir a Panel de Ventas','bar-chart-line','ventas','Página'],['Cambiar tema','circle-half','tema','Acción']];
+  const base = [['Ir al Portal','house-door','portal','Página'],['Ir a Clientes','person-vcard','clientes','Página'],['Ir a Panel de Ventas','bar-chart-line','ventas','Página'],['Cambiar tema','circle-half','tema','Acción'],['Siguiente paleta','palette','paleta','Acción']];
   const mods = todosMods().map(m => [m.nombre, m.icono, m.ir || 'portal', m.g.nombre]);
   items = base.concat(mods).filter(i => !q || norm(i[0]).includes(q) || norm(i[3]).includes(q)).slice(0, 30); sel = 0;
   cl.innerHTML = items.length ? items.map((i,n) => `<li role="option" id="op${n}" aria-selected="${n===0}" data-n="${n}"><i class="bi bi-${i[1]}"></i>${esc(i[0])}<small>${i[3]}</small></li>`).join('') : '<li class="text-muted" role="option" aria-disabled="true">Sin resultados</li>';
   cq.setAttribute('aria-activedescendant', items.length ? 'op0' : '');
 }
 function marcar(n){ if (!items.length) return; sel = (n + items.length) % items.length; $$('li', cl).forEach((li,i) => li.setAttribute('aria-selected', i === sel)); cq.setAttribute('aria-activedescendant', 'op'+sel); $$('li', cl)[sel].scrollIntoView({block:'nearest'}); }
-function elegir(n){ const i = items[n]; if (!i) return; cmd.close(); if (i[2] === 'tema') { $('#btnTema').click(); return; } history.pushState(null,'','#'+i[2]); ir(i[2]); }
+function elegir(n){ const i = items[n]; if (!i) return; cmd.close(); if (i[2] === 'tema') { $('#btnTema').click(); return; } if (i[2] === 'paleta') { const ord = ['a','b','c','d'], act = document.documentElement.getAttribute('data-paleta') || 'a'; $(`[data-paleta-op="${ord[(ord.indexOf(act)+1)%4]}"]`).click(); return; } history.pushState(null,'','#'+i[2]); ir(i[2]); }
 const abrirCmd = () => { cq.value = ''; pintarCmd(); cmd.showModal(); cq.focus(); };
 $('#abrirCmd').onclick = abrirCmd; cq.addEventListener('input', pintarCmd);
 cq.addEventListener('keydown', e => { if (e.key === 'ArrowDown') { e.preventDefault(); marcar(sel+1); } else if (e.key === 'ArrowUp') { e.preventDefault(); marcar(sel-1); } else if (e.key === 'Enter') { e.preventDefault(); elegir(sel); } });
