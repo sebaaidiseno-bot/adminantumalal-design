@@ -3,209 +3,254 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#0b2a4a">
+<meta name="theme-color" content="#f2f5f9">
 <title>Portal · Propuesta de rediseño</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<script>
+/* Igual que el sitio real: sin tema elegido se sigue al sistema; va arriba para no parpadear en blanco */
+(function(){var t=null;try{t=localStorage.getItem('ant.tema')}catch(e){}
+ if(!t&&matchMedia('(prefers-color-scheme: dark)').matches)t='dark';
+ if(t)document.documentElement.setAttribute('data-bs-theme',t);})();
+</script>
 <style>
-/* ============ Tokens ============ */
+/* ============ Tokens (mismos nombres y valores que app.css cuando existen) ============ */
 :root{
-  /* Mismos nombres y valores que ya tiene app.css (--ant-dark, --ant-accent, --ant-r-*, --ant-s*) */
-  --ant-navy:#011e39;        /* = --ant-tinta */
-  --ant-blue:#1b5b95;        /* = --imp-azul (ya existe): color de iconos y enlaces */
-  --ant-accent:#e85215;
-  --ant-bg:#f2f5f9;
-  --ant-surface:#fff;
-  --ant-line:#dfe6ee;
-  --ant-muted:#566a80;
+  --ant-dark:#011e39; --ant-dark-2:#062a4d; --ant-accent:#e85215; --ant-hover:#c44010;
+  --ant-tinta:#011e39;                 /* texto marino; se invierte en oscuro */
+  --ant-icono:#1b5b95;                 /* = --imp-azul: iconos y enlaces */
+  --ant-bg:#f2f5f9; --ant-surface:#fff; --ant-line:#dfe6ee; --ant-muted:#566a80;   /* nuevos: fondo plano, borde de 1 px, texto de apoyo */
   --ant-r-s:10px; --ant-r-m:14px;
-  --ant-shadow:0 1px 2px rgba(1,30,57,.06),0 1px 3px rgba(1,30,57,.05);        /* = --ant-s1 */
-  --ant-shadow-hover:0 2px 6px rgba(1,30,57,.07),0 10px 28px rgba(1,30,57,.11); /* = --ant-s2 */
+  --ant-s1:0 1px 2px rgba(1,30,57,.06),0 1px 3px rgba(1,30,57,.05);
+  --ant-s2:0 2px 6px rgba(1,30,57,.07),0 10px 28px rgba(1,30,57,.11);
+  --c-warn:#b7791f; --c-bad:#c0392b; --c-ok:#198754; --c-info:#0b7285; --c-neutro:#6b7280; --c-azul:#2b6cb0;
+  --bs-body-bg:var(--ant-bg); --bs-body-color:var(--ant-tinta);
 }
-@media (prefers-color-scheme:dark){
-  :root:not([data-bs-theme="light"]){
-    --ant-navy:#dbe7f3; --ant-blue:#4d9bd8; --ant-bg:#0a1626; --ant-surface:#10233a;   /* --ant-celeste-oscuro */
-    --ant-line:#1f3550; --ant-muted:#93a6bc; --ant-shadow:0 1px 2px rgba(0,0,0,.35); --ant-shadow-hover:0 2px 6px rgba(0,0,0,.35),0 8px 20px rgba(0,0,0,.30);
-  }
+[data-bs-theme="dark"]{
+  --ant-tinta:#dbe7f3; --ant-icono:#4d9bd8; --ant-bg:#0a1626; --ant-surface:#10233a; --ant-line:#1f3550; --ant-muted:#93a6bc;
+  --ant-s1:0 1px 2px rgba(0,0,0,.35); --ant-s2:0 2px 6px rgba(0,0,0,.35),0 8px 20px rgba(0,0,0,.30);
+  --c-warn:#e0b04a; --c-bad:#ef7b6e; --c-ok:#4cc38a; --c-info:#4fc3d9; --c-neutro:#9aa8b8; --c-azul:#6aa8ee;
+  --bs-body-bg:var(--ant-bg); --bs-body-color:var(--ant-tinta);
 }
 html{color-scheme:light dark}
-body{background:var(--ant-bg);color:var(--ant-navy);font-size:14px;
-  padding-inline:env(safe-area-inset-left) env(safe-area-inset-right);
-  padding-bottom:env(safe-area-inset-bottom)}
-h1,h2,h3,.titulo{text-wrap:balance}
+body{background:var(--ant-bg);color:var(--ant-tinta);font-size:14px;
+  padding-inline:env(safe-area-inset-left) env(safe-area-inset-right);padding-bottom:env(safe-area-inset-bottom)}
+h1,h2,h3,h4,.titulo{text-wrap:balance}
 p{text-wrap:pretty}
-.num,.kpi-valor,td.num,th.num{font-variant-numeric:tabular-nums}
-a{color:var(--ant-blue)}
+.num{font-variant-numeric:tabular-nums}
+a{color:var(--ant-icono)}
+.text-muted,.form-text{color:var(--ant-muted)!important}
 
-/* ============ Header (claro y bajo, sin bloque oscuro gigante) ============ */
-.top{position:sticky;top:0;z-index:30;background:var(--ant-surface);border-bottom:1px solid var(--ant-line);
-  padding-top:env(safe-area-inset-top)}
-.top-in{display:flex;align-items:center;gap:.5rem;height:52px;max-width:1280px;margin:auto;padding-inline:16px}
-.marca{font-weight:800;letter-spacing:.04em;color:var(--ant-navy);text-decoration:none;display:flex;align-items:center;gap:.5rem}
-.marca i{color:var(--ant-accent);font-size:1.25rem}
-.marca small{font-weight:500;letter-spacing:0;color:var(--ant-muted)}
+/* ============ Cabecera clara (antes: vidrio marino de 56 px) ============ */
+.top{position:sticky;top:0;z-index:1030;background:var(--ant-surface);border-bottom:1px solid var(--ant-line);padding-top:env(safe-area-inset-top)}
+.top-in{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:.5rem;height:52px;max-width:1360px;margin:auto;padding-inline:16px}
+.top-izq{display:flex;align-items:center;gap:.6rem;min-width:0}
+.top-der{display:flex;align-items:center;gap:2px;justify-self:end}
+.marca{font-weight:800;letter-spacing:.04em;color:var(--ant-tinta);text-decoration:none;display:flex;align-items:center;gap:.5rem;white-space:nowrap}
+.marca i{color:var(--ant-accent);font-size:1.3rem}
+.marca small{font-weight:500;letter-spacing:0;color:var(--ant-muted);overflow:hidden;text-overflow:ellipsis}
+.sistema{font-weight:700;letter-spacing:.28em;font-size:.8rem;color:var(--ant-tinta)}
+.sistema span{font-weight:400;color:var(--ant-muted);margin-left:.3em}
 .btn-ghost,.btn-accent{white-space:nowrap}
-.btn-ghost{display:inline-flex;align-items:center;gap:.4rem;min-height:40px;padding:0 .75rem;border:0;background:transparent;
-  color:var(--ant-navy);border-radius:var(--ant-r-s);text-decoration:none;font-weight:500}
-.btn-ghost:hover{background:color-mix(in srgb,var(--ant-blue) 10%,transparent)}
-.btn-borde{border:1px solid var(--ant-line)}
-.btn-cmd{border:1px solid var(--ant-line);color:var(--ant-muted);background:var(--ant-bg);min-width:200px;justify-content:space-between}
-kbd{background:var(--ant-surface);color:var(--ant-muted);border:1px solid var(--ant-line);border-bottom-width:2px;
-  border-radius:5px;padding:0 .35rem;font:600 11px/1.6 system-ui;box-shadow:none}
-.badge-n{background:var(--ant-accent);color:#fff;border-radius:99px;font-size:10px;font-weight:700;padding:1px 6px;margin-left:-6px;position:relative;top:-8px}
+.btn-ghost{display:inline-flex;align-items:center;gap:.4rem;min-height:40px;padding:0 .7rem;border:0;background:transparent;color:var(--ant-tinta);
+  border-radius:var(--ant-r-s);text-decoration:none;font-weight:500;position:relative}
+.btn-ghost:hover{background:color-mix(in srgb,var(--ant-icono) 10%,transparent);color:var(--ant-tinta)}
+.btn-borde{border:1px solid var(--ant-line);background:var(--ant-surface)}
+kbd{background:var(--ant-surface);color:var(--ant-muted);border:1px solid var(--ant-line);border-bottom-width:2px;border-radius:5px;padding:0 .35rem;font:600 11px/1.6 system-ui;box-shadow:none}
+.badge-n{background:var(--ant-accent);color:#fff;border-radius:99px;font-size:10px;font-weight:700;padding:1px 6px;position:absolute;top:2px;right:0}
+.dropdown-menu{--bs-dropdown-border-color:var(--ant-line);--bs-dropdown-bg:var(--ant-surface);--bs-dropdown-link-color:var(--ant-tinta);
+  --bs-dropdown-link-hover-bg:color-mix(in srgb,var(--ant-icono) 10%,transparent);--bs-dropdown-link-hover-color:var(--ant-tinta);
+  --bs-dropdown-border-radius:var(--ant-r-m);--bs-dropdown-padding-y:.35rem;font-size:13px;box-shadow:var(--ant-s2);color:var(--ant-tinta)}
+.dropdown-item{display:flex;align-items:center;gap:.5rem;min-height:36px;border-radius:6px;margin-inline:.25rem;width:auto}
+.dropdown-item i{color:var(--ant-icono)}
+/* menú Módulos */
+.mod-menu{width:min(22rem,calc(100vw - 1.5rem));overflow:hidden}
+.mod-menu-busca{position:relative;padding:.55rem .6rem;border-bottom:1px solid var(--ant-line)}
+.mod-menu-busca>i{position:absolute;left:1.25rem;top:50%;transform:translateY(-50%);color:var(--ant-muted)}
+.mod-menu-busca input{padding-left:2rem;min-height:38px}
+.mod-menu-lista{max-height:min(62vh,30rem);overflow-y:auto;overscroll-behavior:contain;padding:.3rem 0;margin:0;list-style:none}
+.mod-menu-titulo{padding:.5rem 1rem .15rem;font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ant-muted)}
+.mod-menu-item{display:flex;align-items:center}
+.mod-menu-item .dropdown-item{flex:1}
+.mod-menu-pin{border:0;background:none;min-width:40px;min-height:36px;color:var(--ant-muted);border-radius:6px}
+.mod-menu-pin[aria-pressed="true"]{color:var(--ant-accent)}
+.mod-menu-pie{display:block;padding:.6rem 1rem;border-top:1px solid var(--ant-line);font-size:12px;text-decoration:none}
 
-.wrap{max-width:1280px;margin:auto;padding:16px}
-.saludo{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:.5rem;margin-bottom:12px}
-.saludo h1{font-size:1.25rem;font-weight:700;margin:0}
-.saludo p{margin:0;color:var(--ant-muted)}
+.wrap{max-width:1360px;margin:auto;padding:16px}
 
 /* ============ Superficies ============ */
-.panel{background:var(--ant-surface);border:1px solid var(--ant-line);border-radius:var(--ant-r-m);box-shadow:var(--ant-shadow)}
-.buscador{display:flex;gap:.5rem;padding:10px 12px;align-items:center}
-.buscador .form-control,.campo{border:1px solid var(--ant-line);background:var(--ant-bg);color:var(--ant-navy);min-height:40px;box-shadow:none}
+.panel{background:var(--ant-surface);border:1px solid var(--ant-line);border-radius:var(--ant-r-m);box-shadow:var(--ant-s1)}
+.form-control,.form-select{border:1px solid var(--ant-line);background-color:var(--ant-bg);color:var(--ant-tinta);min-height:40px;box-shadow:none}
+.form-control:focus,.form-select:focus{background-color:var(--ant-surface);color:var(--ant-tinta);border-color:var(--ant-icono);box-shadow:0 0 0 3px color-mix(in srgb,var(--ant-icono) 25%,transparent)}
 .btn-accent{background:var(--ant-accent);border:0;color:#fff;font-weight:600;min-height:40px;padding:0 1rem;border-radius:var(--ant-r-s)}
-.btn-accent:hover{filter:brightness(.93);color:#fff}
+.btn-accent:hover{background:var(--ant-hover);color:#fff}
 .btn-accent:disabled{opacity:.6}
+.btn-accent.fin{border-radius:0 var(--ant-r-s) var(--ant-r-s) 0}
+.modal-content{background:var(--ant-surface);border:1px solid var(--ant-line);border-radius:var(--ant-r-m);color:var(--ant-tinta)}
+.modal-header,.modal-footer{border-color:var(--ant-line)}
+[data-bs-theme="dark"] .btn-close{filter:invert(1)}
+.nav-tabs{--bs-nav-tabs-border-color:var(--ant-line);--bs-nav-tabs-link-active-bg:var(--ant-surface);--bs-nav-tabs-link-active-color:var(--ant-tinta);--bs-nav-tabs-link-active-border-color:var(--ant-line) var(--ant-line) var(--ant-surface)}
+.nav-tabs .nav-link{color:var(--ant-muted)}
 
-/* ============ KPI compactos ============ */
-.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:12px 0 20px}
-.kpi{padding:10px 12px;display:flex;flex-direction:column;gap:2px;text-decoration:none;color:inherit}
-a.kpi:hover{box-shadow:var(--ant-shadow-hover)}
-.kpi-t{font-size:12px;color:var(--ant-muted);display:flex;align-items:center;gap:.4rem;text-wrap:balance}
-.kpi-t::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--c,var(--ant-blue));flex:none}
-.kpi-valor{font-size:1.5rem;font-weight:700;line-height:1.1}
-.kpi.cero .kpi-valor{color:var(--ant-muted);font-weight:600}
+/* ============ Portal ============ */
+.saludo{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:.25rem 1rem;margin-bottom:12px}
+.saludo h1{font-size:1.25rem;font-weight:700;margin:0}
+.saludo p{margin:0;color:var(--ant-muted)}
+.buscar-cliente{padding:12px 14px;margin-bottom:12px}
+.buscar-cliente label{font-weight:600;display:flex;align-items:center;gap:.4rem;margin-bottom:6px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(168px,1fr));gap:10px;margin:0 0 20px}
+.kpi{padding:10px 12px;display:flex;flex-direction:column;gap:2px;text-decoration:none;color:inherit;min-width:0;border-left:3px solid var(--c,var(--ant-icono))}
+a.kpi:hover{box-shadow:var(--ant-s2);color:inherit}
+.kpi-t{font-size:12px;color:var(--ant-muted);display:flex;align-items:flex-start;gap:.4rem;justify-content:space-between;text-wrap:balance}
+.kpi-t i{color:var(--c,var(--ant-icono));font-size:.95rem;flex:none}
+.kpi-valor{font-size:1.5rem;font-weight:700;line-height:1.15;white-space:nowrap}
+.kpi.cero .kpi-valor{color:var(--ant-muted);font-weight:600}   /* el valor en cero se apaga: lo que importa destaca */
 
-/* ============ Módulos agrupados ============ */
-.mod-barra{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;justify-content:space-between;margin-bottom:8px}
-.chips{display:flex;gap:6px;flex-wrap:wrap}
-.chip{border:1px solid var(--ant-line);background:var(--ant-surface);color:var(--ant-navy);border-radius:99px;min-height:32px;padding:0 .8rem;font-weight:500}
-.chip[aria-pressed="true"]{background:var(--ant-navy);color:var(--ant-surface);border-color:var(--ant-navy)}
-.grupo{margin-top:18px}
-.grupo-h{display:flex;align-items:center;gap:.5rem;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
-  color:var(--ant-muted);margin:0 0 8px;padding-bottom:6px;border-bottom:1px solid var(--ant-line)}
-.grupo-h .n{font-weight:500;letter-spacing:0;text-transform:none}
-.grid-mod{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-rows:104px;grid-auto-flow:dense;gap:10px}
-/* Bento de 4 columnas. El primer módulo del grupo (o el fijado) es la pieza grande 2×2. Con 4 o más módulos, el segundo es
-   una pieza ancha 2×1 y los dos siguientes 1×1: el bloque de 2 filas queda exacto, sin huecos. Los módulos que sobran siguen en filas de 4
-   y el último se estira para cerrar la fila (.llena). Con 1–2 módulos: piezas anchas 2×1 en una sola fila (compacto); con 3: una grande y dos anchas.
-   Con búsqueda activa todo vuelve a 1×1 para leer resultados sin saltos. */
-.grid-mod.bento .mod.hero{grid-column:span 2;grid-row:span 2;align-items:flex-start;justify-content:flex-end;text-align:left;padding:38px 16px 14px;gap:6px;
-  background:linear-gradient(160deg,color-mix(in srgb,var(--ant-blue) 9%,var(--ant-surface)),var(--ant-surface) 60%)}
-.grid-mod.bento .mod.hero .mod-icono{font-size:4rem;margin-bottom:auto}
-.grid-mod.bento .mod.hero .mod-nombre{font-size:1.05rem}
-.grid-mod.bento .mod.ancho{grid-column:span 2;flex-direction:row;justify-content:flex-start;text-align:left;gap:14px;padding:12px 44px 12px 18px}
-.grid-mod.bento .mod.ancho .mod-nivel,.grid-mod.bento .mod.ancho .mod-fijo{top:8px;left:auto;right:46px}
-.mod-desc,.mod-dato{display:none;margin:0;font-size:12px;color:var(--ant-muted)}
-.mod.hero .mod-desc{display:block;max-width:34ch}
-.mod.hero .mod-dato,.mod.ancho .mod-dato{display:inline-flex;align-items:center;gap:.35rem;font-weight:600;color:var(--ant-navy);font-variant-numeric:tabular-nums}
-.mod-dato::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--ant-accent)}
-.mod.ancho .mod-texto{display:flex;flex-direction:column;gap:2px}
-.mod.ancho .mod-icono{font-size:2.5rem}
-.mod{position:relative;background:var(--ant-surface);border:1px solid var(--ant-line);border-radius:var(--ant-r-m);
-  corner-shape:squircle;
-  min-height:104px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:12px 10px 10px;
-  text-align:center;box-shadow:var(--ant-shadow);transition:box-shadow .18s,border-color .18s,transform .18s}
-.mod:hover,.mod:focus-within{box-shadow:var(--ant-shadow-hover);border-color:color-mix(in srgb,var(--ant-blue) 40%,var(--ant-line))}
-.mod:hover{transform:translateY(-1px)}  /* antes -3px + sombra grande */
-.mod-icono{font-size:2.5rem;line-height:1;color:var(--ant-blue)}   /* sin fondo azul: el icono ES el color */
-.mod-nombre{font-weight:600;font-size:13px;line-height:1.25;color:var(--ant-navy);text-decoration:none;text-wrap:balance}
-.mod-nombre::after{content:"";position:absolute;inset:0;border-radius:inherit}  /* toda la tarjeta es enlace */
-.mod-nivel,.mod-fijo{position:absolute;top:10px;left:10px;font-size:12px;color:var(--ant-muted)}
+.portal-barra{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;justify-content:space-between;margin-bottom:6px}
+.portal-buscar{position:relative;flex:1 1 14rem;max-width:26rem}
+.portal-buscar>.bi{position:absolute;left:.85rem;top:50%;transform:translateY(-50%);color:var(--ant-muted);pointer-events:none}
+.portal-buscar .form-control{padding-left:2.4rem;min-height:44px;border-radius:var(--ant-r-s)}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 4px}
+.chip{border:1px solid var(--ant-line);background:var(--ant-surface);color:var(--ant-tinta);border-radius:99px;min-height:34px;padding:0 .8rem;font-weight:500}
+.chip[aria-pressed="true"]{background:var(--ant-tinta);color:var(--ant-surface);border-color:var(--ant-tinta)}
+.ayuda-linea{font-size:12.5px;color:var(--ant-muted);margin:6px 0 12px}
+.ayuda-linea i{color:var(--ant-icono)}
+
+/* --- Bento de grupos: grupos grandes y chicos se acomodan juntos en filas de 9 unidades (6 en tablet, 1 en móvil) --- */
+#grupos{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));grid-auto-flow:dense;gap:12px;align-items:stretch}
+.grupo{padding:12px;min-width:0;grid-column:span var(--s9,3)}
+.grupo-h{display:flex;align-items:center;gap:.5rem;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ant-muted);margin:0 0 10px}
+.grupo-h i{color:var(--ant-icono);font-size:1rem}
+.grupo-h .n{font-weight:500;letter-spacing:0;text-transform:none;margin-left:auto;font-size:11.5px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(108px,1fr));gap:8px}
+.mod{position:relative;border:1px solid var(--ant-line);border-radius:var(--ant-r-m);corner-shape:squircle;background:var(--ant-bg);
+  min-height:104px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:14px 6px 10px;text-align:center;
+  transition:box-shadow .18s,border-color .18s,background .18s,transform .18s}
+.mod:hover,.mod:focus-within{background:var(--ant-surface);box-shadow:var(--ant-s2);border-color:color-mix(in srgb,var(--ant-icono) 40%,var(--ant-line))}
+.mod:hover{transform:translateY(-1px)}                    /* antes -3px con sombra grande */
+.mod-icono{font-size:2.5rem;line-height:1;color:var(--ant-icono)}   /* sin cuadro de fondo: el icono ES el color */
+.mod-nombre{font-weight:600;font-size:12.5px;line-height:1.22;color:var(--ant-tinta);text-decoration:none;text-wrap:balance;overflow-wrap:anywhere}
+.mod-nombre::after{content:"";position:absolute;inset:0;border-radius:inherit}
+.mod-nivel,.mod-fijo{position:absolute;top:9px;left:9px;font-size:11px;color:var(--ant-muted)}
 .mod-fijo{color:var(--ant-accent)}
-.mod>.dropdown{position:static}  /* Bootstrap pone position:relative y el ⋯ quedaba centrado sobre el icono */
-.mod-mas{position:absolute;top:0;right:0;z-index:2;min-width:44px;min-height:44px;display:grid;place-items:center;border:0;background:none;
-  color:var(--ant-muted);border-radius:var(--ant-r-s);opacity:0;transition:opacity .15s}
+.mod>.dropdown{position:static}          /* Bootstrap pone position:relative y el ⋯ se centraba sobre el icono */
+.mod-mas{position:absolute;top:0;right:0;z-index:2;min-width:44px;min-height:44px;display:grid;place-items:center;border:0;background:none;color:var(--ant-muted);border-radius:var(--ant-r-s);opacity:0;transition:opacity .15s}
 .mod:hover .mod-mas,.mod:focus-within .mod-mas,.mod-mas[aria-expanded="true"]{opacity:1}
 @media (hover:none){.mod-mas{opacity:1}}
-.mod-mas:hover{background:color-mix(in srgb,var(--ant-blue) 10%,transparent);color:var(--ant-navy)}
-.dropdown-menu{--bs-dropdown-border-color:var(--ant-line);--bs-dropdown-bg:var(--ant-surface);--bs-dropdown-link-color:var(--ant-navy);
-  --bs-dropdown-link-hover-bg:color-mix(in srgb,var(--ant-blue) 10%,transparent);--bs-dropdown-link-hover-color:var(--ant-navy);
-  --bs-dropdown-border-radius:var(--ant-r-m);--bs-dropdown-padding-y:.35rem;font-size:13px;box-shadow:var(--ant-shadow-hover)}
-.dropdown-item{display:flex;align-items:center;gap:.5rem;min-height:36px;border-radius:6px;margin-inline:.25rem;width:auto}
-.dropdown-item i{color:var(--ant-blue)}
+.mod-mas:hover{background:color-mix(in srgb,var(--ant-icono) 10%,transparent);color:var(--ant-tinta)}
+/* Lista compacta: una fila por módulo */
+.compacta .tiles{grid-template-columns:1fr;gap:2px}
+.compacta .mod{flex-direction:row;justify-content:flex-start;min-height:48px;padding:4px 48px 4px 12px;gap:12px;text-align:left;border-color:transparent;background:transparent}
+.compacta .mod:hover{background:var(--ant-bg);border-color:var(--ant-line);transform:none;box-shadow:none}
+.compacta .mod-icono{font-size:1.5rem;width:1.75rem;text-align:center}
+.compacta .mod-nivel,.compacta .mod-fijo{position:static;order:3;margin-left:auto}
+.compacta .mod-mas{top:2px;opacity:1}
 .sin-res{padding:24px;text-align:center;color:var(--ant-muted)}
 
-/* ============ Pantalla interna (Panel de ventas) ============ */
+/* ============ Menús: pestañas con «Más» (sin scroll lateral), píldoras y migas ============ */
+.migas{display:flex;align-items:center;gap:.4rem;color:var(--ant-muted);font-size:13px;margin-bottom:8px;flex-wrap:wrap}
+.pestanas{display:flex;flex-wrap:wrap;gap:2px;border-bottom:1px solid var(--ant-line);margin-bottom:12px;align-items:center}
+.pestanas>a,.pestanas button{border:0;background:none;padding:0 .9rem;min-height:42px;display:flex;align-items:center;gap:.4rem;color:var(--ant-muted);text-decoration:none;font-weight:500;border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap}
+.pestanas>a:hover,.pestanas button:hover{color:var(--ant-tinta)}
+.pestanas a[aria-current="page"]{color:var(--ant-tinta);border-color:var(--ant-accent);font-weight:600}
+.pildoras{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.pildoras a{padding:0 .8rem;min-height:34px;display:flex;align-items:center;border-radius:99px;border:1px solid var(--ant-line);background:var(--ant-surface);color:var(--ant-tinta);text-decoration:none;font-size:13px}
+.pildoras a[aria-current="page"]{background:var(--ant-tinta);color:var(--ant-surface);border-color:var(--ant-tinta)}
+
+/* ============ Pantalla interna con lateral ============ */
 .shell{display:grid;grid-template-columns:232px minmax(0,1fr);gap:16px;align-items:start}
 .lateral{position:sticky;top:68px;padding:8px;max-height:calc(100vh - 84px);overflow:auto}
 .lateral details{border-bottom:1px solid var(--ant-line);padding:2px 0}
 .lateral details:last-child{border:0}
-.lateral summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;min-height:36px;padding:0 8px;
-  font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ant-muted);border-radius:6px}
+.lateral summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;min-height:38px;padding:0 8px;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ant-muted);border-radius:6px}
 .lateral summary::-webkit-details-marker{display:none}
 .lateral summary::after{content:"\F282";font-family:bootstrap-icons;transition:transform .2s}
 .lateral details[open] summary::after{transform:rotate(180deg)}
-.lateral a{display:flex;align-items:center;gap:.5rem;min-height:36px;padding:0 8px;border-radius:6px;color:var(--ant-navy);text-decoration:none}
-.lateral a i{color:var(--ant-blue)}
-.lateral a:hover{background:color-mix(in srgb,var(--ant-blue) 8%,transparent)}
-.lateral a[aria-current="page"]{background:color-mix(in srgb,var(--ant-blue) 14%,transparent);font-weight:600}
-.migas{display:flex;align-items:center;gap:.4rem;color:var(--ant-muted);font-size:13px;margin-bottom:8px}
-.pestanas{display:flex;gap:2px;border-bottom:1px solid var(--ant-line);margin-bottom:12px;align-items:center}  /* sin scroll lateral: lo que no cabe va a "Más" */
-.pestanas a,.pestanas button{border:0;background:none;padding:0 .9rem;min-height:40px;display:flex;align-items:center;color:var(--ant-muted);
-  text-decoration:none;font-weight:500;border-bottom:2px solid transparent;margin-bottom:-1px}
-.pestanas a[aria-current="page"]{color:var(--ant-navy);border-color:var(--ant-accent);font-weight:600}
+.lateral a{display:flex;align-items:center;gap:.5rem;min-height:38px;padding:0 8px;border-radius:6px;color:var(--ant-tinta);text-decoration:none}
+.lateral a i{color:var(--ant-icono)}
+.lateral a:hover{background:color-mix(in srgb,var(--ant-icono) 8%,transparent)}
+.lateral a[aria-current="page"]{background:color-mix(in srgb,var(--ant-icono) 14%,transparent);font-weight:600}
+.segmento{display:inline-flex;flex-wrap:wrap;border:1px solid var(--ant-line);border-radius:var(--ant-r-s);background:var(--ant-surface);padding:2px;gap:2px}
+.segmento button{border:0;background:none;min-height:34px;padding:0 .8rem;border-radius:8px;color:var(--ant-muted);font-weight:500;display:flex;align-items:center;gap:.4rem}
+.segmento button[aria-pressed="true"]{background:var(--ant-tinta);color:var(--ant-surface)}
 .filtros{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;padding:12px;margin-bottom:12px}
-.filtros label{font-size:12px;color:var(--ant-muted);margin-bottom:2px}
-.filtros .form-select{min-height:38px;border-color:var(--ant-line);background-color:var(--ant-bg);color:var(--ant-navy);box-shadow:none;font-size:13px}
-.tabla-wrap{overflow:auto}
+.filtros label{font-size:12px;color:var(--ant-muted);margin-bottom:2px;display:block}
+.aviso{display:flex;gap:.6rem;align-items:flex-start;padding:10px 12px;border:1px solid color-mix(in srgb,var(--c-warn) 40%,var(--ant-line));background:color-mix(in srgb,var(--c-warn) 9%,var(--ant-surface));border-radius:var(--ant-r-m);margin-bottom:12px}
+.aviso i{color:var(--c-warn);margin-top:2px}
+.aviso.bad{border-color:color-mix(in srgb,var(--c-bad) 40%,var(--ant-line));background:color-mix(in srgb,var(--c-bad) 8%,var(--ant-surface))}.aviso.bad i{color:var(--c-bad)}
+.aviso.info{border-color:var(--ant-line);background:var(--ant-surface)}.aviso.info i{color:var(--ant-icono)}
+.tabla-wrap{overflow:auto;position:relative}   /* position:relative evita que los .visually-hidden de las cabeceras ensanchen la página */
 table.t{width:100%;border-collapse:collapse}
-.t th{font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--ant-muted);font-weight:600;padding:10px 12px;
-  border-bottom:1px solid var(--ant-line);white-space:nowrap;background:var(--ant-surface)}
-.t td{padding:10px 12px;border-bottom:1px solid var(--ant-line)}
+.t th{font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--ant-muted);font-weight:600;padding:10px 12px;border-bottom:1px solid var(--ant-line);white-space:nowrap;background:var(--ant-surface)}
+.t td{white-space:nowrap;padding:10px 12px;border-bottom:1px solid var(--ant-line);vertical-align:middle;color:var(--ant-tinta)}
 .t tr:last-child td{border:0}
+.t td:first-child{white-space:normal;min-width:170px}
 .t .num{text-align:right}
-.estado{font-size:12px;font-weight:600;padding:2px 8px;border-radius:99px;background:color-mix(in srgb,var(--c) 14%,transparent);color:var(--c)}
+.t tbody tr:hover td{background:color-mix(in srgb,var(--ant-icono) 5%,transparent)}
+.sub{display:block;font-size:12px;color:var(--ant-muted)}
+.estado{font-size:12px;font-weight:600;padding:2px 8px;border-radius:99px;background:color-mix(in srgb,var(--c) 14%,transparent);color:var(--c);white-space:nowrap}
+.pie-tabla{display:flex;justify-content:space-between;align-items:center;gap:.5rem;flex-wrap:wrap;padding:10px 12px;border-top:1px solid var(--ant-line);color:var(--ant-muted)}
+.pasos{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;margin-bottom:12px}
+.paso{padding:0;overflow:hidden}
+.paso h3{font-size:13px;font-weight:700;margin:0;padding:10px 14px;border-bottom:1px solid var(--ant-line);display:flex;gap:.5rem;align-items:center;flex-wrap:wrap}
+.paso .cuerpo{padding:12px 14px}
+.paso h3 i{color:var(--ant-icono)}
+.fila-dato{display:flex;justify-content:space-between;gap:1rem;padding:6px 0;border-bottom:1px solid var(--ant-line)}
+.fila-dato:last-child{border:0}
 
-/* ============ Skeleton (solo si tarda >300 ms; misma tabla, mismas columnas) ============ */
-.sk-b{height:1em;border-radius:6px;background:linear-gradient(90deg,var(--ant-line),color-mix(in srgb,var(--ant-line) 50%,var(--ant-surface)),var(--ant-line));
-  background-size:200% 100%;animation:sk 1.2s linear infinite}
+/* skeleton: solo si la carga pasa de 300 ms, con las mismas columnas que la tabla real (en producción ya existe como [data-esqueleto]) */
+.sk-b{height:1em;border-radius:6px;background:linear-gradient(90deg,var(--ant-line),color-mix(in srgb,var(--ant-line) 50%,var(--ant-surface)),var(--ant-line));background-size:200% 100%;animation:sk 1.2s linear infinite}
 @keyframes sk{to{background-position:-200% 0}}
 
 /* ============ Command menu ============ */
-dialog.cmd{border:1px solid var(--ant-line);border-radius:var(--ant-r-m);padding:0;width:min(560px,calc(100vw - 24px));margin:12vh auto 0;
-  background:var(--ant-surface);color:var(--ant-navy);box-shadow:0 20px 60px rgba(0,0,0,.25)}
-dialog.cmd::backdrop{background:rgba(5,15,28,.45)}
+dialog.cmd{border:1px solid var(--ant-line);border-radius:var(--ant-r-m);padding:0;width:min(560px,calc(100vw - 24px));margin:12vh auto 0;background:var(--ant-surface);color:var(--ant-tinta);box-shadow:0 20px 60px rgba(1,30,57,.3)}
+dialog.cmd::backdrop{background:rgba(1,30,57,.45)}
 .cmd input{width:100%;border:0;border-bottom:1px solid var(--ant-line);padding:14px 16px;font-size:15px;background:transparent;color:inherit;outline:none}
 .cmd ul{list-style:none;margin:0;padding:6px;max-height:50vh;overflow:auto}
 .cmd li{display:flex;align-items:center;gap:.6rem;min-height:40px;padding:0 10px;border-radius:8px;cursor:pointer}
-.cmd li i{color:var(--ant-blue);font-size:1.1rem}
+.cmd li i{color:var(--ant-icono);font-size:1.1rem}
 .cmd li small{margin-left:auto;color:var(--ant-muted)}
-.cmd li[aria-selected="true"]{background:color-mix(in srgb,var(--ant-blue) 14%,transparent)}
+.cmd li[aria-selected="true"]{background:color-mix(in srgb,var(--ant-icono) 14%,transparent)}
 .cmd-pie{display:flex;gap:12px;padding:8px 14px;border-top:1px solid var(--ant-line);color:var(--ant-muted);font-size:12px}
 
-/* ============ Toast con deshacer ============ */
-#toasts{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom));z-index:60;display:grid;gap:8px}
-.toast-u{display:flex;align-items:center;gap:12px;background:#0b2a4a;color:#fff;padding:8px 8px 8px 16px;border-radius:var(--ant-r-m);
-  box-shadow:0 8px 24px rgba(0,0,0,.25);animation:in .2s ease-out}
+/* ============ Toast con Deshacer ============ */
+#toasts{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom));z-index:2000;display:grid;gap:8px;width:max-content;max-width:calc(100vw - 24px)}
+.toast-u{display:flex;align-items:center;gap:12px;background:#011e39;color:#fff;padding:8px 8px 8px 16px;border-radius:var(--ant-r-m);box-shadow:0 8px 24px rgba(1,30,57,.3);animation:in .2s ease-out;border:1px solid rgba(255,255,255,.12)}
 .toast-u button{border:0;background:none;color:#ffb48f;font-weight:700;min-height:40px;padding:0 .8rem;border-radius:8px}
 .toast-u button:hover{background:rgba(255,255,255,.1)}
 @keyframes in{from{opacity:0;transform:translateY(8px)}}
+
+/* ============ Asistente flotante (antes 96 px; aquí 56 px y respeta el safe-area) ============ */
+#sabio{position:fixed;right:max(16px,env(safe-area-inset-right));bottom:max(16px,env(safe-area-inset-bottom));z-index:1040}
+#sabio .boton{width:56px;height:56px;border-radius:50%;border:2px solid var(--ant-icono);background:var(--ant-dark-2);color:#fff;font-size:1.5rem;display:grid;place-items:center;box-shadow:var(--ant-s2)}
+#sabio .saludo-b{position:absolute;right:66px;bottom:8px;width:210px;background:var(--ant-dark);color:#fff;border:1px solid var(--ant-icono);border-radius:var(--ant-r-m);padding:8px 28px 8px 12px;box-shadow:var(--ant-s2);font-size:13px}
+#sabio .saludo-b button{position:absolute;top:0;right:0;min-width:36px;min-height:36px;border:0;background:none;color:#9fb6cd}
+body.tiene-sabio .wrap{padding-bottom:96px}
 
 .vista[hidden]{display:none}
 @view-transition{navigation:auto}
 ::view-transition-group(*){animation-duration:.2s}
 :focus-visible{outline:3px solid color-mix(in srgb,var(--ant-accent) 70%,transparent);outline-offset:2px}
-.skip{position:absolute;left:-999px}.skip:focus{left:8px;top:8px;z-index:99;background:#fff;padding:8px}
+.skip{position:absolute;left:-999px}.skip:focus{left:8px;top:8px;z-index:3000;background:#fff;color:#000;padding:8px}
 
-@media (min-width:861px){.grid-mod.bento .mod.llena{grid-column:span var(--llena,2)}}
-@media (max-width:860px){
-  .grid-mod{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .grid-mod.bento .mod.hero{grid-column:span 2;grid-row:span 1;flex-direction:row;align-items:center;justify-content:flex-start;padding:12px 44px 12px 18px;gap:14px}
-  .grid-mod.bento .mod.hero .mod-icono{font-size:3rem;margin:0}
-  .grid-mod.bento .mod.hero .mod-desc{display:none}
-  .grid-mod.bento .mod.hero .mod-texto{display:flex;flex-direction:column;gap:2px}
-  .grid-mod.bento .mod.ancho{grid-column:span 2}
-  .grid-mod.bento .mod.hero .mod-nivel,.grid-mod.bento .mod.hero .mod-fijo{top:8px;left:auto;right:46px}
+@media (max-width:1180px){
+  #grupos{grid-template-columns:repeat(6,minmax(0,1fr))}
+  .grupo{grid-column:span var(--s6,3)}
+  .sec-1100{display:none}
 }
 @media (max-width:860px){
-  .shell{grid-template-columns:1fr}
-  .lateral{position:static;max-height:none}
-  .btn-cmd{min-width:0}.btn-cmd .txt,.btn-cmd kbd,.hide-sm,.solo-desk{display:none}
-  .top-in{gap:0;padding-inline:8px}.btn-ghost{padding:0 .6rem}
+  .shell{grid-template-columns:minmax(0,1fr)}.lateral{position:static;max-height:none}
+  .top-in{grid-template-columns:1fr auto;padding-inline:8px}.sistema,.hide-sm,.btn-cmd .txt{display:none}
+  .btn-ghost{padding:0 .6rem}
+}
+@media (max-width:760px){
+  #grupos,#grupos.compacta{grid-template-columns:1fr}.grupo{grid-column:auto}
+  .tiles{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .compacta .tiles{grid-template-columns:1fr}
+  .solo-desk,#sabio .saludo-b{display:none}
 }
 @media (prefers-reduced-motion:reduce){
-  *,*::before,*::after{animation:none!important;transition:none!important}
+  *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
   ::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none!important}
 }
 </style>
@@ -215,132 +260,191 @@ dialog.cmd::backdrop{background:rgba(5,15,28,.45)}
 
 <header class="top">
   <div class="top-in">
-    <a class="marca" href="#portal" data-ir="portal"><i class="bi bi-gear-wide-connected"></i> ANTUMALAL <small class="hide-sm">Administración</small></a>
-    <span class="flex-grow-1"></span>
-    <button class="btn-ghost btn-cmd" id="abrirCmd" aria-haspopup="dialog">
-      <span><i class="bi bi-search"></i> <span class="txt">Buscar páginas y acciones</span></span>
-      <kbd data-atajo="K"></kbd>
-    </button>
-    <a class="btn-ghost solo-desk" href="#portal" data-ir="portal" title="Portal"><i class="bi bi-house-door"></i><span class="hide-sm">Portal</span></a>
-    <a class="btn-ghost" href="#clientes" data-ir="clientes" title="Clientes"><i class="bi bi-person-vcard"></i><span class="hide-sm">Clientes</span></a>
-    <button class="btn-ghost" aria-label="Notificaciones, 12 sin leer"><i class="bi bi-bell"></i><span class="badge-n">12</span></button>
-    <div class="dropdown">
-      <button class="btn-ghost" data-bs-toggle="dropdown" aria-label="Menú de usuario"><i class="bi bi-person-circle fs-5"></i><span class="hide-sm">Nombre Apellido</span><i class="bi bi-chevron-down small"></i></button>
-      <ul class="dropdown-menu dropdown-menu-end">
-        <li><a class="dropdown-item" href="#"><i class="bi bi-sliders"></i>Personalizar portal</a></li>
-        <li><a class="dropdown-item" href="#"><i class="bi bi-question-circle"></i>Guía</a></li>
-        <li><hr class="dropdown-divider"></li>
-        <li><a class="dropdown-item" href="#"><i class="bi bi-box-arrow-right"></i>Cerrar sesión</a></li>
-      </ul>
+    <div class="top-izq">
+      <a class="marca" href="#portal" data-ir="portal"><i class="bi bi-gear-wide-connected"></i><span>ANTUMALAL</span><small class="hide-sm">Administración Antumalal</small></a>
+    </div>
+    <div class="sistema d-none d-xl-block">RAPHAEL<span>OS</span></div>
+    <div class="top-der">
+      <button class="btn-ghost hide-sm" data-bs-toggle="modal" data-bs-target="#modalGuia" title="Cómo se usa esta pantalla"><i class="bi bi-question-circle"></i>Guía</button>
+      <a class="btn-ghost solo-desk" href="#portal" data-ir="portal" title="Portal maestro"><i class="bi bi-house-door"></i><span class="hide-sm">Portal</span></a>
+      <a class="btn-ghost" href="#clientes" data-ir="clientes" title="Maestro de clientes"><i class="bi bi-person-rolodex"></i><span class="hide-sm">Clientes</span></a>
+      <div class="dropdown">
+        <button class="btn-ghost" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false"><i class="bi bi-grid-3x3-gap"></i><span class="hide-sm">Módulos</span><i class="bi bi-chevron-down small hide-sm"></i></button>
+        <div class="dropdown-menu dropdown-menu-end p-0 mod-menu">
+          <div class="mod-menu-busca"><i class="bi bi-search" aria-hidden="true"></i><input type="search" class="form-control form-control-sm" placeholder="Buscar módulo" aria-label="Buscar módulo" autocomplete="off" id="menuBusca"></div>
+          <ul class="mod-menu-lista" id="menuLista"></ul>
+          <a class="mod-menu-pie" href="#portal" data-ir="portal"><i class="bi bi-arrows-move me-1"></i>Ordenar a mi gusto en el Portal</a>
+        </div>
+      </div>
+      <button class="btn-ghost btn-cmd" id="abrirCmd" aria-haspopup="dialog" title="Buscar páginas y acciones"><i class="bi bi-search"></i><span class="txt"><kbd data-atajo="K"></kbd></span></button>
+      <a class="btn-ghost" href="#" aria-label="Notificaciones, 60 sin leer"><i class="bi bi-bell"></i><span class="badge-n">60</span></a>
+      <div class="dropdown">
+        <button class="btn-ghost" data-bs-toggle="dropdown" aria-label="Menú de usuario"><i class="bi bi-person-circle"></i><span class="hide-sm">Nombre</span><i class="bi bi-chevron-down small hide-sm"></i></button>
+        <ul class="dropdown-menu dropdown-menu-end">
+          <li class="dropdown-header">Nombre Apellido<br><small class="text-muted">Usuario</small></li>
+          <li><hr class="dropdown-divider"></li>
+          <li><a class="dropdown-item" href="#"><i class="bi bi-person-gear"></i>Mi perfil</a></li>
+          <li><a class="dropdown-item" href="#clientes" data-ir="clientes"><i class="bi bi-person-rolodex"></i>Maestro de clientes</a></li>
+          <li><button class="dropdown-item" id="btnTema"><i class="bi bi-circle-half"></i>Tema: <span id="temaTxt">automático</span></button></li>
+          <li><hr class="dropdown-divider"></li>
+          <li><a class="dropdown-item" href="#"><i class="bi bi-box-arrow-right"></i>Salir</a></li>
+        </ul>
+      </div>
     </div>
   </div>
 </header>
 
 <main id="main" class="wrap">
 
-<!-- =================== VISTA 1: PORTAL =================== -->
+<!-- ==================================================== PORTAL ==================================================== -->
 <section class="vista" id="v-portal" aria-label="Portal">
   <div class="saludo">
-    <h1>Hola, Nombre</h1>
-    <p class="hide-sm">Elige un módulo o presiona <kbd data-atajo="K"></kbd> para ir a cualquier parte.</p>
+    <h1>Hola, Nombre 👋</h1>
+    <p>Bienvenido/a a Administración Antumalal. Selecciona un módulo o presiona <kbd data-atajo="K"></kbd>.</p>
   </div>
 
-  <form class="panel buscador" role="search" id="formCliente">
-    <i class="bi bi-person-vcard text-muted"></i>
-    <input class="form-control" type="search" placeholder="Buscar cliente por RUT o nombre" aria-label="Buscar cliente" autocomplete="off">
-    <button class="btn-accent" type="submit"><i class="bi bi-search me-1"></i>Buscar</button>
+  <form class="panel buscar-cliente" role="search" id="formCliente">
+    <label for="qCliente"><i class="bi bi-person-rolodex text-muted"></i>Buscar un cliente</label>
+    <div class="input-group">
+      <input type="search" id="qCliente" class="form-control" placeholder="RUT o nombre del cliente" minlength="2" required autocomplete="off">
+      <button class="btn-accent fin" type="submit"><i class="bi bi-search me-1"></i>Buscar</button>
+    </div>
+    <div class="form-text">Abre su ficha: últimas compras, precios por producto, descuentos y sugerencias de compra.</div>
   </form>
 
   <div class="kpis" aria-label="Pendientes del día">
-    <a class="panel kpi cero" href="#" style="--c:#d69e2e"><span class="kpi-t">Solicitudes por aprobar</span><span class="kpi-valor num">0</span></a>
-    <a class="panel kpi" href="#" style="--c:#2b6cb0"><span class="kpi-t">Pagos por transferir</span><span class="kpi-valor num">00</span></a>
-    <a class="panel kpi cero" href="#" style="--c:#c0392b"><span class="kpi-t">Importaciones bloqueadas</span><span class="kpi-valor num">0</span></a>
-    <a class="panel kpi" href="#" style="--c:#d69e2e"><span class="kpi-t">Docs de aduana pendientes</span><span class="kpi-valor num">00</span></a>
-    <a class="panel kpi cero" href="#" style="--c:#0b7285"><span class="kpi-t">Mis tareas pendientes</span><span class="kpi-valor num">0</span></a>
-    <a class="panel kpi cero" href="#" style="--c:#6b7280"><span class="kpi-t">Mermas sin resolver</span><span class="kpi-valor num">0</span></a>
+    <a class="panel kpi cero" href="#" style="--c:var(--c-warn)"><span class="kpi-t">Solicitudes por aprobar<i class="bi bi-hourglass-split"></i></span><span class="kpi-valor num">0</span></a>
+    <a class="panel kpi" href="#" style="--c:var(--c-azul)"><span class="kpi-t">Pagos por transferir<i class="bi bi-cash-stack"></i></span><span class="kpi-valor num">00</span></a>
+    <a class="panel kpi cero" href="#" style="--c:var(--c-bad)"><span class="kpi-t">Importaciones con eventos bloqueantes<i class="bi bi-exclamation-octagon"></i></span><span class="kpi-valor num">0</span></a>
+    <a class="panel kpi" href="#" style="--c:var(--c-warn)"><span class="kpi-t">Importaciones con docs de aduana pendientes<i class="bi bi-file-earmark-x"></i></span><span class="kpi-valor num">00</span></a>
+    <a class="panel kpi cero" href="#" style="--c:var(--c-info)"><span class="kpi-t">Mis tareas pendientes<i class="bi bi-check2-square"></i></span><span class="kpi-valor num">0</span></a>
+    <a class="panel kpi cero" href="#" style="--c:var(--c-neutro)"><span class="kpi-t">Mermas sin resolver<i class="bi bi-clipboard2-x"></i></span><span class="kpi-valor num">0</span></a>
   </div>
 
-  <div class="mod-barra">
-    <div class="chips" id="chips" role="group" aria-label="Filtrar por área"></div>
-    <div class="d-flex gap-2 flex-grow-1 justify-content-end">
-      <div class="position-relative" style="max-width:320px;flex:1">
-        <i class="bi bi-search position-absolute top-50 translate-middle-y ms-3 text-muted"></i>
-        <input id="qMod" type="search" class="form-control campo ps-5" placeholder="Filtrar módulos" aria-label="Filtrar módulos">
-      </div>
-      <button class="btn-ghost btn-borde"><i class="bi bi-sliders"></i><span class="hide-sm">Personalizar</span></button>
+  <div class="portal-barra">
+    <div class="portal-buscar" role="search">
+      <i class="bi bi-search" aria-hidden="true"></i>
+      <input type="search" id="qMod" class="form-control" placeholder="Buscar módulo…" aria-label="Buscar módulo" autocomplete="off">
+    </div>
+    <div class="d-flex align-items-center gap-2">
+      <span id="ordenMsg" class="small text-muted" role="status" aria-live="polite"></span>
+      <button class="btn-ghost btn-borde" type="button" data-bs-toggle="collapse" data-bs-target="#panelPersonalizar" aria-expanded="false" aria-controls="panelPersonalizar" style="min-height:44px"><i class="bi bi-sliders"></i>Personalizar</button>
     </div>
   </div>
+
+  <div class="collapse mb-3 mt-2" id="panelPersonalizar">
+    <div class="panel p-3">
+      <div class="row g-3 align-items-end">
+        <div class="col-12 col-md-5">
+          <div class="small fw-semibold mb-1">Cómo quieres ver los módulos</div>
+          <div class="d-flex gap-3">
+            <div class="form-check"><input class="form-check-input" type="radio" name="vista" id="vtarjetas" value="tarjetas" checked><label class="form-check-label small" for="vtarjetas">Tarjetas</label></div>
+            <div class="form-check"><input class="form-check-input" type="radio" name="vista" id="vcompacta" value="compacta"><label class="form-check-label small" for="vcompacta">Lista compacta</label></div>
+          </div>
+          <div class="form-text">La lista compacta muestra más módulos sin bajar la pantalla.</div>
+        </div>
+        <div class="col-12 col-md-4">
+          <label class="small fw-semibold mb-1" for="selInicio">Al iniciar sesión, llévame a</label>
+          <select id="selInicio" class="form-select form-select-sm"></select>
+          <div class="form-text">Puedes volver al portal cuando quieras con el botón de arriba.</div>
+        </div>
+        <div class="col-12 col-md-3"><button class="btn-accent w-100" id="btnGuardarPref"><i class="bi bi-check2 me-1"></i>Guardar</button></div>
+      </div>
+      <hr class="my-3" style="border-color:var(--ant-line)">
+      <button class="btn-ghost btn-borde" id="btnRestablecer"><i class="bi bi-arrow-counterclockwise"></i>Restablecer mi vista</button>
+      <span class="small text-muted ms-2">No cambia tus permisos ni afecta a otros usuarios.</span>
+    </div>
+  </div>
+
+  <div class="chips" id="chips" role="group" aria-label="Filtrar por área"></div>
+  <p class="ayuda-linea">En <i class="bi bi-three-dots"></i> de cada módulo puedes fijarlo arriba <i class="bi bi-pin-angle"></i>, moverlo <i class="bi bi-arrows-move"></i> o ver qué hace <i class="bi bi-question-lg"></i>. <span class="d-none d-md-inline">Es tu vista personal: no le cambia el portal a nadie más.</span></p>
+
   <div id="grupos"></div>
   <p class="sin-res" id="sinRes" hidden>Ningún módulo coincide con tu búsqueda.</p>
 </section>
 
-<!-- =================== VISTA 2: PANEL DE VENTAS =================== -->
+<!-- ==================================================== PANEL DE VENTAS ==================================================== -->
 <section class="vista" id="v-ventas" aria-label="Panel de Ventas" hidden>
   <div class="shell">
     <nav class="panel lateral" aria-label="Pantallas de Ventas">
-      <details open><summary>Vista</summary>
-        <a href="#ventas" aria-current="page"><i class="bi bi-globe2"></i>Toda la empresa</a>
-        <a href="#ventas"><i class="bi bi-truck"></i>Distribución</a>
-        <a href="#ventas"><i class="bi bi-wrench"></i>Servicio</a>
-      </details>
       <details open><summary>Seguimiento</summary>
-        <a href="#ventas"><i class="bi bi-bar-chart-line"></i>Panel</a>
-        <a href="#ventas"><i class="bi bi-flag"></i>Metas</a>
+        <a href="#ventas" aria-current="page"><i class="bi bi-bar-chart-line"></i>Panel</a>
+        <a href="#ventas"><i class="bi bi-flag"></i>Seguimiento de metas</a>
         <a href="#ventas"><i class="bi bi-lightning-charge"></i>Hoy</a>
+        <a href="#ventas"><i class="bi bi-person-check"></i>Mi avance</a>
         <a href="#ventas"><i class="bi bi-trophy"></i>Ranking de vendedores</a>
+        <a href="#ventas"><i class="bi bi-person"></i>Por vendedor</a>
       </details>
       <details><summary>Análisis</summary>
         <a href="#ventas"><i class="bi bi-tags"></i>Marcas y familias</a>
         <a href="#ventas"><i class="bi bi-calendar3"></i>Mes a mes</a>
         <a href="#ventas"><i class="bi bi-droplet"></i>Lubricantes (litros)</a>
         <a href="#ventas"><i class="bi bi-list-ul"></i>Listado de productos</a>
+        <a href="#ventas"><i class="bi bi-bar-chart-steps"></i>Ranking por categoría</a>
       </details>
       <details><summary>Control</summary>
         <a href="#ventas"><i class="bi bi-calculator"></i>Cuadratura</a>
         <a href="#ventas"><i class="bi bi-receipt"></i>Facturas de servicio</a>
+        <a href="#ventas"><i class="bi bi-file-earmark-bar-graph"></i>Conciliación con Power BI</a>
+        <a href="#ventas"><i class="bi bi-graph-down-arrow"></i>Índice de morosidad</a>
         <a href="#ventas"><i class="bi bi-file-earmark-text"></i>Informes diarios</a>
+        <a href="#ventas"><i class="bi bi-file-earmark-richtext"></i>Informe general</a>
       </details>
-      <details><summary>Administración</summary>
-        <a href="#ventas"><i class="bi bi-bullseye"></i>Configurar metas</a>
+      <details><summary>Administrador</summary>
+        <a href="#ventas"><i class="bi bi-bullseye"></i>Metas</a>
         <a href="#ventas"><i class="bi bi-award"></i>Bonos por categoría</a>
+        <a href="#ventas"><i class="bi bi-robot"></i>Ayudante</a>
+      </details>
+      <details><summary>Marcas <span class="num">(15)</span></summary>
+        <a href="#ventas"><i class="bi bi-tag"></i>Marca 01</a><a href="#ventas"><i class="bi bi-tag"></i>Marca 02</a><a href="#ventas"><i class="bi bi-tag"></i>Marca 03</a>
+        <a href="#ventas" class="text-muted"><i class="bi bi-three-dots"></i>Ver las 15 marcas</a>
+      </details>
+      <details><summary>Plataforma</summary>
+        <a href="#portal" data-ir="portal"><i class="bi bi-house-door"></i>Volver al Portal</a>
       </details>
     </nav>
 
     <div>
-      <div class="migas"><a href="#portal" data-ir="portal">Portal</a><i class="bi bi-chevron-right small"></i><span>Ventas</span><i class="bi bi-chevron-right small"></i><strong>Panel</strong></div>
+      <div class="migas"><a href="#portal" data-ir="portal">Portal</a><i class="bi bi-chevron-right small"></i><span>Ventas</span><i class="bi bi-chevron-right small"></i><strong class="text-body">Panel</strong></div>
       <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-2">
         <h1 class="h4 m-0">Panel de Ventas</h1>
-        <div class="d-flex gap-2">
+        <div class="d-flex flex-wrap gap-2 align-items-center">
+          <div class="segmento" role="group" aria-label="Vista">
+            <button aria-pressed="true"><i class="bi bi-globe2"></i>Toda la empresa</button>
+            <button aria-pressed="false"><i class="bi bi-truck"></i>Distribución</button>
+            <button aria-pressed="false"><i class="bi bi-wrench"></i>Servicio</button>
+          </div>
           <button class="btn-ghost btn-borde" id="btnRecargar"><i class="bi bi-arrow-repeat"></i>Actualizar</button>
-          <button class="btn-ghost btn-borde"><i class="bi bi-download"></i>Exportar</button>
+          <div class="dropdown"><button class="btn-ghost btn-borde" data-bs-toggle="dropdown"><i class="bi bi-download"></i>Exportar</button>
+            <ul class="dropdown-menu dropdown-menu-end"><li><a class="dropdown-item" href="#"><i class="bi bi-file-earmark-excel"></i>Excel</a></li><li><a class="dropdown-item" href="#"><i class="bi bi-filetype-csv"></i>CSV</a></li></ul></div>
         </div>
       </div>
-      <nav class="pestanas" aria-label="Secciones">
-        <a href="#ventas" aria-current="page">Resumen</a><a href="#ventas">Por vendedor</a><a href="#ventas">Por sucursal</a>
-        <div class="dropdown">
-          <button data-bs-toggle="dropdown" aria-expanded="false">Más <i class="bi bi-chevron-down ms-1 small"></i></button>
-          <ul class="dropdown-menu"><li><a class="dropdown-item" href="#">Mes a mes</a></li><li><a class="dropdown-item" href="#">Marcas</a></li><li><a class="dropdown-item" href="#">Informes</a></li></ul>
-        </div>
-      </nav>
 
       <form class="panel filtros" onsubmit="return false">
         <div><label for="f1">Año</label><select id="f1" class="form-select"><option>2026</option></select></div>
-        <div><label for="f2">Mes</label><select id="f2" class="form-select"><option>Mes</option></select></div>
+        <div><label for="f2">Mes</label><select id="f2" class="form-select"><option>Mes actual</option></select></div>
         <div><label for="f3">Sucursal</label><select id="f3" class="form-select"><option>Todas</option></select></div>
-        <div><label for="f4">Vendedor</label><select id="f4" class="form-select"><option>Todos</option></select></div>
+        <div><label for="f4">Unidad de negocio</label><select id="f4" class="form-select"><option>Toda la empresa</option></select></div>
+        <div><label for="f5">Vendedor</label><button type="button" class="form-select text-start" id="f5" data-bs-toggle="modal" data-bs-target="#modalVend">Todos</button></div>
+        <div><label for="f6">Canal</label><select id="f6" class="form-select"><option>Web / Tradicional</option></select></div>
       </form>
 
-      <div class="kpis" style="margin-top:0">
-        <div class="panel kpi" style="--c:#2b6cb0"><span class="kpi-t">Venta del mes</span><span class="kpi-valor num">$ 000.000.000</span></div>
-        <div class="panel kpi" style="--c:#198754"><span class="kpi-t">Meta cumplida</span><span class="kpi-valor num">00,0 %</span></div>
-        <div class="panel kpi" style="--c:#d69e2e"><span class="kpi-t">Documentos</span><span class="kpi-valor num">0.000</span></div>
-        <div class="panel kpi" style="--c:#6b7280"><span class="kpi-t">Ticket promedio</span><span class="kpi-valor num">$ 000.000</span></div>
+      <div class="aviso"><i class="bi bi-exclamation-triangle"></i><div><strong>3 avisos del mes.</strong> <a href="#" id="verAvisos">Ver detalle</a></div></div>
+
+      <div class="kpis" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">
+        <div class="panel kpi" style="--c:var(--c-azul)"><span class="kpi-t">Venta · mes actual</span><span class="kpi-valor num">$ 000.000.000</span><span class="sub">ya resta −$00.000.000 en notas de crédito</span></div>
+        <div class="panel kpi" style="--c:var(--c-neutro)"><span class="kpi-t">Meta</span><span class="kpi-valor num">$ 000.000.000</span><span class="sub">faltan $000.000.000</span></div>
+        <div class="panel kpi" style="--c:var(--c-ok)"><span class="kpi-t">Cumplimiento</span><span class="kpi-valor num">00,0 %</span><span class="sub">proyección 00 %</span></div>
+        <div class="panel kpi" style="--c:var(--c-info)"><span class="kpi-t">Margen</span><span class="kpi-valor num">$ 000.000.000</span><span class="sub">000 sin costo</span></div>
+        <div class="panel kpi" style="--c:var(--c-warn)"><span class="kpi-t">Documentos</span><span class="kpi-valor num">00.000</span><span class="sub">00.000 unidades · $0.000 c/u</span></div>
+        <div class="panel kpi" style="--c:var(--c-azul)"><span class="kpi-t">Clientes con compra</span><span class="kpi-valor num">0.000</span><span class="sub">$000.000 por cliente</span></div>
+        <div class="panel kpi" style="--c:var(--c-info)"><span class="kpi-t">Litros de lubricante</span><span class="kpi-valor num">000.000</span><span class="sub">de 000.000 de meta</span></div>
       </div>
 
-      <div class="panel tabla-wrap" id="tablaVentas" aria-busy="false">
+      <div class="panel tabla-wrap" aria-busy="false">
         <table class="t">
           <caption class="visually-hidden">Ventas por vendedor (datos de ejemplo)</caption>
-          <thead><tr><th scope="col">Vendedor</th><th scope="col">Sucursal</th><th scope="col">Estado</th><th class="num" scope="col">Venta</th><th class="num" scope="col">Meta</th><th class="num" scope="col">Cumpl.</th><th scope="col"><span class="visually-hidden">Acciones</span></th></tr></thead>
+          <thead><tr><th scope="col">Vendedor</th><th scope="col" class="sec-1100">Sucursal</th><th scope="col">Estado</th><th class="num" scope="col">Venta</th><th class="num sec-1100" scope="col">Meta</th><th class="num" scope="col">Cumpl.</th><th scope="col"><span class="visually-hidden">Acciones</span></th></tr></thead>
           <tbody id="tbody"></tbody>
         </table>
       </div>
@@ -348,13 +452,119 @@ dialog.cmd::backdrop{background:rgba(5,15,28,.45)}
   </div>
 </section>
 
-<!-- =================== VISTA 3: CLIENTES (referencia) =================== -->
-<section class="vista" id="v-clientes" hidden>
-  <div class="migas"><a href="#portal" data-ir="portal">Portal</a><i class="bi bi-chevron-right small"></i><strong>Clientes</strong></div>
-  <h1 class="h4">Clientes</h1>
-  <p class="text-muted">Pantalla de referencia: aplicaría los mismos patrones (filtros en una fila, tabla con números tabulares, menú «Más», skeleton).</p>
+<!-- ==================================================== CLIENTES (CRM) ==================================================== -->
+<section class="vista" id="v-clientes" aria-label="Clientes" hidden>
+  <nav class="pestanas" aria-label="Raphael Chat">
+    <a href="#clientes">Conversaciones</a><a href="#clientes">Contactos</a><a href="#clientes">Casos</a><a href="#clientes">Negocios</a>
+    <a href="#clientes" aria-current="page">Clientes</a>
+    <div class="dropdown"><button data-bs-toggle="dropdown" aria-expanded="false">Más <i class="bi bi-chevron-down small"></i></button>
+      <ul class="dropdown-menu"><li><a class="dropdown-item" href="#">Citas</a></li><li><a class="dropdown-item" href="#">Llamadas</a></li><li><a class="dropdown-item" href="#">Formularios</a></li><li><a class="dropdown-item" href="#">Bots</a></li><li><a class="dropdown-item" href="#">Seguimiento</a></li><li><a class="dropdown-item" href="#">Configuración</a></li></ul></div>
+    <a class="ms-auto" href="#portal" data-ir="portal"><i class="bi bi-arrow-left"></i>Volver al inicio</a>
+  </nav>
+  <div class="pildoras" aria-label="Secciones de clientes"><a href="#clientes" aria-current="page">Clientes</a><a href="#clientes">Cobertura de teléfono</a><a href="#clientes">Teléfonos de taller</a><a href="#clientes">Cambio de aceite</a><a href="#clientes">Giros</a></div>
+
+  <div class="d-flex flex-wrap align-items-start justify-content-between gap-2 mb-2">
+    <div><h1 class="h4 m-0"><i class="bi bi-person-vcard me-2" style="color:var(--ant-icono)"></i>Clientes</h1>
+      <p class="text-muted mb-0">Quién es cada cliente, cómo ubicarlo, cuándo compró por última vez y en qué estado está.</p></div>
+    <button class="btn-ghost btn-borde"><i class="bi bi-file-earmark-excel"></i>Bajar a Excel</button>
+  </div>
+  <p class="text-muted small">Calculado el 00/00/0000 00:00. Las compras se miden desde 0000, donde empiezan las ventas registradas.</p>
+
+  <div class="kpis" style="grid-template-columns:repeat(auto-fit,minmax(130px,1fr))">
+    <div class="panel kpi" style="--c:var(--c-azul)"><span class="kpi-valor num">00.000</span><span class="kpi-t">Clientes con compras</span></div>
+    <div class="panel kpi" style="--c:var(--c-azul)"><span class="kpi-valor num">0.000</span><span class="kpi-t">Nuevo</span></div>
+    <div class="panel kpi" style="--c:var(--c-info)"><span class="kpi-valor num">0.000</span><span class="kpi-t">Recuperado</span></div>
+    <div class="panel kpi" style="--c:var(--c-ok)"><span class="kpi-valor num">0.000</span><span class="kpi-t">Activo</span></div>
+    <div class="panel kpi" style="--c:var(--c-warn)"><span class="kpi-valor num">0.000</span><span class="kpi-t">En riesgo</span></div>
+    <div class="panel kpi" style="--c:var(--c-neutro)"><span class="kpi-valor num">00.000</span><span class="kpi-t">Dormido</span></div>
+    <div class="panel kpi" style="--c:var(--c-bad)"><span class="kpi-valor num">00.000</span><span class="kpi-t">Perdido</span></div>
+  </div>
+
+  <form class="panel filtros" onsubmit="return false">
+    <div><label for="c1">Negocio</label><select id="c1" class="form-select"><option>Todos</option></select></div>
+    <div><label for="c2">Sucursal (última compra)</label><select id="c2" class="form-select"><option>Todas</option></select></div>
+    <div><label for="c3">Vendedor</label><select id="c3" class="form-select"><option>Todos</option></select></div>
+    <div><label for="c4">Comuna</label><select id="c4" class="form-select"><option>Todas</option></select></div>
+    <div><label for="c5">Tipo de cliente</label><select id="c5" class="form-select"><option>Todos</option></select></div>
+    <div><label for="c6">Estado</label><select id="c6" class="form-select"><option>Todos</option></select></div>
+    <div><label for="c7">Teléfono</label><select id="c7" class="form-select"><option>Todos</option></select></div>
+    <div><label for="c8">RUT o nombre</label><div class="input-group"><input id="c8" class="form-control" placeholder="00000000-0 o nombre"><button class="btn-accent fin" type="button"><i class="bi bi-search"></i><span class="visually-hidden">Buscar</span></button></div></div>
+  </form>
+
+  <div class="panel tabla-wrap" aria-busy="false">
+    <div class="pie-tabla" style="border:0;border-bottom:1px solid var(--ant-line)">
+      <span class="num">000.000 clientes · página 1 de 0.000</span>
+      <label class="d-flex align-items-center gap-2 small">Ordenar por <select class="form-select form-select-sm" style="min-width:230px"><option>Monto 12 meses, de mayor a menor</option></select></label>
+    </div>
+    <table class="t">
+      <caption class="visually-hidden">Clientes (datos de ejemplo)</caption>
+      <thead><tr><th scope="col">Cliente</th><th scope="col" class="sec-1100">Tipo</th><th scope="col">Comuna</th><th scope="col">Teléfono</th><th scope="col" class="sec-1100">Correo</th><th scope="col" class="sec-1100">Vendedor</th><th scope="col" class="sec-1100">Sucursal</th><th scope="col" class="sec-1100">Negocio</th><th scope="col" class="num">Última compra</th><th scope="col" class="num">Días sin comprar</th><th scope="col" class="num">Monto 12 meses</th><th scope="col"><span class="visually-hidden">Ficha</span></th></tr></thead>
+      <tbody id="tbClientes"></tbody>
+    </table>
+    <div class="pie-tabla"><span class="num">Página 1 de 0.000 · 50 por página</span><button class="btn-ghost btn-borde">Siguiente<i class="bi bi-chevron-right"></i></button></div>
+  </div>
+</section>
+
+<!-- ==================================================== PORTAL DE PAGOS (apoyo al cliente) ==================================================== -->
+<section class="vista" id="v-pagos" aria-label="Portal de Pagos" hidden>
+  <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-2">
+    <h1 class="h4 m-0"><i class="bi bi-headset me-2" style="color:var(--ant-icono)"></i>Portal de Pagos — «no me llegó el código»</h1>
+    <div class="segmento" role="group"><button aria-pressed="true">Pagos</button><button aria-pressed="false">Pendientes</button><button aria-pressed="false">Conexión</button><button aria-pressed="false" data-ir="portal">Volver</button></div>
+  </div>
+  <div class="aviso info"><i class="bi bi-shield-lock"></i><div><strong>El código de acceso no se puede ver desde aquí, y es a propósito.</strong> Si un ejecutivo pudiera leerlo y dictarlo, bastaría con que alguien llamara diciendo ser el cliente para llevarse su cuenta completa. Lo que sí puedes hacer es <em>mandarlo a un canal</em>: al correo registrado, a uno nuevo tras verificar la identidad, o por WhatsApp <strong>solo al móvil que ya está en el ERP</strong>.</div></div>
+
+  <form class="panel p-3 mb-3" onsubmit="return false">
+    <label class="small mb-1" for="rutPago">RUT del cliente que escribió</label>
+    <div class="input-group"><input id="rutPago" class="form-control" value="00000000-0"><button class="btn-accent fin"><i class="bi bi-search me-1"></i>Buscar</button></div>
+  </form>
+
+  <div class="aviso"><i class="bi bi-envelope-exclamation"></i><div class="w-100"><div class="d-flex justify-content-between flex-wrap gap-2"><strong>El ERP no tiene correo para este cliente</strong><span class="text-muted num">00.000.000-0 — Cliente de ejemplo</span></div>
+    <p class="mb-1 mt-2">El ERP no tiene correo para este RUT.</p><p class="mb-2"><strong>Verifica su identidad, envía el código al correo que entregue y después corrige la ficha en el SGE.</strong></p>
+    <div class="small text-muted d-flex flex-wrap gap-3"><span>Correo en el ERP: <em>en blanco</em></span><span>Teléfono en el ERP: <span class="num">000000000</span></span><span>RUT que comparten ese correo: <span class="num">0</span></span></div></div></div>
+
+  <div class="aviso bad"><i class="bi bi-x-circle-fill"></i><div><div class="small text-muted">¿A dónde le llega el código hoy?</div><strong class="fs-6">A ninguna parte: este cliente no puede recibir el código</strong></div></div>
+
+  <div class="pasos">
+    <div class="panel paso"><h3><i class="bi bi-person-check"></i>Para verificar que hablas con el cliente</h3><div class="cuerpo">
+      <p class="text-muted small">El cliente de verdad sabe cuánto debe. Pregúntaselo antes de mandar nada a un correo nuevo.</p>
+      <div class="fila-dato"><span>Deuda vigente</span><strong class="num">$00</strong></div><div class="fila-dato"><span>De eso, vencido</span><strong class="num">$00</strong></div><div class="fila-dato"><span>Cuotas pendientes</span><strong class="num">0</strong></div></div></div>
+    <div class="panel paso"><h3><i class="bi bi-clock-history"></i>¿De verdad intentó entrar?</h3><div class="cuerpo">
+      <div class="aviso mb-0"><i class="bi bi-exclamation-triangle"></i><div><strong>No hay ningún intento registrado.</strong> Quien está escribiendo ni siquiera ha probado a entrar al portal. Vale la pena preguntar por qué antes de mandarle un código.</div></div></div></div>
+  </div>
+  <div class="pasos">
+    <div class="panel paso"><h3><i class="bi bi-envelope-plus"></i>2 · Enviar a un correo nuevo</h3><div class="cuerpo">
+      <label class="small" for="pg1">Correo que entregó el cliente</label><input id="pg1" class="form-control mb-2" placeholder="nuevo@empresa.cl">
+      <label class="small" for="pg2">Cómo verificaste su identidad <span style="color:var(--c-bad)">*</span></label><textarea id="pg2" class="form-control" rows="2" placeholder="Ej: llamé al fijo del ERP y confirmó el monto de la deuda"></textarea>
+      <div class="form-text mb-2">Queda con tu nombre. Es lo único que quedará escrito de por qué confiaste.</div>
+      <button class="btn-accent w-100"><i class="bi bi-send me-1"></i>Verificar y enviar</button></div></div>
+    <div class="panel paso"><h3><i class="bi bi-whatsapp"></i>3 · Por WhatsApp</h3><div class="cuerpo d-flex flex-column gap-3">
+      <p class="text-muted small mb-0">Va <strong>solo al móvil que ya está en el ERP</strong> (<span class="num">000000000</span>). Un número dictado por quien escribe se rechaza: sería entregarle el código a quien lo pide.</p>
+      <button class="btn-accent mt-auto" style="background:var(--c-ok)"><i class="bi bi-whatsapp me-1"></i>Preparar mensaje</button></div></div>
+  </div>
+  <div class="panel paso mb-3"><h3><i class="bi bi-pin-angle"></i>Fijar el correo de este cliente <span class="text-muted fw-normal">— para siempre, no sólo esta vez</span></h3><div class="cuerpo">
+    <p class="text-muted small">Enviar a un correo nuevo (arriba) manda el código <strong>una vez</strong>: el cliente vuelve a quedar bloqueado en su siguiente intento. Esto en cambio queda guardado y <strong>entra solo la próxima vez</strong>, hasta que alguien lo cambie.</p>
+    <div class="row g-3"><div class="col-md-6"><label class="small" for="pg3">Correo nuevo</label><input id="pg3" class="form-control" placeholder="pagos@empresa.cl"></div>
+      <div class="col-md-6"><div class="small mb-1">¿Por qué se cambia?</div>
+        <div class="form-check"><input class="form-check-input" type="radio" name="porque" id="r1" checked><label class="form-check-label" for="r1"><strong>Quien paga no es quien compra.</strong> <span class="text-muted">El del ERP es del comprador y está bien.</span></label></div>
+        <div class="form-check"><input class="form-check-input" type="radio" name="porque" id="r2"><label class="form-check-label" for="r2"><strong>El correo del ERP está malo o vacío</strong> <span class="text-muted">— queda además la tarea de corregirlo en el SGE.</span></label></div></div>
+      <div class="col-md-9"><label class="small" for="pg4">¿Cómo verificaste que es el cliente?</label><input id="pg4" class="form-control" placeholder="Ej: llamé al fijo del ERP y confirmé la deuda"></div>
+      <div class="col-md-3 d-flex align-items-end"><button class="btn-accent w-100"><i class="bi bi-pin-angle me-1"></i>Fijar</button></div></div></div></div>
+  <div class="panel tabla-wrap">
+    <div class="p-3 fw-semibold" style="border-bottom:1px solid var(--ant-line)"><i class="bi bi-credit-card me-2" style="color:var(--ant-icono)"></i>Pagos recientes en el portal</div>
+    <table class="t"><thead><tr><th>Referencia</th><th class="num">Monto</th><th>Medio</th><th>Estado</th><th>Cuándo</th><th><span class="visually-hidden">Acción</span></th></tr></thead>
+      <tbody>
+        <tr><td><code>0000aa00-0000-0000-0000-000000000000</code></td><td class="num">$00</td><td>WEBPAY</td><td><span class="estado" style="--c:var(--c-warn)">EN_CONCILIACION</span></td><td class="num">0000-00-00 00:00:00</td><td class="text-end"><button class="btn-ghost btn-borde undo-pago" style="color:var(--c-bad)">Deshacer</button></td></tr>
+        <tr><td><code>0000bb00-0000-0000-0000-000000000000</code></td><td class="num">$00</td><td>WEBPAY</td><td><span class="estado" style="--c:var(--c-neutro)">ANULADO</span></td><td class="num">0000-00-00 00:00:00</td><td class="text-end"><button class="btn-ghost btn-borde undo-pago" style="color:var(--c-bad)">Deshacer</button></td></tr>
+      </tbody></table>
+  </div>
 </section>
 </main>
+
+<!-- Asistente flotante -->
+<div id="sabio">
+  <div class="saludo-b" id="sabioSaludo"><strong>Hola 👋</strong><br>¿Necesitas ayuda con esta pantalla?<button type="button" aria-label="Cerrar saludo" id="cierraSabio"><i class="bi bi-x-lg"></i></button></div>
+  <button class="boton" aria-label="Abrir asistente" id="btnSabio"><i class="bi bi-stars"></i></button>
+</div>
 
 <dialog class="cmd" id="cmd" aria-label="Buscar páginas y acciones">
   <input id="cmdQ" type="text" role="combobox" aria-expanded="true" aria-controls="cmdLista" aria-autocomplete="list" placeholder="Escribe una página o acción…" autocomplete="off">
@@ -362,6 +572,25 @@ dialog.cmd::backdrop{background:rgba(5,15,28,.45)}
   <div class="cmd-pie"><span><kbd>↑</kbd> <kbd>↓</kbd> navegar</span><span><kbd>↵</kbd> abrir</span><span><kbd>Esc</kbd> cerrar</span></div>
 </dialog>
 <div id="toasts" role="status" aria-live="polite"></div>
+
+<div class="modal fade" id="modalGuia" tabindex="-1" aria-labelledby="gT" aria-hidden="true"><div class="modal-dialog modal-lg modal-dialog-scrollable"><div class="modal-content">
+  <div class="modal-header"><h5 class="modal-title" id="gT"><i class="bi bi-question-circle me-2"></i>Cómo se usa esta pantalla</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button></div>
+  <div class="modal-body"><p>Texto de ejemplo de la guía. Aquí va la explicación de la pantalla, botón por botón.</p><ul><li><strong>Módulos:</strong> descripción de ejemplo.</li><li><strong>Personalizar:</strong> descripción de ejemplo.</li></ul></div>
+  <div class="modal-footer justify-content-between"><div class="form-check"><input class="form-check-input" type="checkbox" id="guiaChk"><label class="form-check-label small" for="guiaChk">No volver a mostrar al entrar</label></div><button class="btn-accent" data-bs-dismiss="modal">Entendido</button></div>
+</div></div></div>
+
+<div class="modal fade" id="modalVend" tabindex="-1" aria-labelledby="vT" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content">
+  <div class="modal-header"><h5 class="modal-title" id="vT">¿Qué vendedores quieres ver?</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button></div>
+  <div class="modal-body"><p class="small text-muted">Lo que desmarques deja de aparecer en tus tablas y gráficos. Es solo para ti y no cambia ningún total.</p>
+    <div class="d-flex gap-2 mb-2"><button class="btn-ghost btn-borde" id="vTodos">Marcar todos</button><button class="btn-ghost btn-borde" id="vNinguno">Desmarcar todos</button></div>
+    <div id="listaVend"></div></div>
+  <div class="modal-footer"><button class="btn-ghost btn-borde" data-bs-dismiss="modal">Cancelar</button><button class="btn-accent" data-bs-dismiss="modal">Aplicar</button></div>
+</div></div></div>
+
+<div class="modal fade" id="modalFicha" tabindex="-1" aria-labelledby="fT" aria-hidden="true"><div class="modal-dialog modal-xl modal-dialog-scrollable"><div class="modal-content">
+  <div class="modal-header"><h5 class="modal-title" id="fT"><i class="bi bi-person-vcard me-2"></i>Ficha del cliente</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button></div>
+  <div class="modal-body" id="fichaCuerpo"></div>
+</div></div></div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
@@ -371,207 +600,204 @@ const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const esMac = /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent);
 const $ = (s, r=document) => r.querySelector(s);
 const $$ = (s, r=document) => [...r.querySelectorAll(s)];
-const safe = (fn) => { try { return fn(); } catch(e) { return null; } };
-
-/* ---- Datos de ejemplo (los nombres de módulo son la estructura; todo lo demás es ficticio) ---- */
-const GRUPOS = [
-  {id:'ventas', nombre:'Ventas', mods:[
-    ['Panel de Ventas','bar-chart-line','#ventas'],['Pedidos de repuesto','cart-plus'],['Taller: órdenes de trabajo','wrench-adjustable'],
-    ['Descuentos y Plazos','percent'],['Control de Notas de Venta','shield-exclamation']]},
-  {id:'cobranza', nombre:'Cobranza y Finanzas', mods:[
-    ['Portal de Pagos','credit-card-2-front'],['Solicitudes de Pago','cash-coin'],['Conciliación de Ingresos','shield-check'],
-    ['Morosidad Empresarial','graph-down-arrow'],['Protestos','file-earmark-x'],['Talonario Digital','receipt-cutoff'],
-    ['Cumplimiento Forma de Pago','clipboard2-check'],['Importación de Facturas','file-earmark-arrow-up']]},
-  {id:'bodega', nombre:'Bodega y Logística', mods:[
-    ['Bodega','boxes'],['Toma de Inventario','upc-scan'],['Mermas y Logística','clipboard2-x'],
-    ['Pedidos de mercadería','clipboard-data'],['Maestro de Productos','database']]},
-  {id:'abast', nombre:'Abastecimiento', mods:[['Importaciones','box-seam'],['Proveedores','truck']]},
-  {id:'clientes', nombre:'Clientes y Marketing', mods:[['Raphael Chat','chat-dots'],['Clientes','person-vcard','#clientes']]},
-  {id:'gestion', nombre:'Gestión', mods:[['Tareas y Recordatorios','check2-square'],['Cardinal OS','signpost-split']]}
-];
-const NOMBRES = ['Vendedor A','Vendedor B','Vendedor C','Vendedor D','Vendedor E','Vendedor F','Vendedor G','Vendedor H'];
-const SUC = ['Sucursal 1','Sucursal 2','Sucursal 3'];
-const ESTADOS = [['En meta','#198754'],['En riesgo','#b7791f'],['Bajo meta','#c0392b']];
-const fmt = new Intl.NumberFormat('es-CL');
-
-/* ---- Atajos: ⌘ en Mac, Ctrl en el resto ---- */
-$$('[data-atajo]').forEach(k => k.textContent = (esMac ? '⌘' : 'Ctrl') + ' ' + k.dataset.atajo);
-
-/* ---- Estado personal (fijados/ocultos); con backend sería una llamada con rollback ---- */
-const store = {
-  get(k, d){ const v = safe(() => JSON.parse(localStorage.getItem(k))); return v == null ? d : v; },
-  set(k, v){ safe(() => localStorage.setItem(k, JSON.stringify(v))); }
-};
-let fijados = new Set(store.get('ant.fijados', []));
-let ocultos = new Set(store.get('ant.ocultos', []));
-const guardar = () => { store.set('ant.fijados',[...fijados]); store.set('ant.ocultos',[...ocultos]); };
-
-/* ---- View transitions (<300 ms) con respaldo si el navegador no las tiene ---- */
-function transicion(fn){
-  if (!reduce && document.startViewTransition) document.startViewTransition(fn); else fn();
-}
-
-/* ---- Módulos agrupados ---- */
-let filtroGrupo = 'todos', texto = '';
+const safe = fn => { try { return fn(); } catch(e) { return null; } };
 const norm = s => s.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase();
+const fmt = new Intl.NumberFormat('es-CL');
+const esc = v => String(v == null ? '' : v).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
-function tarjeta(g, m, forma){
-  const [nombre, icono, href] = m, key = g.id + ':' + nombre, fijo = fijados.has(key);
-  return `<div class="mod ${forma || ''}">
-    ${fijo ? '<i class="bi bi-pin-angle-fill mod-fijo" role="img" aria-label="Fijado"></i>' : '<i class="bi bi-shield-lock mod-nivel" role="img" aria-label="Solo administradores" title="Solo administradores"></i>'}
-    <div class="dropdown">
-      <button class="mod-mas" data-bs-toggle="dropdown" aria-label="Opciones de ${nombre}"><i class="bi bi-three-dots"></i></button>
-      <ul class="dropdown-menu dropdown-menu-end">
-        <li><button class="dropdown-item" data-acc="fijar" data-key="${key}"><i class="bi bi-pin-angle"></i>${fijo?'Quitar fijado':'Fijar primero'}</button></li>
-        <li><button class="dropdown-item" data-acc="ayuda" data-key="${key}"><i class="bi bi-question-circle"></i>Qué hace</button></li>
-        <li><button class="dropdown-item" data-acc="ocultar" data-key="${key}"><i class="bi bi-eye-slash"></i>Ocultar</button></li>
-      </ul>
-    </div>
-    <i class="bi bi-${icono} mod-icono" aria-hidden="true"></i>
-    <span class="mod-texto">
-      <a class="mod-nombre" href="${href || '#'}" ${href ? 'data-ir="'+href.slice(1)+'"' : ''}>${nombre}</a>
-      <p class="mod-desc">Descripción breve del módulo (texto de ejemplo).</p>
-      <span class="mod-dato">00 pendientes</span>
-    </span>
-  </div>`;
-}
-/* Forma bento de cada pieza según cuántos módulos tiene el grupo (ver comentario del CSS) */
-function formaBento(i, n){
-  if (n <= 3 && i > 0 || n <= 2) return 'ancho';
-  if (i === 0) return 'hero';
-  if (i === 1) return 'ancho';
-  const extra = n - 4, resto = extra % 4;
-  if (i === n - 1 && resto) return 'ancho llena" style="--llena:' + (4 - resto + 1);
-  return '';
-}
-function renderModulos(){
-  const q = norm(texto.trim()); let total = 0;
-  $('#grupos').innerHTML = GRUPOS.map(g => {
-    if (filtroGrupo !== 'todos' && filtroGrupo !== g.id) return '';
-    const mods = g.mods.filter(m => !ocultos.has(g.id+':'+m[0]) && (!q || norm(m[0]).includes(q)))
-      .sort((a,b) => fijados.has(g.id+':'+b[0]) - fijados.has(g.id+':'+a[0]));
-    total += mods.length;
-    if (!mods.length) return '';
-    return `<section class="grupo" aria-labelledby="h-${g.id}">
-      <h2 class="grupo-h" id="h-${g.id}">${g.nombre} <span class="n">· ${mods.length}</span></h2>
-      <div class="grid-mod${q ? '' : ' bento'}">${mods.map((m,i) => tarjeta(g, m, q ? "" : formaBento(i, mods.length))).join('')}</div></section>`;
-  }).join('');
-  $('#sinRes').hidden = total > 0;
-}
-$('#chips').innerHTML = [['todos','Todos']].concat(GRUPOS.map(g=>[g.id,g.nombre])).map(([id,n]) =>
-  `<button class="chip" data-g="${id}" aria-pressed="${id==='todos'}">${n}</button>`).join('');
-$('#chips').addEventListener('click', e => {
-  const b = e.target.closest('[data-g]'); if (!b) return;
-  filtroGrupo = b.dataset.g;
-  $$('#chips .chip').forEach(c => c.setAttribute('aria-pressed', c === b));
-  transicion(renderModulos);
-});
-$('#qMod').addEventListener('input', e => { texto = e.target.value; renderModulos(); });
+/* ---------------- Datos de ejemplo: los nombres de módulo son la estructura; descripciones y cifras son ficticias ---------------- */
+const GRUPOS = [
+  {id:'ventas',   nombre:'Ventas',               icono:'graph-up-arrow', mods:[['Panel de Ventas','bar-chart-line','ventas'],['Pedidos de repuesto','cart-plus'],['Taller: órdenes de trabajo y repuestos','wrench-adjustable'],['Descuentos y Plazos','percent'],['Control de Notas de Venta','shield-exclamation']]},
+  {id:'cobranza', nombre:'Cobranza y Finanzas',  icono:'cash-coin',      mods:[['Portal de Pagos','credit-card-2-front','pagos'],['Solicitudes de Pago','cash-coin'],['Conciliación de Ingresos','shield-check'],['Morosidad Empresarial','graph-down-arrow'],['Protestos','file-earmark-x'],['Talonario Digital','receipt-cutoff'],['Cumplimiento Forma de Pago','clipboard2-check'],['Importación de Facturas','file-earmark-arrow-up']]},
+  {id:'bodega',   nombre:'Bodega y Logística',   icono:'boxes',          mods:[['Bodega','boxes'],['Toma de Inventario','upc-scan'],['Mermas y Logística','clipboard2-x'],['Pedidos de mercadería','clipboard-data'],['Maestro de Productos','database']]},
+  {id:'abast',    nombre:'Abastecimiento',       icono:'box-seam',       mods:[['Importaciones','box-seam'],['Proveedores','truck']]},
+  {id:'clientes', nombre:'Clientes y Marketing', icono:'people',         mods:[['Raphael Chat','chat-dots'],['Clientes','person-vcard','clientes']]},
+  {id:'gestion',  nombre:'Gestión',              icono:'kanban',         mods:[['Tareas y Recordatorios','check2-square'],['Cardinal OS','signpost-split']]}
+];
+const todosMods = () => GRUPOS.flatMap(g => g.mods.map(m => ({g, nombre:m[0], icono:m[1], ir:m[2], key:g.id+':'+m[0]})));
 
-/* ---- Toast con Deshacer (6–8 s; el contenedor es role=status) ---- */
+/* ---------------- Estado personal (en producción: /portal/fijar, /portal/orden, /portal/preferencias) ---------------- */
+const store = { get(k,d){ const v = safe(() => JSON.parse(localStorage.getItem(k))); return v == null ? d : v; }, set(k,v){ safe(() => localStorage.setItem(k, JSON.stringify(v))); } };
+const estado = { fijados:new Set(store.get('ant.fijados',[])), ocultos:new Set(store.get('ant.ocultos',[])), orden:store.get('ant.orden',{}), vista:store.get('ant.vista','tarjetas') };
+const guardar = () => { store.set('ant.fijados',[...estado.fijados]); store.set('ant.ocultos',[...estado.ocultos]); store.set('ant.orden',estado.orden); store.set('ant.vista',estado.vista); };
+const instantanea = () => JSON.stringify({f:[...estado.fijados],o:[...estado.ocultos],r:estado.orden,v:estado.vista});
+const restaurar = s => { const d = JSON.parse(s); estado.fijados = new Set(d.f); estado.ocultos = new Set(d.o); estado.orden = d.r; estado.vista = d.v; guardar(); renderTodo(); };
+
+/* ---------------- Utilidades de UI ---------------- */
+$$('[data-atajo]').forEach(k => k.textContent = (esMac ? '⌘' : 'Ctrl') + ' ' + k.dataset.atajo);
+function transicion(fn){ if (!reduce && document.startViewTransition) document.startViewTransition(fn); else fn(); }
 function toast(msg, onUndo, ms=8000){
   const t = document.createElement('div'); t.className = 'toast-u';
-  const s = document.createElement('span'); s.textContent = msg; t.appendChild(s);
-  let hecho = false;
-  if (onUndo) {
-    const b = document.createElement('button'); b.type = 'button'; b.textContent = 'Deshacer';
-    b.onclick = () => { hecho = true; onUndo(); t.remove(); }; t.appendChild(b);
-  }
+  const s = document.createElement('span'); s.textContent = msg; t.appendChild(s); let hecho = false;
+  if (onUndo) { const b = document.createElement('button'); b.type = 'button'; b.textContent = 'Deshacer'; b.onclick = () => { hecho = true; onUndo(); t.remove(); }; t.appendChild(b); }
   $('#toasts').appendChild(t); setTimeout(() => { if (!hecho) t.remove(); }, ms);
 }
 
-/* ---- Acciones de tarjeta: se aplican al instante (optimista) y se pueden deshacer; sin diálogo de confirmación ---- */
+/* ---------------- Portal: bento de grupos ---------------- */
+let filtroGrupo = 'todos', texto = '';
+const unidades = n => n <= 2 ? 2 : n === 3 ? 3 : Math.min(5, Math.ceil(n / 2));   // unidades de ancho que pide un grupo según su cantidad de módulos
+/* Reparte los grupos en filas de `cols` unidades (primer hueco que calce) y estira el último de cada fila para no dejar huecos. */
+function empacar(us, cols){
+  const filas = [];
+  us = us.map(u => Math.min(u, cols));
+  us.forEach((u, i) => { let f = filas.find(f => f.libre >= u); if (!f) { f = {libre:cols, items:[]}; filas.push(f); } f.items.push(i); f.libre -= u; });
+  filas.forEach(f => { us[f.items[f.items.length - 1]] += f.libre; });
+  return us;
+}
+function modulosDe(g, q){
+  const orden = estado.orden[g.id] || [];
+  const mods = g.mods.filter(m => !estado.ocultos.has(g.id+':'+m[0]) && (!q || norm(m[0]).includes(q)));
+  mods.sort((a,b) => (orden.indexOf(a[0]) + 1 || 99) - (orden.indexOf(b[0]) + 1 || 99));
+  return mods.sort((a,b) => estado.fijados.has(g.id+':'+b[0]) - estado.fijados.has(g.id+':'+a[0]));   // fijados primero
+}
+function tarjeta(g, m){
+  const [nombre, icono, ir] = m, key = g.id+':'+nombre, fijo = estado.fijados.has(key);
+  return `<div class="mod">
+    ${fijo ? '<i class="bi bi-pin-angle-fill mod-fijo" role="img" aria-label="Fijado"></i>' : '<i class="bi bi-shield-lock mod-nivel" role="img" aria-label="Solo administradores" title="Solo administradores"></i>'}
+    <div class="dropdown"><button class="mod-mas" data-bs-toggle="dropdown" aria-label="Opciones de ${esc(nombre)}"><i class="bi bi-three-dots"></i></button>
+      <ul class="dropdown-menu dropdown-menu-end">
+        <li><button class="dropdown-item" data-acc="fijar" data-key="${esc(key)}"><i class="bi bi-pin-angle"></i>${fijo?'Quitar fijado':'Fijar primero'}</button></li>
+        <li><button class="dropdown-item" data-acc="antes" data-key="${esc(key)}"><i class="bi bi-arrow-left"></i>Mover antes</button></li>
+        <li><button class="dropdown-item" data-acc="despues" data-key="${esc(key)}"><i class="bi bi-arrow-right"></i>Mover después</button></li>
+        <li><button class="dropdown-item" data-acc="ayuda" data-key="${esc(key)}"><i class="bi bi-question-lg"></i>Qué hace</button></li>
+        <li><button class="dropdown-item" data-acc="ocultar" data-key="${esc(key)}"><i class="bi bi-eye-slash"></i>Ocultar</button></li>
+      </ul></div>
+    <i class="bi bi-${icono} mod-icono" aria-hidden="true"></i>
+    <a class="mod-nombre" href="#${ir||'portal'}" data-ir="${ir||'portal'}">${esc(nombre)}</a>
+  </div>`;
+}
+function renderModulos(){
+  const q = norm(texto.trim());
+  const grupos = GRUPOS.filter(g => filtroGrupo === 'todos' || filtroGrupo === g.id).map(g => ({g, mods:modulosDe(g, q)})).filter(x => x.mods.length);
+  const compacta = estado.vista === 'compacta';
+  const u9 = empacar(grupos.map(x => compacta ? 3 : unidades(x.mods.length)), 9);
+  const u6 = empacar(grupos.map(x => compacta ? 3 : Math.min(3, unidades(x.mods.length))), 6);
+  const cont = $('#grupos'); cont.className = compacta ? 'compacta' : '';
+  cont.innerHTML = grupos.map(({g, mods}, i) => `<section class="panel grupo" style="--s9:${u9[i]};--s6:${u6[i]}" aria-labelledby="h-${g.id}">
+    <h2 class="grupo-h" id="h-${g.id}"><i class="bi bi-${g.icono}"></i>${g.nombre}<span class="n">${mods.length}</span></h2>
+    <div class="tiles">${mods.map(m => tarjeta(g, m)).join('')}</div></section>`).join('');
+  $('#sinRes').hidden = grupos.length > 0;
+}
+$('#chips').innerHTML = [['todos','Todos']].concat(GRUPOS.map(g => [g.id, g.nombre])).map(([id,n]) => `<button class="chip" data-g="${id}" aria-pressed="${id==='todos'}">${n}</button>`).join('');
+$('#chips').addEventListener('click', e => { const b = e.target.closest('[data-g]'); if (!b) return; filtroGrupo = b.dataset.g; $$('#chips .chip').forEach(c => c.setAttribute('aria-pressed', c === b)); transicion(renderModulos); });
+$('#qMod').addEventListener('input', e => { texto = e.target.value; renderModulos(); });
+
+/* Acciones de módulo (tarjeta y menú de la barra): se aplican al instante y se pueden deshacer; sin diálogo de confirmación */
+function cambiar(msg, fn){ const antes = instantanea(); fn(); guardar(); renderTodo(); toast(msg, () => restaurar(antes), 7000); }
 document.addEventListener('click', e => {
   const a = e.target.closest('[data-acc]'); if (!a) return;
-  const key = a.dataset.key, nombre = key.split(':')[1];
-  if (a.dataset.acc === 'fijar') {
-    const antes = fijados.has(key);
-    antes ? fijados.delete(key) : fijados.add(key);
-    guardar(); renderModulos();
-    toast(antes ? `«${nombre}» ya no está fijado` : `«${nombre}» fijado arriba`,
-      () => { antes ? fijados.add(key) : fijados.delete(key); guardar(); renderModulos(); }, 6000);
-  } else if (a.dataset.acc === 'ocultar') {
-    ocultos.add(key); guardar(); renderModulos();
-    toast(`«${nombre}» oculto de tu vista`, () => { ocultos.delete(key); guardar(); renderModulos(); });
-  } else {
-    toast(`${nombre}: aquí va la descripción del módulo (texto de ejemplo).`, null, 5000);
-  }
+  const key = a.dataset.key, [gid, nombre] = key.split(':'), g = GRUPOS.find(x => x.id === gid);
+  if (a.dataset.acc === 'fijar') { const ya = estado.fijados.has(key); cambiar(ya ? `«${nombre}» ya no está fijado` : `«${nombre}» fijado arriba`, () => ya ? estado.fijados.delete(key) : estado.fijados.add(key)); }
+  else if (a.dataset.acc === 'ocultar') cambiar(`«${nombre}» oculto de tu vista`, () => estado.ocultos.add(key));
+  else if (a.dataset.acc === 'antes' || a.dataset.acc === 'despues') {
+    cambiar(`«${nombre}» movido`, () => { const lista = modulosDe(g, '').map(m => m[0]); const i = lista.indexOf(nombre), j = i + (a.dataset.acc === 'antes' ? -1 : 1);
+      if (j >= 0 && j < lista.length) { [lista[i], lista[j]] = [lista[j], lista[i]]; estado.orden[gid] = lista; } });
+  } else if (a.dataset.acc === 'ayuda') toast(nombre + ': descripción breve del módulo (texto de ejemplo).', null, 5000);
 });
 
-/* ---- Vistas ---- */
+/* Personalizar */
+$$('input[name="vista"]').forEach(r => r.addEventListener('change', () => { estado.vista = r.value; guardar(); transicion(renderModulos); }));
+$('#btnGuardarPref').onclick = () => { $('#ordenMsg').textContent = 'Preferencias guardadas'; setTimeout(() => $('#ordenMsg').textContent = '', 3000); };
+$('#btnRestablecer').onclick = () => { const antes = instantanea(); estado.fijados = new Set(); estado.ocultos = new Set(); estado.orden = {}; estado.vista = 'tarjetas'; guardar(); renderTodo(); toast('Tu vista quedó como viene de fábrica', () => restaurar(antes), 8000); };
+$('#selInicio').innerHTML = '<option>El portal (esta pantalla)</option>' + todosMods().map(m => `<option>${esc(m.nombre)}</option>`).join('');
+
+/* ---------------- Menú «Módulos» de la barra ---------------- */
+function renderMenu(){
+  const q = norm($('#menuBusca').value.trim()), todos = todosMods().filter(m => !q || norm(m.nombre).includes(q));
+  const fij = todos.filter(m => estado.fijados.has(m.key)); let h = '';
+  if (!q) h += '<li><a class="dropdown-item" href="#portal" data-ir="portal"><i class="bi bi-house-door"></i>Portal</a></li>';
+  const fila = m => `<li class="mod-menu-item"><a class="dropdown-item" href="#${m.ir||'portal'}" data-ir="${m.ir||'portal'}"><i class="bi bi-${m.icono}"></i>${esc(m.nombre)}</a>
+    <button type="button" class="mod-menu-pin" data-acc="fijar" data-key="${esc(m.key)}" aria-pressed="${estado.fijados.has(m.key)}" aria-label="${estado.fijados.has(m.key)?'Quitar fijado de':'Fijar'} ${esc(m.nombre)}"><i class="bi bi-pin-angle${estado.fijados.has(m.key)?'-fill':''}"></i></button></li>`;
+  if (!q && fij.length) h += '<li class="mod-menu-titulo">Fijados</li>' + fij.map(fila).join('');
+  GRUPOS.forEach(g => { const l = todos.filter(m => m.g === g && (q || !estado.fijados.has(m.key))); if (l.length) h += `<li class="mod-menu-titulo">${g.nombre}</li>` + l.map(fila).join(''); });
+  $('#menuLista').innerHTML = h || '<li class="p-3 text-muted">Ningún módulo con ese nombre.</li>';
+}
+$('#menuBusca').addEventListener('input', renderMenu);
+$('#menuBusca').addEventListener('keydown', e => { if (e.key === 'Enter') { const a = $('#menuLista .dropdown-item[data-ir]:not([data-ir="portal"])'); if (a) a.click(); } });
+
+/* ---------------- Vistas ---------------- */
 function ir(nombre){
   if (!$('#v-'+nombre)) nombre = 'portal';
-  transicion(() => {
-    $$('.vista').forEach(v => v.hidden = v.id !== 'v-'+nombre);
-    if (nombre === 'ventas') cargarVentas();
-    scrollTo(0,0);
-  });
+  transicion(() => { $$('.vista').forEach(v => v.hidden = v.id !== 'v-'+nombre); if (nombre === 'ventas') cargarVentas(); if (nombre === 'clientes') cargarClientes(); scrollTo(0,0); });
 }
-document.addEventListener('click', e => {
-  const l = e.target.closest('[data-ir]'); if (!l) return;
-  e.preventDefault(); history.pushState(null,'','#'+l.dataset.ir); ir(l.dataset.ir);
-});
+document.addEventListener('click', e => { const l = e.target.closest('[data-ir]'); if (!l) return; e.preventDefault(); history.pushState(null,'','#'+l.dataset.ir); ir(l.dataset.ir); });
 addEventListener('popstate', () => ir(location.hash.slice(1) || 'portal'));
 
-/* ---- Tabla: skeleton solo si la carga pasa de 300 ms, con las mismas columnas que la tabla real ---- */
-function filas(skel){
-  return NOMBRES.map((n,i) => {
-    if (skel) return '<tr>' + [70,55,40,60,50,45].map((w,j) => `<td${j>2?' class="num"':''}><div class="sk-b" style="width:${w}%;margin-left:${j>2?'auto':'0'}"></div></td>`).join('') + '<td></td></tr>';
-    const venta = 40e6 + ((i*7919)%30)*1.7e6, meta = 55e6, c = venta/meta*100, e = ESTADOS[c>=95?0:c>=80?1:2];
-    return `<tr><td>${n}</td><td>${SUC[i%3]}</td><td><span class="estado" style="--c:${e[1]}">${e[0]}</span></td>
-      <td class="num">$ ${fmt.format(Math.round(venta))}</td><td class="num">$ ${fmt.format(meta)}</td><td class="num">${c.toFixed(1).replace('.',',')} %</td>
-      <td class="text-end"><button class="btn-ghost" aria-label="Ver detalle de ${n}"><i class="bi bi-chevron-right"></i></button></td></tr>`;
-  }).join('');
+/* ---------------- Tablas con skeleton (solo si pasan de 300 ms) ---------------- */
+function skeleton(cols, filas){ return Array.from({length:filas}, (_, i) => '<tr>' + Array.from({length:cols}, (_, j) => `<td><div class="sk-b" style="width:${40+((i*7+j*13)%50)}%"></div></td>`).join('') + '</tr>').join(''); }
+function cargaConSkeleton(tb, cols, pintar){
+  const id = (tb._id = (tb._id || 0) + 1), caja = tb.closest('.panel'); caja.setAttribute('aria-busy', 'true');
+  const t = setTimeout(() => { if (tb._id === id) tb.innerHTML = skeleton(cols, 8); }, 300);
+  setTimeout(() => { clearTimeout(t); if (tb._id !== id) return; tb.innerHTML = pintar(); caja.setAttribute('aria-busy', 'false'); }, 900);
 }
-let cargaId = 0;
+const ESTADOS = [['En meta','var(--c-ok)'],['En riesgo','var(--c-warn)'],['Bajo meta','var(--c-bad)']];
 function cargarVentas(){
-  const id = ++cargaId, tb = $('#tbody'), cont = $('#tablaVentas');
-  cont.setAttribute('aria-busy','true');
-  const t = setTimeout(() => { if (id === cargaId) tb.innerHTML = filas(true); }, 300);
-  setTimeout(() => { clearTimeout(t); if (id !== cargaId) return; tb.innerHTML = filas(false); cont.setAttribute('aria-busy','false'); }, 900);
+  cargaConSkeleton($('#tbody'), 7, () => Array.from({length:8}, (_, i) => { const v = 40e6 + ((i*7919)%30)*1.7e6, c = v/55e6*100, e = ESTADOS[c>=95?0:c>=80?1:2];
+    return `<tr><td>Vendedor ${String.fromCharCode(65+i)}</td><td class="sec-1100">Sucursal ${i%3+1}</td><td><span class="estado" style="--c:${e[1]}">${e[0]}</span></td><td class="num">$ ${fmt.format(Math.round(v))}</td><td class="num sec-1100">$ ${fmt.format(55e6)}</td><td class="num">${c.toFixed(1).replace('.',',')} %</td><td class="text-end"><button class="btn-ghost" aria-label="Ver detalle"><i class="bi bi-chevron-right"></i></button></td></tr>`; }).join(''));
 }
 $('#btnRecargar').onclick = cargarVentas;
+function cargarClientes(){
+  const EST = [['Activo','var(--c-ok)'],['En riesgo','var(--c-warn)'],['Dormido','var(--c-neutro)'],['Nuevo','var(--c-azul)']];
+  cargaConSkeleton($('#tbClientes'), 12, () => Array.from({length:10}, (_, i) => { const e = EST[i%4];
+    return `<tr><td><strong>Cliente de ejemplo ${String(i+1).padStart(2,'0')}</strong><span class="sub num">00.000.00${i}-0</span><span class="estado" style="--c:${e[1]}">${e[0]}</span></td>
+      <td class="sec-1100">Tipo ${i%3+1}<span class="sub">Rubro de ejemplo</span></td><td>Comuna ${i%4+1}</td><td class="num">+56 9 0000 000${i}</td><td class="sec-1100">correo${i}@ejemplo.cl</td><td class="sec-1100">Vendedor ${String.fromCharCode(65+i%5)}</td><td class="sec-1100">Sucursal ${i%3+1}</td><td class="sec-1100">Negocio ${i%2+1}</td>
+      <td class="num">00/00/0000</td><td class="num">${(i*7)%40+1}</td><td class="num">$ ${fmt.format(9e6 - i*7e5)}</td><td class="text-end"><button class="btn-ghost btn-borde" data-ficha="${i}">Ficha</button></td></tr>`; }).join(''));
+}
 
-/* ---- Envío: botón deshabilitado mientras corre + Idempotency-Key estable por intento de la acción ---- */
+/* ---------------- Ficha 360 (modal): abre al instante, lo del ERP llega aparte ---------------- */
+const modalFicha = new bootstrap.Modal('#modalFicha');
+function abrirFicha(nombre){
+  $('#fichaCuerpo').innerHTML = `<div class="d-flex flex-wrap justify-content-between gap-2 mb-3"><div><h2 class="h5 mb-0">${esc(nombre)}</h2><span class="text-muted num">00.000.000-0</span></div><span class="estado align-self-start" style="--c:var(--c-ok)">Activo</span></div>
+  <ul class="nav nav-tabs mb-3" role="tablist">${['Resumen','Compras','Productos','Sugerencias','Notas'].map((t,i) => `<li class="nav-item"><button class="nav-link ${i?'':'active'}" data-bs-toggle="tab" data-bs-target="#ft${i}" type="button">${t}</button></li>`).join('')}</ul>
+  <div class="tab-content"><div class="tab-pane fade show active" id="ft0"><div class="row g-3">
+    <div class="col-md-6"><div class="panel p-3"><div class="fila-dato"><span>Razón social</span><span>Texto de ejemplo</span></div><div class="fila-dato"><span>Ciudad</span><span>Ciudad de ejemplo</span></div><div class="fila-dato"><span>Vendedor</span><span>Vendedor A</span></div><div class="fila-dato"><span>Fono</span><span class="num">+56 9 0000 0000</span></div></div></div>
+    <div class="col-md-6"><div class="panel p-3"><div class="fila-dato"><span>Saldo en el ERP</span><span class="num" id="saldoErp"><span class="sk-b d-inline-block" style="width:70px"></span></span></div><div class="fila-dato"><span>Vencido</span><span class="num" id="vencErp"><span class="sk-b d-inline-block" style="width:70px"></span></span></div><div class="fila-dato"><span>Última consulta</span><span class="num" id="horaErp">…</span></div></div></div></div></div>
+  ${[1,2,3,4].map(i => `<div class="tab-pane fade" id="ft${i}"><p class="text-muted">Contenido de ejemplo de la pestaña.</p></div>`).join('')}</div>`;
+  modalFicha.show();
+  setTimeout(() => { const s = $('#saldoErp'); if (s) { s.textContent = '$ 000.000'; $('#vencErp').textContent = '$ 00.000'; $('#horaErp').textContent = '00:00'; } }, 900);
+}
+document.addEventListener('click', e => { const b = e.target.closest('[data-ficha]'); if (b) abrirFicha('Cliente de ejemplo ' + String(+b.dataset.ficha + 1).padStart(2,'0')); });
 $('#formCliente').addEventListener('submit', e => {
-  e.preventDefault(); const b = e.submitter, key = crypto.randomUUID();
-  b.disabled = true;
-  setTimeout(() => { b.disabled = false; toast('Búsqueda de ejemplo · Idempotency-Key ' + key.slice(0,8) + '…', null, 4000); }, 600);
+  e.preventDefault(); const b = e.submitter; b.disabled = true;     // se deshabilita mientras corre; una búsqueda no crea registros, así que no necesita Idempotency-Key
+  setTimeout(() => { b.disabled = false; history.pushState(null,'','#clientes'); ir('clientes'); }, 400);
 });
 
-/* ---- Command menu ---- */
-const cmd = $('#cmd'), cq = $('#cmdQ'), cl = $('#cmdLista');
-let items = [], sel = 0;
-function todos(){
-  const base = [['Ir al Portal','house-door','portal','Página'],['Ir a Panel de Ventas','bar-chart-line','ventas','Página'],['Ir a Clientes','person-vcard','clientes','Página']];
-  const mods = GRUPOS.flatMap(g => g.mods.map(m => [m[0], m[1], (m[2]||'#portal').slice(1), g.nombre]));
-  return base.concat(mods);
-}
+/* ---------------- Selector de vendedores (modal) y avisos ---------------- */
+$('#listaVend').innerHTML = Array.from({length:12}, (_, i) => `<div class="form-check py-1"><input class="form-check-input" type="checkbox" id="v${i}" checked><label class="form-check-label" for="v${i}">Vendedor ${String.fromCharCode(65+i)} <span class="text-muted num">(${300+i})</span></label></div>`).join('');
+$('#vTodos').onclick = () => $$('#listaVend input').forEach(c => c.checked = true);
+$('#vNinguno').onclick = () => $$('#listaVend input').forEach(c => c.checked = false);
+$('#verAvisos').onclick = e => { e.preventDefault(); toast('Aquí se despliegan los 3 avisos del mes (texto de ejemplo).', null, 4000); };
+$$('.undo-pago').forEach(b => b.onclick = () => toast('Ejemplo: esta acción SÍ debe pedir confirmación (es financiera).', null, 5000));
+
+/* ---------------- Tema ---------------- */
+const temaTxt = () => { const t = safe(() => localStorage.getItem('ant.tema')); $('#temaTxt').textContent = t === 'dark' ? 'oscuro' : t === 'light' ? 'claro' : 'automático'; };
+$('#btnTema').onclick = e => { e.stopPropagation(); const t = safe(() => localStorage.getItem('ant.tema')), sig = !t ? 'light' : t === 'light' ? 'dark' : null;
+  safe(() => sig ? localStorage.setItem('ant.tema', sig) : localStorage.removeItem('ant.tema'));
+  document.documentElement.setAttribute('data-bs-theme', sig || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')); temaTxt(); };
+temaTxt();
+
+/* ---------------- Asistente flotante ---------------- */
+document.body.classList.add('tiene-sabio');
+$('#cierraSabio').onclick = () => $('#sabioSaludo').remove();
+$('#btnSabio').onclick = () => toast('Aquí abre el asistente (maqueta).', null, 3000);
+
+/* ---------------- Command menu + atajos ---------------- */
+const cmd = $('#cmd'), cq = $('#cmdQ'), cl = $('#cmdLista'); let items = [], sel = 0;
 function pintarCmd(){
   const q = norm(cq.value.trim());
-  items = todos().filter(i => !q || norm(i[0]).includes(q) || norm(i[3]).includes(q)).slice(0,30); sel = 0;
-  cl.innerHTML = items.length ? items.map((i,n) => `<li role="option" id="op${n}" aria-selected="${n===0}" data-n="${n}"><i class="bi bi-${i[1]}"></i>${i[0]}<small>${i[3]}</small></li>`).join('')
-    : '<li class="text-muted" role="option" aria-disabled="true">Sin resultados</li>';
+  const base = [['Ir al Portal','house-door','portal','Página'],['Ir a Clientes','person-vcard','clientes','Página'],['Ir a Panel de Ventas','bar-chart-line','ventas','Página'],['Cambiar tema','circle-half','tema','Acción']];
+  const mods = todosMods().map(m => [m.nombre, m.icono, m.ir || 'portal', m.g.nombre]);
+  items = base.concat(mods).filter(i => !q || norm(i[0]).includes(q) || norm(i[3]).includes(q)).slice(0, 30); sel = 0;
+  cl.innerHTML = items.length ? items.map((i,n) => `<li role="option" id="op${n}" aria-selected="${n===0}" data-n="${n}"><i class="bi bi-${i[1]}"></i>${esc(i[0])}<small>${i[3]}</small></li>`).join('') : '<li class="text-muted" role="option" aria-disabled="true">Sin resultados</li>';
   cq.setAttribute('aria-activedescendant', items.length ? 'op0' : '');
 }
-function marcar(n){
-  if (!items.length) return; sel = (n + items.length) % items.length;
-  $$('li', cl).forEach((li,i) => li.setAttribute('aria-selected', i === sel));
-  cq.setAttribute('aria-activedescendant', 'op'+sel); $$('li', cl)[sel].scrollIntoView({block:'nearest'});
-}
-function elegir(n){ const i = items[n]; if (!i) return; cmd.close(); history.pushState(null,'','#'+i[2]); ir(i[2]); }
-function abrirCmd(){ cq.value=''; pintarCmd(); cmd.showModal(); cq.focus(); }
-$('#abrirCmd').onclick = abrirCmd;
-cq.addEventListener('input', pintarCmd);
-cq.addEventListener('keydown', e => {
-  if (e.key === 'ArrowDown') { e.preventDefault(); marcar(sel+1); }
-  else if (e.key === 'ArrowUp') { e.preventDefault(); marcar(sel-1); }
-  else if (e.key === 'Enter') { e.preventDefault(); elegir(sel); }
-});
+function marcar(n){ if (!items.length) return; sel = (n + items.length) % items.length; $$('li', cl).forEach((li,i) => li.setAttribute('aria-selected', i === sel)); cq.setAttribute('aria-activedescendant', 'op'+sel); $$('li', cl)[sel].scrollIntoView({block:'nearest'}); }
+function elegir(n){ const i = items[n]; if (!i) return; cmd.close(); if (i[2] === 'tema') { $('#btnTema').click(); return; } history.pushState(null,'','#'+i[2]); ir(i[2]); }
+const abrirCmd = () => { cq.value = ''; pintarCmd(); cmd.showModal(); cq.focus(); };
+$('#abrirCmd').onclick = abrirCmd; cq.addEventListener('input', pintarCmd);
+cq.addEventListener('keydown', e => { if (e.key === 'ArrowDown') { e.preventDefault(); marcar(sel+1); } else if (e.key === 'ArrowUp') { e.preventDefault(); marcar(sel-1); } else if (e.key === 'Enter') { e.preventDefault(); elegir(sel); } });
 cl.addEventListener('click', e => { const li = e.target.closest('li[data-n]'); if (li) elegir(+li.dataset.n); });
 cmd.addEventListener('click', e => { if (e.target === cmd) cmd.close(); });
-
-/* ---- Atajos globales: nunca se disparan mientras se escribe en un campo ---- */
 const escribiendo = el => el && (/^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName) || el.isContentEditable);
 addEventListener('keydown', e => {
   if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); cmd.open ? cmd.close() : abrirCmd(); return; }
@@ -579,7 +805,8 @@ addEventListener('keydown', e => {
   if (e.key === '/') { e.preventDefault(); $('#qMod').focus(); }
 });
 
-renderModulos();
+function renderTodo(){ $$('input[name="vista"]').forEach(r => r.checked = r.value === estado.vista); renderModulos(); renderMenu(); }
+renderTodo();
 ir(location.hash.slice(1) || 'portal');
 })();
 </script>

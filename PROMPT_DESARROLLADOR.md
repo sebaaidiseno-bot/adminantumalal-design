@@ -48,24 +48,26 @@ Trabaja **un cambio a la vez**, corre las verificaciones del proyecto (tests, li
   - **Clientes y Marketing**: Raphael Chat, Clientes (y futuros módulos de marketing)
   - **Gestión**: Tareas y Recordatorios, Cardinal OS
   - Un módulo sin grupo cae en «Otros». Se oculta el grupo que quede vacío por permisos/filtros.
-- **Tarjeta nueva**: `.module-icon` sin cuadro de fondo (quitar `background-color` inline de `MODULE_META` y la capa de brillo en el portal); el **icono mismo es azul (`--imp-azul`) a 2.5rem** (hoy 1.35–1.6rem dentro de 46–54 px). Altura mínima ~104px (hoy `padding: 2.85rem …` ≈ 140px), ancho `minmax(148px,1fr)`, gap 10px, nombre 13px/600. Mantener el `<a class="portal-enlace stretched-link">` y el `data-buscar` del filtro. El campo de color por módulo en `MODULE_META` puede quedar sin uso (no borrarlo si otras pantallas lo usan, como `.module-icon-sm`).
+- **Tarjeta nueva**: `.module-icon` sin cuadro de fondo (quitar `background-color` inline de `MODULE_META` y la capa de brillo en el portal); el **icono mismo es azul (`--imp-azul`) a 2.5rem** (hoy 1.35–1.6rem dentro de 46–54 px). Altura mínima ~104px (hoy `padding: 2.85rem …` ≈ 140px), ancho `minmax(148px,1fr)`, gap 10px, nombre 13px/600. Mantener el `<a class="portal-enlace stretched-link">` y el `data-buscar` del filtro. La tarjeta pasa a `min-height:104px` con ancho fluido del panel. El campo de color por módulo en `MODULE_META` puede quedar sin uso (no borrarlo si otras pantallas lo usan, como `.module-icon-sm`).
 - La pastilla `.portal-nivel` («Admin») pasa a un icono `bi-shield-lock` pequeño arriba a la izquierda con `title`/`aria-label="Solo administradores"`; «Fijado» usa `bi-pin-angle-fill` naranja en la misma posición.
 - El menú `⋯` (`.portal-mas`): hoy abre una capa que **tapa la tarjeta** con 4 botones (fijar, mover, ayuda, ✕). Cambiar a `dropdown-menu` de Bootstrap con **Fijar primero**, **Qué hace** y (si se aprueba) **Ocultar**; se elimina el botón ✕. El botón sigue de 44×44, visible en hover/foco y **siempre visible en táctil** (`@media (hover:none)`). «Mover» (Sortable, `.drag-handle`) se conserva pero se activa desde «Personalizar», que ya existe, para no perder el reordenamiento ni el soporte de teclado.
 - «Ocultar» **no existe hoy** (requiere endpoint nuevo, p. ej. `POST /portal/ocultar` con CSRF y persistencia por usuario). Si no se aprueba, omitirlo.
 - Toda la tarjeta es clicable (`::after` sobre el enlace), sin romper el menú `⋯` (`z-index`).
 
-#### Diseño bento dentro de cada grupo
-Cada grupo es una cuadrícula **bento de 4 columnas** (`grid-template-columns:repeat(4,minmax(0,1fr)); grid-auto-rows:104px; grid-auto-flow:dense; gap:10px`), sin huecos:
-- **Pieza grande 2×2** (`.hero`): el módulo fijado o, si no hay, el primero del grupo. Icono 4rem, nombre, descripción corta y un dato (ej. «N pendientes»; usar un conteo que el backend ya tenga, **no inventar métricas**; si no hay, se omite).
-- **Pieza ancha 2×1** (`.ancho`): el segundo módulo; icono 2.5rem a la izquierda, nombre y dato a la derecha. Con 4+ módulos, los dos siguientes son 1×1 y el bloque de 2 filas queda exacto.
-- Módulos que sobran: filas de 4 piezas 1×1; **la última se estira** (`.llena`, `span` = 4 − resto + 1) para no dejar hueco.
-- Grupos de 1–2 módulos: piezas anchas 2×1 en una sola fila (compactas). Grupo de 3: una grande y dos anchas apiladas.
-- Con texto en el buscador de módulos: todo vuelve a 1×1 (sin bento) para que los resultados no se muevan.
-- ≤860 px: 2 columnas; la grande y la ancha ocupan el ancho completo en horizontal (icono a la izquierda), sin descripción.
-- Como la pieza grande es el fijado, **fijar** pasa a ser el modo de «destacar»: reutiliza `/portal/fijar` y `menu_modulos.js`. La función `formaBento(i, n)` del prototipo es la lógica de referencia (sirve igual en Jinja).
-- El orden dentro del grupo sigue siendo el que cada persona definió con Sortable; el arrastre solo reordena dentro del grupo.
+#### Bento de grupos (los módulos NO se agrandan)
+Los módulos siguen siendo tarjetas **pequeñas y uniformes** (~108–130 px de ancho, 104 px de alto). El bento está en **cómo se acomodan los grupos**: cada grupo es un panel (`.panel.grupo`) cuyo ancho depende de cuántos módulos tiene, y los paneles grandes y chicos comparten fila en vez de ocupar una fila completa cada uno.
+- Contenedor `#grupos`: `display:grid; grid-template-columns:repeat(9,minmax(0,1fr)); grid-auto-flow:dense; gap:12px`. Cada grupo lleva `grid-column: span var(--s9)`.
+- Ancho del grupo (unidades de 9): 1–2 módulos → 2; 3 → 3; 4 o más → `min(5, ceil(n/2))` (8 módulos → 4; 5 módulos → 3). Dentro del panel, las tarjetas van en `grid-template-columns:repeat(auto-fill,minmax(108px,1fr))`.
+- **Empaque sin huecos**: se reparten los grupos en filas de 9 (primer hueco que calce) y al último de cada fila se le suma lo que sobra. Es una función de ~8 líneas (`empacar()` del prototipo); como los conteos cambian con permisos, filtros y «Ocultar», se calcula en el servidor (Jinja) o en JS al renderizar, no a mano.
+- Responsive: ≤1180 px → 6 unidades (los grupos piden máx. 3); ≤760 px → una columna, tarjetas de 3 por fila. Se calculan `--s9` y `--s6` por separado.
+- Con el filtro de texto o un chip de área activo, se mantiene el mismo bento pero solo con los grupos que tienen resultados.
+- «Lista compacta» (ya existe en Personalizar): la misma estructura con una fila por módulo y cada grupo ocupando 3 unidades.
+- Orden: fijados primero, luego el orden personal del usuario **dentro de cada grupo**. «Mover antes/después» (accesible por teclado) reemplaza al arrastre en la tarjeta; Sortable puede mantenerse para arrastrar dentro del panel.
 
-**Error a evitar (visto en la prueba):** `.dropdown` de Bootstrap trae `position:relative`; dentro de la tarjeta convierte al botón `⋯` (absoluto) en hijo de ese contenedor y queda **centrado sobre el icono**. Solución: `.portal-card > .dropdown { position: static }` (o poner el botón directamente como hijo de la tarjeta con `top:0; right:0`) para que quede en la esquina superior derecha, 44×44, por encima del enlace estirado (`z-index` mayor que el `::after` del enlace).
+**Errores a evitar (vistos en la prueba):**
+1. `.dropdown` de Bootstrap trae `position:relative`; dentro de la tarjeta el botón `⋯` (absoluto) queda **centrado sobre el icono**. Solución: `.portal-card > .dropdown { position: static }` (o poner el botón como hijo directo de la tarjeta, `top:0; right:0`, 44×44, con `z-index` mayor que el `::after` del enlace estirado).
+2. Los `.visually-hidden` (texto solo para lector de pantalla) en cabeceras de tablas con scroll **ensanchan toda la página** en móvil si el contenedor con `overflow:auto` no es `position:relative`. Solución: `.tabla-wrap { overflow:auto; position:relative }`.
+3. Un `grid-template-columns:1fr` en una cuadrícula de una columna no limita al contenido ancho: usar `minmax(0,1fr)`.
 
 ### 5. Menús largos y con scroll horizontal
 - **Barra de pestañas** (ej. Panel de Ventas): máximo 3–4 visibles + desplegable **«Más»**. Sin `overflow-x:auto` en ningún menú.
@@ -124,3 +126,14 @@ Para lo marcado «requiere backend», entrega primero el front y deja `TODO` cla
 
 ## Fuera de alcance
 Cambios de backend de negocio, nuevas dependencias, migración a otro framework, rediseño del flujo del Portal de Pagos o del CRM (aplicar solo tokens, tabla y menús).
+
+## Pantallas de referencia incluidas en el prototipo (todas con datos ficticios)
+Además del portal, `prototipo/index.html` trae tres pantallas reconstruidas desde tus capturas/PDF para mostrar el mismo lenguaje visual aplicado a lo que hoy existe:
+- **Panel de Ventas** (`#ventas`): selector «Toda la empresa / Distribución / Servicio» como control segmentado, filtros en una fila (Año, Mes, Sucursal, Unidad, Vendedor con modal «¿Qué vendedores quieres ver?», Canal), aviso «3 avisos del mes» plegado, 7 KPI (Venta, Meta, Cumplimiento, Margen, Documentos, Clientes con compra, Litros), tabla con skeleton, lateral con secciones colapsables (Seguimiento, Análisis, Control, Administrador, Marcas, Plataforma).
+- **Clientes / CRM** (`#clientes`): pestañas con «Más» (en vez de 12 pestañas con scroll lateral), píldoras de subsección, 7 KPI de estado, 8 filtros en cuadrícula, tabla de 12 columnas que en <1180 px oculta las secundarias (correo, vendedor, sucursal, negocio, tipo) y las deja en la **ficha 360** (modal con pestañas; lo del ERP llega aparte con skeleton).
+- **Portal de Pagos – «no me llegó el código»** (`#pagos`): mismo contenido y misma regla de seguridad (el código nunca se muestra; solo canales verificados), con avisos de color suave en vez de tarjetas amarillas/rojas saturadas, pasos numerados y la acción financiera «Deshacer» del listado **conservando su confirmación**.
+- Cabecera con todos los elementos actuales (marca, «Raphael OS», Guía, Portal, Clientes, menú «Módulos» con buscador y fijar, notificaciones, menú de usuario) más botón de búsqueda ⌘/Ctrl K y selector de tema.
+- Widget del asistente: 56 px en vez de 96 px, con `safe-area` y el saludo oculto en móvil (hoy tapa contenido).
+
+## Observación sobre el fondo («cielo»)
+En los PDF exportados desde el sistema se ven manchas naranja y negras de gran tamaño detrás del contenido (el `.app-body::before` con tres manchas de color y vidrio con `backdrop-filter`). Sobre pantallas de datos (tablas, ventas, portal de pagos) eso resta contraste y se ve tosco. Propuesta: fondo plano `--ant-bg` en todo el sistema y vidrio solo en la cabecera, o manchas con opacidad ≤ .08.
