@@ -132,7 +132,15 @@ a.kpi:hover{box-shadow:var(--ant-s2);color:inherit}
 
 /* --- Bento de grupos: grupos grandes y chicos se acomodan juntos en filas de 9 unidades (6 en tablet, 1 en móvil) --- */
 #grupos{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));grid-auto-flow:dense;gap:12px;align-items:stretch}
-.grupo{padding:12px;min-width:0;grid-column:span var(--s9,3)}
+.grupo,.cluster{min-width:0;order:var(--o9,0);grid-column:span var(--s9,3)}
+.grupo{padding:12px}
+/* Grupos chicos (1–2 módulos): una sola columna, varios lado a lado dentro de un bloque («cluster») */
+.cluster{display:grid;grid-template-columns:repeat(var(--k,3),minmax(0,1fr));gap:12px}
+.cluster>.grupo{grid-column:auto;order:0}   /* --s9/--s6 se heredan del bloque: sin esto cada panel pedía el ancho del bloque entero */
+.grupo.chico .tiles{grid-template-columns:minmax(0,1fr)}
+.grupo.chico .grupo-h{flex-wrap:wrap;gap:.1rem .4rem;letter-spacing:.03em;font-size:11px;line-height:1.25;align-items:flex-start}
+.grupo.chico .grupo-h i{margin-top:1px}
+.grupo.chico .grupo-h .n{margin-left:auto}
 .grupo-h{display:flex;align-items:center;gap:.5rem;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ant-muted);margin:0 0 10px}
 .grupo-h i{color:var(--ant-icono);font-size:1rem}
 .grupo-h .n{font-weight:500;letter-spacing:0;text-transform:none;margin-left:auto;font-size:11.5px}
@@ -247,9 +255,10 @@ body.tiene-sabio .wrap{padding-bottom:96px}
 :focus-visible{outline:3px solid color-mix(in srgb,var(--ant-accent) 70%,transparent);outline-offset:2px}
 .skip{position:absolute;left:-999px}.skip:focus{left:8px;top:8px;z-index:3000;background:#fff;color:#000;padding:8px}
 
+@media (max-width:1240px){.marca small{display:none}}
 @media (max-width:1180px){
   #grupos{grid-template-columns:repeat(6,minmax(0,1fr))}
-  .grupo{grid-column:span var(--s6,3)}
+  .grupo,.cluster{grid-column:span var(--s6,3);order:var(--o6,0)}
   .sec-1100{display:none}
 }
 @media (max-width:860px){
@@ -258,8 +267,9 @@ body.tiene-sabio .wrap{padding-bottom:96px}
   .btn-ghost{padding:0 .6rem}
 }
 @media (max-width:760px){
-  #grupos,#grupos.compacta{grid-template-columns:1fr}.grupo{grid-column:auto}
-  .tiles{grid-template-columns:repeat(3,minmax(0,1fr))}
+  #grupos,#grupos.compacta{grid-template-columns:1fr}.grupo,.cluster{grid-column:auto;order:var(--o0,0)}
+  .cluster{grid-template-columns:1fr}
+  .tiles,.grupo.chico .tiles{grid-template-columns:repeat(3,minmax(0,1fr))}
   .compacta .tiles{grid-template-columns:1fr}
   .solo-desk,#sabio .saludo-b{display:none}
 }
@@ -654,14 +664,27 @@ function toast(msg, onUndo, ms=8000){
 
 /* ---------------- Portal: bento de grupos ---------------- */
 let filtroGrupo = 'todos', texto = '';
-const unidades = n => n <= 2 ? 2 : n === 3 ? 3 : Math.min(5, Math.ceil(n / 2));   // unidades de ancho que pide un grupo según su cantidad de módulos
-/* Reparte los grupos en filas de `cols` unidades (primer hueco que calce) y estira el último de cada fila para no dejar huecos. */
-function empacar(us, cols){
-  const filas = [];
-  us = us.map(u => Math.min(u, cols));
-  us.forEach((u, i) => { let f = filas.find(f => f.libre >= u); if (!f) { f = {libre:cols, items:[]}; filas.push(f); } f.items.push(i); f.libre -= u; });
-  filas.forEach(f => { us[f.items[f.items.length - 1]] += f.libre; });
-  return us;
+const unidades = n => Math.min(5, Math.ceil(n / 2));   // unidades de ancho de un grupo GRANDE (3+ módulos): 3→2, 5→3, 8→4. Los de 1–2 módulos son «chicos»: 1 unidad, una sola columna.
+/* Busca el reparto en filas de `cols` unidades que deje menos huecos, con los grupos chicos juntos en bloques de hasta 3.
+   items: [{u}] → {orden:[índices en el orden de lectura], spans:[unidades finales]} (lo que sobra en una fila se le suma a su pieza más ancha). */
+function empacar(items, cols){
+  const n = items.length; if (!n) return {orden:[], spans:[]};
+  const unidad = (1300 - (cols - 1) * 12) / cols;                         // ancho aproximado de una unidad
+  const filasDe = (it, span) => it.c ? it.c : Math.ceil(it.t / Math.max(1, Math.floor((span * unidad + (span - 1) * 12 - 16) / 116)));   // alto en filas de tarjetas
+  const evaluar = perm => { const filas = [{libre:cols, idx:[]}];
+    perm.forEach(i => { const u = Math.min(items[i].u, cols); let f = filas[filas.length - 1]; if (f.libre < u) { f = {libre:cols, idx:[]}; filas.push(f); } f.idx.push(i); f.libre -= u; });
+    let costo = filas.length * 100 + filas.reduce((t, f) => t + f.libre + (f.libre ? 2 : 0), 0);
+    filas.forEach(f => { const ancho = f.idx.map(i => Math.min(items[i].u, cols)); if (f.libre) ancho[ancho.indexOf(Math.max(...ancho))] += f.libre;
+      const alto = f.idx.map((i, k) => filasDe(items[i], ancho[k])), maxA = Math.max(...alto); alto.forEach(a => costo += (maxA - a) * 8); });   // castiga piezas bajas junto a piezas altas (quedan con aire vacío)
+    perm.forEach((i, pos) => costo += Math.abs(pos - i) * .5);             // conserva el orden original salvo que un cambio mejore el reparto
+    return {filas, costo}; };
+  let mejor = null;
+  const perms = (arr, k = 0) => { if (k === arr.length) { const r = evaluar(arr); if (!mejor || r.costo < mejor.costo) mejor = {...r, perm:arr.slice()}; return; }
+    for (let j = k; j < arr.length; j++) { [arr[k], arr[j]] = [arr[j], arr[k]]; perms(arr, k + 1); [arr[k], arr[j]] = [arr[j], arr[k]]; } };
+  if (n <= 7) perms([...Array(n).keys()]); else mejor = {...evaluar([...Array(n).keys()]), perm:[...Array(n).keys()]};
+  const spans = items.map(it => Math.min(it.u, cols));
+  mejor.filas.forEach(f => { if (f.libre) { const g = f.idx.reduce((m, i) => spans[i] > spans[m] ? i : m, f.idx[0]); spans[g] += f.libre; } });
+  return {orden:mejor.perm, spans};
 }
 function modulosDe(g, q){
   const orden = estado.orden[g.id] || [];
@@ -689,12 +712,23 @@ function renderModulos(){
   const q = norm(texto.trim());
   const grupos = GRUPOS.filter(g => filtroGrupo === 'todos' || filtroGrupo === g.id).map(g => ({g, mods:modulosDe(g, q)})).filter(x => x.mods.length);
   const compacta = estado.vista === 'compacta';
-  const u9 = empacar(grupos.map(x => compacta ? 3 : unidades(x.mods.length)), 9);
-  const u6 = empacar(grupos.map(x => compacta ? 3 : Math.min(3, unidades(x.mods.length))), 6);
-  const cont = $('#grupos'); cont.className = compacta ? 'compacta' : '';
-  cont.innerHTML = grupos.map(({g, mods}, i) => `<section class="panel grupo" style="--s9:${u9[i]};--s6:${u6[i]}" aria-labelledby="h-${g.id}">
+  /* piezas del bento: grupos grandes sueltos + bloques de grupos chicos (hasta 3 lado a lado, cada uno en una sola columna) */
+  const piezas = []; let bloque = null;
+  grupos.forEach((x, i) => {
+    if (compacta || x.mods.length > 2) { piezas.push({grupos:[x], o0:i, t:x.mods.length, u:compacta ? 3 : unidades(x.mods.length), u6:compacta ? 3 : Math.min(3, unidades(x.mods.length))}); }
+    else { if (!bloque || bloque.grupos.length === 3) { bloque = {grupos:[], o0:i}; piezas.push(bloque); } bloque.grupos.push(x); }
+  });
+  piezas.forEach(p => { if (p.grupos.length && !p.u) { p.u = p.u6 = p.grupos.length; p.c = Math.max(...p.grupos.map(x => x.mods.length)); } });
+  const p9 = empacar(piezas.map(p => ({u:p.u, t:p.t, c:p.c})), 9), p6 = empacar(piezas.map(p => ({u:p.u6, t:p.t, c:p.c})), 6);
+  const o9 = []; p9.orden.forEach((i, pos) => o9[i] = pos); const o6 = []; p6.orden.forEach((i, pos) => o6[i] = pos);
+  const panel = ({g, mods}, chico) => `<section class="panel grupo${chico ? ' chico' : ''}" aria-labelledby="h-${g.id}">
     <h2 class="grupo-h" id="h-${g.id}"><i class="bi bi-${g.icono}"></i>${g.nombre}<span class="n">${mods.length}</span></h2>
-    <div class="tiles">${mods.map(m => tarjeta(g, m)).join('')}</div></section>`).join('');
+    <div class="tiles">${mods.map(m => tarjeta(g, m)).join('')}</div></section>`;
+  const cont = $('#grupos'); cont.className = compacta ? 'compacta' : '';
+  cont.innerHTML = piezas.map((p, i) => { const est = `--s9:${p9.spans[i]};--s6:${p6.spans[i]};--o9:${o9[i]};--o6:${o6[i]};--o0:${p.o0}`;
+    return p.grupos.length > 1 || (p.grupos.length === 1 && p.grupos[0].mods.length <= 2 && !compacta)
+      ? `<div class="cluster" style="${est};--k:${p.grupos.length}">${p.grupos.map(x => panel(x, true)).join('')}</div>`
+      : panel(p.grupos[0], false).replace('<section class="panel grupo"', `<section class="panel grupo" style="${est}"`); }).join('');
   $('#sinRes').hidden = grupos.length > 0;
 }
 $('#chips').innerHTML = [['todos','Todos']].concat(GRUPOS.map(g => [g.id, g.nombre])).map(([id,n]) => `<button class="chip" data-g="${id}" aria-pressed="${id==='todos'}">${n}</button>`).join('');

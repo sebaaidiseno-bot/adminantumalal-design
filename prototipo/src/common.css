@@ -230,6 +230,7 @@ body.tiene-sabio .wrap{padding-bottom:96px}
 :focus-visible{outline:3px solid color-mix(in srgb,var(--ant-accent) 70%,transparent);outline-offset:2px}
 .skip{position:absolute;left:-999px}.skip:focus{left:8px;top:8px;z-index:3000;background:#fff;color:#000;padding:8px}
 
+@media (max-width:1240px){.marca small{display:none}}
 @media (max-width:1180px){
   #grupos{grid-template-columns:repeat(6,minmax(0,1fr))}
   .grupo{grid-column:span var(--s6,3)}
