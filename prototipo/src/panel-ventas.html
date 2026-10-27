@@ -1,0 +1,164 @@
+<main id="main" class="wrap">
+<div class="shell">
+  <nav class="panel lateral" aria-label="Pantallas de Ventas">
+    <div class="px-2 pt-1 pb-2"><strong>Panel de Ventas</strong><div class="small text-muted">Mes año</div></div>
+    <details open><summary>Vista</summary>
+      <a href="#" aria-current="page"><i class="bi bi-globe2"></i>Toda la empresa (Global)</a>
+      <a href="#"><i class="bi bi-truck"></i>Distribución</a>
+      <a href="#"><i class="bi bi-wrench"></i>Servicio</a>
+    </details>
+    <details open><summary>Seguimiento</summary>
+      <a href="#" aria-current="page"><i class="bi bi-bar-chart-line"></i>Panel</a>
+      <a href="#"><i class="bi bi-flag"></i>Seguimiento de metas</a>
+      <a href="#"><i class="bi bi-lightning-charge"></i>Hoy</a>
+      <a href="#"><i class="bi bi-person-check"></i>Mi avance</a>
+      <a href="#"><i class="bi bi-trophy"></i>Ranking de vendedores</a>
+      <a href="#"><i class="bi bi-person"></i>Por vendedor</a>
+    </details>
+    <details><summary>Análisis</summary>
+      <a href="#"><i class="bi bi-tags"></i>Marcas y familias</a>
+      <a href="#"><i class="bi bi-calendar3"></i>Mes a mes</a>
+      <a href="#"><i class="bi bi-award"></i>Bonos por categoría</a>
+      <a href="#"><i class="bi bi-droplet"></i>Lubricantes (litros)</a>
+      <a href="#"><i class="bi bi-list-ul"></i>Listado de productos</a>
+      <a href="#"><i class="bi bi-bar-chart-steps"></i>Ranking por categoría</a>
+    </details>
+    <details><summary>Control</summary>
+      <a href="#"><i class="bi bi-receipt"></i>Facturas de servicio</a>
+      <a href="#"><i class="bi bi-calculator"></i>Cuadratura</a>
+      <a href="#"><i class="bi bi-file-earmark-bar-graph"></i>Conciliación con Power BI</a>
+      <a href="#"><i class="bi bi-graph-down-arrow"></i>Índice de morosidad</a>
+      <a href="#"><i class="bi bi-file-earmark-text"></i>Informes diarios</a>
+      <a href="#"><i class="bi bi-file-earmark-richtext"></i>Informe general</a>
+    </details>
+    <details><summary>Administrador</summary>
+      <a href="#"><i class="bi bi-bullseye"></i>Metas</a>
+      <a href="#"><i class="bi bi-robot"></i>Ayudante</a>
+    </details>
+    <details><summary>Marcas <span class="num">(15)</span></summary>
+      <a href="#"><i class="bi bi-tag"></i>Marca 01</a><a href="#"><i class="bi bi-tag"></i>Marca 02</a><a href="#"><i class="bi bi-tag"></i>Marca 03</a>
+      <a href="#" class="text-muted"><i class="bi bi-three-dots"></i>Ver las 15 marcas</a>
+    </details>
+    <details><summary>Plataforma</summary><a href="../index.html"><i class="bi bi-house-door"></i>Volver al Portal</a></details>
+  </nav>
+
+  <div>
+    <div class="migas"><a href="../index.html">Portal</a><i class="bi bi-chevron-right small"></i><span>Ventas</span><i class="bi bi-chevron-right small"></i><strong class="text-body">Panel</strong></div>
+    <div class="d-flex flex-wrap align-items-start justify-content-between gap-2 mb-2">
+      <div><h1 class="h4 m-0">Panel de Ventas <small class="text-muted fw-normal fs-6">mes año · facturas y boletas</small></h1></div>
+      <div class="text-end"><button class="btn-ghost btn-borde" id="btnAct"><i class="bi bi-arrow-repeat"></i>Actualizar ahora</button>
+        <div class="estado-sync mt-1">Facturas y boletas al 00/00 00:00 · Resumen del ERP calculado hasta el 00/00 (datos de ejemplo)</div></div>
+    </div>
+
+    <form class="panel filtros" onsubmit="return false">
+      <div><label for="f1">Año</label><select id="f1" class="form-select"><option>2026</option></select></div>
+      <div><label for="f2">Mes</label><select id="f2" class="form-select"><option>Mes actual</option></select></div>
+      <div><label for="f3">Sucursal</label><select id="f3" class="form-select"><option>Todas</option></select></div>
+      <div><label for="f4">Unidad de negocio</label><select id="f4" class="form-select"><option>Toda la empresa</option></select></div>
+      <div><label for="f5">Vendedor</label><select id="f5" class="form-select"><option>Todos</option></select></div>
+      <div><label for="f6">Web / Tradicional</label><select id="f6" class="form-select"><option>Todos</option></select></div>
+    </form>
+
+    <div class="aviso info"><i class="bi bi-info-circle"></i><div>Las tarjetas cuentan facturas y boletas, netas de notas de crédito: es lo que mide la meta y lo que muestran las cifras del ERP. <a href="#">Ver notas de venta</a></div></div>
+
+    <div class="kpis" style="grid-template-columns:repeat(auto-fit,minmax(190px,1fr))">
+      <div class="panel kpi" style="--c:var(--c-azul)"><span class="kpi-t">Venta (facturas y boletas)</span><span class="kpi-valor num">$000.000.000</span><span class="sub">mes año · ya resta −$00.000.000 en notas de crédito</span></div>
+      <div class="panel kpi" style="--c:var(--c-neutro)"><span class="kpi-t">Meta</span><span class="kpi-valor num">$0.000.000.000</span><span class="sub">faltan $000.000.000</span></div>
+      <div class="panel kpi" style="--c:var(--c-bad)"><span class="kpi-t">Cumplimiento</span><span class="kpi-valor num"><i class="bi bi-arrow-down"></i> 00 %</span><span class="sub">proyección $000.000.000 (00 %)</span></div>
+      <div class="panel kpi" style="--c:var(--c-info)"><span class="kpi-t">Margen</span><span class="kpi-valor num">00,0 %</span><span class="sub">utilidad $000.000.000 · 000 sin costo</span></div>
+      <div class="panel kpi" style="--c:var(--c-warn)"><span class="kpi-t">Documentos</span><span class="kpi-valor num">0.000</span><span class="sub">00.000 unidades · $0.000 c/u</span></div>
+      <div class="panel kpi" style="--c:var(--c-azul)"><span class="kpi-t">Clientes con compra</span><span class="kpi-valor num">0.000</span><span class="sub">$000.000 por cliente</span></div>
+      <div class="panel kpi" style="--c:var(--c-info)"><span class="kpi-t">Litros de lubricante</span><span class="kpi-valor num">00.000 L</span><span class="sub">de 000.000 de meta · <i class="bi bi-arrow-down"></i> 00 %</span></div>
+    </div>
+
+    <div class="rejilla-2">
+      <section class="panel">
+        <div class="panel-cab"><h2 class="titulo-panel"><i class="bi bi-bar-chart"></i>Venta por día <small>facturas y boletas</small></h2></div>
+        <div class="panel-cuerpo chart"><div id="chDia"></div><h3 class="titulo-panel mt-2 mb-0" style="font-size:12px"><i class="bi bi-percent"></i>Margen por día</h3><div id="chMargen"></div></div>
+      </section>
+      <section class="panel">
+        <div class="panel-cab"><h2 class="titulo-panel"><i class="bi bi-tag"></i>Por marca <small>% del total de facturas y boletas</small></h2><a href="#" class="small"><i class="bi bi-funnel"></i> Elegir</a></div>
+        <div class="tabla-wrap" style="max-height:340px"><table class="t"><thead><tr><th>Marca</th><th class="num">Venta</th><th class="num">%</th><th class="num">Margen</th></tr></thead><tbody id="tbMarca"></tbody></table></div>
+      </section>
+    </div>
+
+    <section class="panel mb-3">
+      <div class="panel-cab"><h2 class="titulo-panel"><i class="bi bi-people"></i>Vendedores <small>facturas y boletas</small></h2>
+        <div class="d-flex gap-3 small align-items-center"><span class="text-muted num">51 vendedores · mostrando 1–10 de 51</span><a href="#"><i class="bi bi-file-earmark-excel"></i> Excel</a><a href="#"><i class="bi bi-funnel"></i> Elegir</a></div></div>
+      <div class="tabla-wrap" aria-busy="false"><table class="t">
+        <caption class="visually-hidden">Vendedores (datos de ejemplo)</caption>
+        <thead><tr><th>Vendedor</th><th class="num">Venta</th><th class="num sec-1100">Proyección</th><th class="num">Meta</th><th class="num">% Cumpl.</th><th class="num sec-1100">% Proyectado</th><th class="num">Margen</th><th class="num">Deuda</th><th class="num sec-1100">Potencial</th><th class="num sec-1100">Docs</th><th class="num sec-1100">Clientes</th><th class="num sec-1100">Unid.</th><th class="num sec-1100">Litros</th></tr></thead>
+        <tbody id="tbVend"></tbody></table></div>
+      <div class="nota-pie">El color compara con la meta a esta altura del mes (con la meta hasta ayer). <strong>Deuda:</strong> cartera de Cobranza; vencido desde 8 días. <strong>Potencial:</strong> Cardinal OS, lo que sus clientes todavía pueden comprar este mes. Las grasas vienen en kilos y se suman como si fueran litros, igual que en el ERP.</div>
+      <div class="pie-tabla"><span class="num">mostrando 1–10 de 51</span><span class="num">página 1 de 6 · <a href="#">Siguiente »</a></span></div>
+    </section>
+
+    <div class="rejilla-2">
+      <section class="panel">
+        <div class="panel-cab"><h2 class="titulo-panel"><i class="bi bi-boxes"></i>Por familia</h2></div>
+        <div class="panel-cuerpo"><div id="hbFam"></div></div>
+        <div class="tabla-wrap" style="max-height:240px"><table class="t"><thead><tr><th>Familia</th><th class="num">Venta</th><th class="num">% Cumpl.</th><th class="num">Margen</th></tr></thead><tbody id="tbFam"></tbody></table></div>
+      </section>
+      <section class="panel">
+        <div class="panel-cab"><h2 class="titulo-panel"><i class="bi bi-shop"></i>Por sucursal</h2></div>
+        <div class="panel-cuerpo chart"><div id="chSuc"></div></div>
+        <div class="tabla-wrap"><table class="t"><thead><tr><th>Sucursal</th><th class="num">Venta</th><th class="num">% Cumpl.</th><th class="num">Margen</th></tr></thead><tbody id="tbSuc"></tbody></table></div>
+      </section>
+    </div>
+    <p class="nota-venta"><i class="bi bi-globe2"></i> <strong>Web / Tradicional:</strong> el canal Web solo se distingue en notas de venta; en facturas y boletas todo figura como Tradicional. <a href="#">Ver notas de venta</a></p>
+
+    <div class="rejilla-2">
+      <section class="panel">
+        <div class="panel-cab"><h2 class="titulo-panel"><i class="bi bi-person-plus"></i>Clientes por categoría</h2></div>
+        <div class="panel-cuerpo chart"><div id="chCat"></div>
+          <p class="small text-muted mt-2 mb-0"><strong>Primera compra:</strong> nunca antes había comprado. <strong>Nuevo con compra:</strong> empezó hace menos de 4 meses y volvió. <strong>Reactivado:</strong> no compraba hace 4 meses o más. <strong>Retenido:</strong> compra seguido.</p></div>
+      </section>
+      <section class="panel">
+        <div class="panel-cab"><h2 class="titulo-panel"><i class="bi bi-arrow-left-right"></i>Distribución / Servicio <small>cifras del ERP</small></h2></div>
+        <div class="panel-cuerpo"><div id="hbUnidad"></div>
+          <p class="small text-muted mt-2 mb-0">Barra: lo vendido · raya negra: la meta · Total del ERP: $000.000.000</p></div>
+      </section>
+    </div>
+  </div>
+</div>
+</main>
+
+<script>
+(function(){
+const { $, fmt, esc, money, pct } = ant;
+const A = n => { let h = 7; for (const c of String(n)) h = (h * 131 + c.charCodeAt(0)) % 100003; return Math.abs(Math.sin(h * 12.9898) * 43758.5453) % 1; };   // pseudoaleatorio estable
+const cls = c => c >= 100 ? 'bien' : c >= 85 ? 'med' : 'mal';
+const flecha = c => c >= 100 ? 'bi-arrow-up' : c >= 85 ? 'bi-arrow-right' : 'bi-arrow-down';
+const celdaCumpl = c => `<span class="cumpl ${cls(c)}"><i class="bi ${flecha(c)}"></i> ${Math.round(c)} %</span>`;
+
+/* venta por día + margen por día (dos gráficos, un eje de días) */
+const dias = Array.from({length:27}, (_, i) => ({ l: String(i + 1), v: 12e6 + A('d' + i) * 38e6 + (i % 7 === 5 ? -9e6 : 0) }));
+ant.barras($('#chDia'), dias.map(d => ({ l: d.l, v: d.v, tip: `Día ${d.l}<br>Venta <b>${money(d.v)}</b>` })), { aria: 'Venta por día', cadaEtq: 2, fmtY: v => '$' + Math.round(v / 1e6) + ' M' });
+ant.linea($('#chMargen'), dias.map((d, i) => { const m = 36 + A('m' + i) * 14; return { l: d.l, v: m, tip: `Día ${d.l}<br>Margen <b>${pct(m, 1)}</b>` }; }), { aria: 'Margen por día', cadaEtq: 2, min: 30, max: 54, fmtY: v => Math.round(v) + ' %' , r: 3});
+
+/* marcas */
+const marcas = Array.from({length:8}, (_, i) => ({ n: i < 6 ? 'Marca ' + String(i + 1).padStart(2, '0') : i === 6 ? 'Otras marcas' : 'Marca 07', v: (230 - i * 26) * 1e6, mg: 36 + A('mg' + i) * 14, dc: 1500 - i * 150, cl: 1100 - i * 90 }));
+const tot = marcas.reduce((s, m) => s + m.v, 0);
+$('#tbMarca').innerHTML = marcas.map(m => `<tr><td><a href="#">${esc(m.n)}</a></td><td class="num barra-celda" style="--w:${m.v / marcas[0].v * 100}%">${money(m.v)}</td><td class="num">${pct(m.v / tot * 100)}</td><td class="num">${pct(m.mg, 1)}</td></tr>`).join('');
+
+/* vendedores (con skeleton si tarda más de 300 ms) */
+const pintarVend = () => Array.from({length:10}, (_, i) => { const meta = 100e6 - i * 5e6, venta = meta * (0.5 + A('v' + i) * 0.7), c = venta / meta * 100, p = c * 1.2;
+  return `<tr><td><strong>Vendedor ${String.fromCharCode(65 + i)}</strong><span class="sub num">${300 + i} · ${(10.4 - i * .6).toFixed(1).replace('.', ',')} %</span></td><td class="num"><strong>${money(venta)}</strong></td><td class="num sec-1100">${money(venta * 1.22)}</td><td class="num">${money(meta)}</td><td class="num">${celdaCumpl(c)}</td><td class="num sec-1100">${celdaCumpl(p)}</td><td class="num">${pct(34 + A('g' + i) * 20, 1)}</td><td class="num">${money(venta * .4)}<span class="sub-rojo">vencido ${money(venta * .06)}</span></td><td class="num sec-1100">${money(venta * .5)}</td><td class="num sec-1100">${fmt.format(300 - i * 20)}</td><td class="num sec-1100">${fmt.format(250 - i * 15)}</td><td class="num sec-1100">${fmt.format(8000 - i * 500)}</td><td class="num sec-1100">${fmt.format(4000 - i * 300)}</td></tr>`; }).join('');
+const cargarVend = () => ant.skeleton($('#tbVend'), 13, 10, pintarVend);
+cargarVend(); $('#btnAct').onclick = cargarVend;
+
+/* familias */
+const fams = ['Familia 01','Familia 02','Familia 03','Familia 04','Familia 05','Familia 06','Familia 07','Familia 08'].map((n, i) => ({ n, v: (260 - i * 30) * 1e6, meta: (330 - i * 28) * 1e6, mg: 36 + A('f' + i) * 20 }));
+ant.hbarras($('#hbFam'), fams.map(f => ({ l: f.n, v: f.v, meta: f.meta, txt: money(f.v / 1e6) + ' M', tip: `${f.n}<br>Venta <b>${money(f.v)}</b><br>Meta ${money(f.meta)}` })));
+$('#tbFam').innerHTML = fams.map(f => `<tr><td>${f.n}</td><td class="num">${money(f.v)}</td><td class="num">${celdaCumpl(f.v / f.meta * 100)}</td><td class="num">${pct(f.mg, 1)}</td></tr>`).join('');
+
+/* sucursales */
+const sucs = ['Sucursal 1','Sucursal 2','Sucursal 3','Sucursal 4','Sucursal 5','Sucursal 6','Sucursal 7','Sucursal 8'].map((n, i) => ({ n, v: (180 - i * 18) * 1e6, meta: (260 - i * 15) * 1e6, mg: 36 + A('s' + i) * 18 }));
+ant.barras($('#chSuc'), sucs.map(s => ({ l: s.n.replace('Sucursal ', 'S'), v: s.v, tip: `${s.n}<br>Venta <b>${money(s.v)}</b>` })), { aria: 'Venta por sucursal', alto: 170, fmtY: v => '$' + Math.round(v / 1e6) + ' M' });
+$('#tbSuc').innerHTML = sucs.slice(0, 6).map(s => `<tr><td><a href="#">${s.n}</a></td><td class="num">${money(s.v)}</td><td class="num">${celdaCumpl(s.v / s.meta * 100)}</td><td class="num">${pct(s.mg, 1)}</td></tr>`).join('');
+
+/* clientes por categoría y distribución/servicio */
+ant.barras($('#chCat'), [{ l: 'Primera compra', v: 820 }, { l: 'Nuevo con compra', v: 180 }, { l: 'Reactivado', v: 860 }, { l: 'Retenido', v: 1560 }].map(d => ({ ...d, tip: `${d.l}: <b>${fmt.format(d.v)}</b> clientes` })), { aria: 'Clientes por categoría', alto: 170, fmtY: v => fmt.format(Math.round(v)) });
+ant.hbarras($('#hbUnidad'), [{ l: 'Distribución', v: 473e6, meta: 880e6, txt: '$473,9 M · ' + 46 + ' %' }, { l: 'Servicio', v: 287e6, meta: 430e6, txt: '$287,4 M · ' + 67 + ' %' }]);
+})();
+</script>

@@ -137,3 +137,18 @@ Además del portal, `prototipo/index.html` trae tres pantallas reconstruidas des
 
 ## Observación sobre el fondo («cielo»)
 En los PDF exportados desde el sistema se ven manchas naranja y negras de gran tamaño detrás del contenido (el `.app-body::before` con tres manchas de color y vidrio con `backdrop-filter`). Sobre pantallas de datos (tablas, ventas, portal de pagos) eso resta contraste y se ve tosco. Propuesta: fondo plano `--ant-bg` en todo el sistema y vidrio solo en la cabecera, o manchas con opacidad ≤ .08.
+
+## Vistas sueltas (prototipo/vistas/, cada archivo se abre solo)
+Se generan con `python3 prototipo/build.py` desde `prototipo/src/` (CSS y JS compartidos). Referencia visual de lo que hoy existe, con datos ficticios:
+- `panel-ventas.html` — Panel de Ventas completo: lateral colapsable, filtros, 7 KPI, venta por día, marcas, vendedores (13 columnas; en <1180 px se ocultan las secundarias), familias, sucursales, clientes por categoría y Distribución/Servicio.
+- `cardinal-cartera.html` — Cardinal OS · Cartera: aviso «ver como», filtros por chips con conteo, tarjetas de cliente en 2 columnas con probabilidad en barra y acciones en una fila (Qué venderle / Llamar / WhatsApp en vez de 3 botones apilados).
+- `cardinal-gerencia.html` — Cardinal OS · Gerencia: las **21 secciones pasan a 6 + «Más secciones»** agrupadas (Terreno, Comercial); tabla de equipo con «Cierra el mes en», avance contra el ritmo (marca vertical), vendido hoy, visitas, cotizaciones y terreno; panel «Anotan solo en el SGE».
+- `portal-pagos.html` — Portal de Pagos «no me llegó el código».
+
+**Reglas de gráficos aplicadas (para el desarrollador):**
+1. **Nada de doble eje.** «Evolución en dinero y margen» (barras + línea con dos escalas) se separa en dos gráficos con el mismo eje de días: venta por día (barras) y margen por día (línea).
+2. **Un donut con 8+ porciones no sirve** para comparar: «Por marca» pasa a tabla con barra incrustada en la columna Venta (se lee el orden y el valor exacto).
+3. **Una sola serie = un solo color** (el azul de iconos); el estado (atrasado / en ritmo / adelantado, bajo / sobre meta) va en **texto + flecha + color**, nunca solo color.
+4. Marcas finas, cuadrícula recesiva, etiquetas directas selectivas, **tooltip al pasar el mouse o enfocar** (los puntos y barras son `tabindex=0`), y cada gráfico tiene su tabla al lado como vista alternativa para lector de pantalla.
+5. Colores de estado en tinte suave (14 %) con texto del mismo color; verde ≥ 100 %, ámbar 85–100 %, rojo < 85 % (la escala actual de Cardinal, sin cambios de lógica).
+6. Los datos con skeleton cargan con las mismas columnas (umbral 300 ms); el saludo del asistente flotante se retira solo a los 7 s.

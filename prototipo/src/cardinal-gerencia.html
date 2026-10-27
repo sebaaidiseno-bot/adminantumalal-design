@@ -1,0 +1,78 @@
+<main id="main" class="wrap">
+  <h1 class="h4 m-0" style="font-family:Georgia,serif">Gerencia</h1>
+  <p class="text-muted mt-1">Cómo va el equipo, del más atrasado al más adelantado contra el ritmo del mes.</p>
+
+  <!-- 21 secciones: 6 visibles + «Más» agrupadas (antes: 21 botones en 3 filas) -->
+  <div class="pildoras" id="secciones"></div>
+
+  <div class="tarea-nav justify-content-between">
+    <div class="fecha-nav">
+      <button class="btn-ghost btn-borde" aria-label="Día anterior"><i class="bi bi-chevron-left"></i></button>
+      <strong class="px-2">Martes 00/00</strong>
+      <button class="btn-ghost btn-borde" aria-label="Día siguiente"><i class="bi bi-chevron-right"></i></button>
+      <label class="small text-muted d-flex align-items-center gap-2 ms-2"><i class="bi bi-calendar3"></i>Ir al día<input type="date" class="form-control form-control-sm" style="width:auto" value="2026-10-27"></label>
+    </div>
+    <div class="small text-muted"><i class="bi bi-clock me-1"></i>Datos de las 00:00 · <a href="#" id="btnAct">Actualizar</a></div>
+  </div>
+
+  <p class="mb-2">Van <strong class="num">17 de 21</strong> días hábiles del mes: al ritmo esperado, cada vendedor debería llevar el <strong class="num">81 %</strong> de su meta. Es la marca vertical de cada barra.</p>
+  <div class="d-flex flex-wrap align-items-center gap-3 mb-2">
+    <span class="estado" style="--c:var(--c-bad)"><i class="bi bi-arrow-down-right"></i> 3 atrasados</span>
+    <span class="text-muted">Equipo hoy: <strong class="text-body num">$27.171.795</strong> vendido · 12 visitas, 17 % con venta · cotizaciones del mes a nota: 5 %</span>
+  </div>
+  <div class="d-flex align-items-center gap-2 mb-2 small text-muted">Ordenar:
+    <div class="segmento" role="group" aria-label="Orden"><button aria-pressed="true" data-o="atraso">Más atrasado primero</button><button aria-pressed="false" data-o="nombre">Por nombre</button></div></div>
+
+  <section class="panel mb-3" aria-busy="false">
+    <div class="tabla-wrap"><table class="t">
+      <caption class="visually-hidden">Equipo comercial contra el ritmo del mes (datos de ejemplo)</caption>
+      <thead><tr><th>Vendedor</th><th class="num">Cierra el mes en</th><th>Avance de la meta contra el ritmo</th><th class="num">Vendido hoy</th><th class="num">Visitas con venta</th><th class="num">Cotizaciones a nota</th><th>Terreno</th></tr></thead>
+      <tbody id="tbEquipo"></tbody></table></div>
+    <div class="nota-pie">«Cierra el mes en» = lo facturado en el mes llevado al mes completo al mismo ritmo (la meta se mide contra lo facturado, como en el ERP). Rojo bajo 85 %, ámbar de 85 a 100 %, verde 100 % o más. Vendido = notas de venta del ERP del día: en distribución la venta queda primero como nota y se factura después. Toca el nombre para ver su día. <a href="#">¿Cómo se calcula?</a></div>
+  </section>
+
+  <h2 class="h6 mt-4 mb-2">Anotan solo en el SGE</h2>
+  <div class="aviso info aviso-sge"><i class="bi bi-info-circle"></i><div>Estos vendedores anotan en el rutero del SGE, no en Cardinal: sus gestiones no traen GPS y la hora la escriben a mano. Por eso aquí <strong>no tienen nota diaria ni kilómetros</strong>, solo lo que el SGE sí permite medir. Están todos los vendedores a terreno (Ventas → Configuración), también los que no anotaron nada en el mes: esos van primero. Gestiones y venta: del 1 al 27/10. Cartera atendida: los 30 días hasta ese día.</div></div>
+  <section class="panel mb-3">
+    <div class="tabla-wrap"><table class="t">
+      <caption class="visually-hidden">Vendedores que anotan solo en el SGE (datos de ejemplo)</caption>
+      <thead><tr><th>Vendedor</th><th class="num">Gestiones comerciales</th><th class="num">Clientes gestionados</th><th>Cartera atendida (30 días)</th><th class="num">Facturado del mes</th><th class="num">Vendido en notas</th></tr></thead>
+      <tbody>
+        <tr><td><div class="vend"><span class="avatar">C</span><div><b>Código 000</b><small>Código 000</small></div></div></td><td class="num"><span class="cero-rojo num">0</span><span class="sub-rojo">no anotó gestiones este mes</span></td><td class="num">0</td><td><div class="meta-barra" style="--c:var(--ant-icono)"><i style="width:0%"></i></div><div class="meta-txt"><b>0 %</b> · 0 de 63 clientes activos</div></td><td class="num"><strong>$14.965.246</strong></td><td class="num"><strong>$16.703.153</strong></td></tr>
+        <tr><td><div class="vend"><span class="avatar">C</span><div><b>Código 001</b><small>Código 001</small></div></div></td><td class="num"><span class="cero-rojo num">0</span><span class="sub-rojo">no anotó gestiones este mes</span></td><td class="num">0</td><td><div class="meta-barra" style="--c:var(--ant-icono)"><i style="width:27%"></i></div><div class="meta-txt"><b>27 %</b> · 9 de 33 clientes activos</div></td><td class="num">$0</td><td class="num">$0</td></tr>
+        <tr><td><div class="vend"><span class="avatar">C</span><div><b>Código 002</b><small>Código 002</small></div></div></td><td class="num"><span class="cero-rojo num">0</span><span class="sub-rojo">no anotó gestiones este mes</span></td><td class="num">0</td><td class="text-muted">Sin dato: no tiene cartera activa en la copia de ventas</td><td class="num">$0</td><td class="num">$0</td></tr>
+      </tbody></table></div>
+    <div class="nota-pie">Vendedores que anotan solo en el SGE, de menor a mayor cartera atendida.</div>
+  </section>
+  <p class="text-muted small text-center">Datos de ejemplo. Desarrollado por el equipo de plataforma.</p>
+</main>
+
+<script>
+(function(){
+const { $, $$, esc, money, pct, skeleton } = ant;
+/* Secciones: 6 principales + «Más» (el resto agrupado) */
+const PRINCIPALES = [['Vendedor por vendedor','person-badge',true],['Tendencia y cobertura','graph-up'],['Nota diaria','journal-text'],['Retos y concursos','trophy'],['Pautas de visita','clipboard-check'],['Acompañamientos','people']];
+const MAS = { 'Terreno':['Kilómetros y costo','Jornadas','Territorios','Visitas (técnico)','Bodegas por persona'], 'Comercial':['Demanda no atendida','% Descuentos que cierran','Promociones de enganche','Por recuperar','Potencial por captar','Comparativo','Clientes por gestionar','Cambios pedidos'] };
+$('#secciones').innerHTML = PRINCIPALES.map(([t, ic, act]) => `<a href="#"${act ? ' aria-current="page"' : ''}><i class="bi bi-${ic} me-1"></i>${t}</a>`).join('') +
+  `<div class="dropdown"><a href="#" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi bi-three-dots me-1"></i>Más secciones</a><ul class="dropdown-menu">${Object.entries(MAS).map(([g, l]) => `<li class="dropdown-header">${g}</li>` + l.map(x => `<li><a class="dropdown-item" href="#">${x}</a></li>`).join('')).join('')}</ul></div>`;
+
+/* Equipo: «Cierra el mes en» = % de la meta llevado al mes completo; el ritmo esperado es 81 % */
+const EQ = [['Vendedor A',31,25,0,0,0,'ok','sin km con GPS · 2 cobros','2 lejos del cliente'],['Vendedor B',32,26,0,18,6,'ok','sin km con GPS',''],['Equipo de pruebas',55,45,27171795,0,0,'no','',''],['Vendedor D',88,71,6400000,25,12,'ok','42 km · 5 visitas',''],['Vendedor E',104,84,9800000,40,18,'ok','61 km · 8 visitas','']];
+const estado = c => c >= 100 ? ['Adelantado','var(--c-ok)','bi-arrow-up-right'] : c >= 85 ? ['En ritmo','var(--c-warn)','bi-arrow-right'] : ['Atrasado','var(--c-bad)','bi-arrow-down-right'];
+let orden = 'atraso';
+function filas(){
+  const l = EQ.slice().sort((a, b) => orden === 'atraso' ? a[1] - b[1] : a[0].localeCompare(b[0]));
+  return l.map(([n, cierra, avance, hoy, vc, cn, act, terr, lejos]) => { const [et, col, ic] = estado(cierra);
+    return `<tr><td><div class="vend"><span class="avatar">${esc(n.split(' ').map(x => x[0]).slice(0, 2).join(''))}</span><div><b>${esc(n)}</b><small>Código 000</small></div></div></td>
+      <td class="num"><div class="grande">${cierra} %</div><span class="insignia" style="--c:${col}"><i class="bi ${ic}"></i>${et}</span></td>
+      <td style="min-width:220px"><div class="meta-barra" style="--c:${col}" role="img" aria-label="${avance} % de la meta; ritmo esperado 81 %"><i style="width:${Math.min(avance, 100)}%"></i><u style="left:81%"></u></div><div class="meta-txt"><b>${avance} % de la meta</b> · $0 facturado de $00.000.000</div></td>
+      <td class="num"><strong>${money(hoy)}</strong><span class="sub">0 notas · $0 facturado</span></td>
+      <td class="num">${vc ? `<div class="grande" style="font-size:1.1rem">${vc} %</div><span class="sub">${Math.round(vc / 9)} de 11</span>` : '<span class="text-muted">—</span>'}</td>
+      <td class="num">${cn ? `<div class="grande" style="font-size:1.1rem">${cn} %</div><span class="sub">4 de 72</span>` : '<span class="text-muted">—</span>'}</td>
+      <td class="terreno">${act === 'ok' ? '<span class="pto ok"></span><b>Con actividad</b>' : '<span class="pto"></span><b>Sin actividad</b>'}<br>${esc(terr)}${lejos ? `<br><span class="lejos"><i class="bi bi-geo-alt"></i> ${esc(lejos)}</span>` : ''}</td></tr>`; }).join('');
+}
+const cargar = () => skeleton($('#tbEquipo'), 7, 5, filas);
+cargar(); $('#btnAct').addEventListener('click', e => { e.preventDefault(); cargar(); });
+$$('[data-o]').forEach(b => b.addEventListener('click', () => { orden = b.dataset.o; $$('[data-o]').forEach(x => x.setAttribute('aria-pressed', x === b)); $('#tbEquipo').innerHTML = filas(); }));
+})();
+</script>

@@ -1,0 +1,52 @@
+<main id="main" class="wrap">
+  <div class="vendedor-aviso"><i class="bi bi-eye"></i><span>Estás viendo Cardinal OS <strong>como el vendedor 000 (Vendedor A)</strong>. Solo aparecen los clientes con código de vendedor 000 y sus rutas.</span>
+    <button class="btn-ghost btn-borde ms-auto"><i class="bi bi-arrow-counterclockwise"></i>Volver a mi vista</button></div>
+
+  <div class="d-flex flex-wrap align-items-end justify-content-between gap-3 mb-2">
+    <div><h1 class="h4 m-0">0000 Sucursal ejemplo · 000</h1>
+      <p class="text-muted mb-0 mt-1"><strong class="text-body num">10</strong> clientes suyos con compras en 18 meses y <strong class="text-body num">1</strong> sin compras, al 00/00/0000 · Comuna ejemplo, Zona ejemplo.</p></div>
+    <label class="d-flex align-items-center gap-2 small text-muted text-nowrap"><i class="bi bi-person-badge"></i>Ver como
+      <select class="form-select form-select-sm" style="min-width:230px"><option>000 · Vendedor A</option><option>001 · Vendedor B</option></select></label>
+  </div>
+  <p class="text-muted small mb-2">El orden «Prioridad» pone primero a los que es más probable que compren en las próximas 2 semanas y que más compran. Medido contra el pasado, de los 10 primeros compran unos 7.</p>
+
+  <div class="d-flex flex-wrap gap-2 align-items-center">
+    <div class="portal-buscar flex-grow-1" style="max-width:none"><i class="bi bi-search"></i><input type="search" class="form-control" placeholder="Buscar cliente, RUT o localidad (en todos)…" aria-label="Buscar en la cartera" data-buscar-atajo id="qCli"></div>
+    <label class="d-flex align-items-center gap-2 small text-muted"><i class="bi bi-sort-down"></i>Ordenar<select class="form-select" style="min-width:230px"><option>Prioridad (Cardinal OS)</option><option>Monto mensual</option><option>Días sin comprar</option></select></label>
+  </div>
+
+  <div class="chips-sec" id="chipsCli" role="group" aria-label="Filtrar la cartera"></div>
+  <div class="lista-cli" id="listaCli"></div>
+  <p class="text-muted small mt-3 text-center">Datos de ejemplo. Desarrollado por el equipo de plataforma.</p>
+</main>
+
+<script>
+(function(){
+const { $, $$, esc, money, norm } = ant;
+const A = n => { let h = 7; for (const c of String(n)) h = (h * 131 + c.charCodeAt(0)) % 100003; return Math.abs(Math.sin(h * 12.9898) * 43758.5453) % 1; };
+const TIPOS = { toca:['Le toca','var(--c-ok)','bi-bell'], frio:['Enfriando','var(--c-warn)','bi-thermometer-low'] };
+const clientes = Array.from({length:10}, (_, i) => {
+  const toca = i % 3 !== 2, p = Math.round(86 - i * 7 + A('p' + i) * 8), mes = Math.round(1.0e6 / (i + 1.4)), dias = (i * 13 + 3) % 110 + 1, deuda = i === 1 || i === 4;
+  return { n: i + 1, nombre: `Cliente de ejemplo ${String(i + 1).padStart(2, '0')}`, lugar: `Comuna ${i % 3 + 1} · Calle de ejemplo ${100 + i * 17}`, tipo: toca ? 'toca' : 'frio', p, mes, dias, debe: deuda ? 535500 - i * 40000 : 0, vencido: i === 4,
+    ventaTipica: Math.round(mes / 3.2), pistas: toca ? `Véndele <b>Categoría ${i % 4 + 1}</b>: compra cada ${17 + i * 4} días y van ${60 - i * 3} (${money(50000 / (i + 1))} por compra)` : `Recupéralo: los últimos 3 meses van al ${Math.round(A('r' + i) * 40)} % de su promedio mensual (${money(mes)})`,
+    gestion: i === 1 ? 'Gestionado el viernes por Vendedor A: presencial, no se logró venta. «Presentación a encargado»' : i === 4 ? 'Gestionado hace 54 días por Vendedor B: llamada, venta lograda' : '' };
+});
+let filtro = 'todos', q = '';
+const cuentas = { con: 10, toca: clientes.filter(c => c.tipo === 'toca').length, cobrar: 0, frio: clientes.filter(c => c.tipo === 'frio').length, deuda: clientes.filter(c => c.vencido).length, sin: 1, todos: 11 };
+const CHIPS = [['con','Con compras','people'],['toca','Le toca comprar','bell'],['cobrar','Pasar a cobrar','cash-coin'],['frio','Se está enfriando','thermometer-low'],['deuda','Con deuda vencida','exclamation-triangle'],['sin','Sin compras','person-dash'],['todos','Todos','list']];
+$('#chipsCli').innerHTML = CHIPS.map(([k, t, ic]) => `<button class="chip-sec" data-f="${k}" aria-pressed="${k === 'con'}"><i class="bi bi-${ic}"></i>${t}<span class="n">${cuentas[k]}</span></button>`).join('');
+function pintar(){
+  const l = clientes.filter(c => (filtro === 'todos' || filtro === 'con' || (filtro === 'toca' && c.tipo === 'toca') || (filtro === 'frio' && c.tipo === 'frio') || (filtro === 'deuda' && c.vencido)) && (!q || norm(c.nombre + c.lugar).includes(q)));
+  $('#listaCli').innerHTML = l.length ? l.map(c => { const [et, col, ic] = TIPOS[c.tipo]; return `<article class="panel cli">
+    <div class="cli-cab"><span class="cli-n num">${c.n}</span><div><h2 class="cli-nombre">${esc(c.nombre)}</h2><div class="cli-lugar">${esc(c.lugar)}</div></div><span class="estado cli-etq" style="--c:${col}"><i class="bi ${ic}"></i> ${et}</span></div>
+    <div class="cli-datos"><span><i class="bi bi-graph-up"></i><b>${c.p} %</b> en 2 semanas</span><span><i class="bi bi-cash-stack"></i><b>${money(c.mes)}</b>/mes</span><span><i class="bi bi-clock-history"></i>hace <b>${c.dias}</b> días</span>${c.debe ? `<span class="debe"><i class="bi bi-receipt"></i>debe ${money(c.debe)}${c.vencido ? ' (vencido)' : ''}</span>` : ''}</div>
+    <div class="prob" role="img" aria-label="${c.p} % de probabilidad de compra en 2 semanas"><i style="width:${c.p}%"></i></div>
+    <ul class="cli-pistas"><li>${c.p} % de probabilidad de que compre en las próximas 2 semanas; cuando compra, suele ser ${money(c.ventaTipica)}</li><li>Compra ${money(c.mes)} al mes en promedio</li><li>${c.pistas}</li></ul>
+    ${c.gestion ? `<div class="gestion"><i class="bi bi-check-circle-fill"></i><span>${esc(c.gestion)}</span></div>` : ''}
+    <div class="cli-acc"><button class="btn-accent"><i class="bi bi-lightbulb me-1"></i>Qué venderle</button><button class="btn-ghost"><i class="bi bi-telephone"></i>Llamar</button><button class="btn-ghost wa"><i class="bi bi-whatsapp"></i>WhatsApp</button></div></article>`; }).join('') : '<p class="text-muted p-4">Ningún cliente coincide.</p>';
+}
+$('#chipsCli').addEventListener('click', e => { const b = e.target.closest('[data-f]'); if (!b) return; filtro = b.dataset.f; $$('#chipsCli .chip-sec').forEach(c => c.setAttribute('aria-pressed', c === b)); pintar(); });
+$('#qCli').addEventListener('input', e => { q = norm(e.target.value.trim()); pintar(); });
+pintar();
+})();
+</script>

@@ -1,0 +1,55 @@
+<main id="main" class="wrap">
+  <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-2">
+    <h1 class="h4 m-0"><i class="bi bi-headset me-2" style="color:var(--ant-icono)"></i>Portal de Pagos — «no me llegó el código»</h1>
+    <div class="segmento" role="group"><button aria-pressed="true">Pagos</button><button aria-pressed="false">Pendientes</button><button aria-pressed="false">Conexión</button><button aria-pressed="false" onclick="location.href='../index.html'">Volver</button></div>
+  </div>
+  <div class="aviso info"><i class="bi bi-shield-lock"></i><div><strong>El código de acceso no se puede ver desde aquí, y es a propósito.</strong> Si un ejecutivo pudiera leerlo y dictarlo, bastaría con que alguien llamara diciendo ser el cliente para llevarse su cuenta completa. Lo que sí puedes hacer es <em>mandarlo a un canal</em>: al correo registrado, a uno nuevo tras verificar la identidad, o por WhatsApp <strong>solo al móvil que ya está en el ERP</strong>.</div></div>
+
+  <form class="panel p-3 mb-3" onsubmit="return false">
+    <label class="small mb-1" for="rutPago">RUT del cliente que escribió</label>
+    <div class="input-group"><input id="rutPago" class="form-control" value="00000000-0"><button class="btn-accent fin"><i class="bi bi-search me-1"></i>Buscar</button></div>
+  </form>
+
+  <div class="aviso"><i class="bi bi-envelope-exclamation"></i><div class="w-100"><div class="d-flex justify-content-between flex-wrap gap-2"><strong>El ERP no tiene correo para este cliente</strong><span class="text-muted num">00.000.000-0 — Cliente de ejemplo</span></div>
+    <p class="mb-1 mt-2">El ERP no tiene correo para este RUT.</p><p class="mb-2"><strong>Verifica su identidad, envía el código al correo que entregue y después corrige la ficha en el SGE.</strong></p>
+    <div class="small text-muted d-flex flex-wrap gap-3"><span>Correo en el ERP: <em>en blanco</em></span><span>Teléfono en el ERP: <span class="num">000000000</span></span><span>RUT que comparten ese correo: <span class="num">0</span></span></div></div></div>
+
+  <div class="aviso bad"><i class="bi bi-x-circle-fill"></i><div><div class="small text-muted">¿A dónde le llega el código hoy?</div><strong class="fs-6">A ninguna parte: este cliente no puede recibir el código</strong></div></div>
+
+  <div class="pasos">
+    <div class="panel paso"><h3><i class="bi bi-person-check"></i>Para verificar que hablas con el cliente</h3><div class="cuerpo">
+      <p class="text-muted small">El cliente de verdad sabe cuánto debe. Pregúntaselo antes de mandar nada a un correo nuevo.</p>
+      <div class="fila-dato"><span>Deuda vigente</span><strong class="num">$00</strong></div><div class="fila-dato"><span>De eso, vencido</span><strong class="num">$00</strong></div><div class="fila-dato"><span>Cuotas pendientes</span><strong class="num">0</strong></div></div></div>
+    <div class="panel paso"><h3><i class="bi bi-clock-history"></i>¿De verdad intentó entrar?</h3><div class="cuerpo">
+      <div class="aviso mb-0"><i class="bi bi-exclamation-triangle"></i><div><strong>No hay ningún intento registrado.</strong> Quien está escribiendo ni siquiera ha probado a entrar al portal. Vale la pena preguntar por qué antes de mandarle un código.</div></div></div></div>
+  </div>
+  <div class="pasos">
+    <div class="panel paso"><h3><i class="bi bi-envelope-plus"></i>2 · Enviar a un correo nuevo</h3><div class="cuerpo">
+      <label class="small" for="pg1">Correo que entregó el cliente</label><input id="pg1" class="form-control mb-2" placeholder="nuevo@empresa.cl">
+      <label class="small" for="pg2">Cómo verificaste su identidad <span style="color:var(--c-bad)">*</span></label><textarea id="pg2" class="form-control" rows="2" placeholder="Ej: llamé al fijo del ERP y confirmó el monto de la deuda"></textarea>
+      <div class="form-text mb-2">Queda con tu nombre. Es lo único que quedará escrito de por qué confiaste.</div>
+      <button class="btn-accent w-100"><i class="bi bi-send me-1"></i>Verificar y enviar</button></div></div>
+    <div class="panel paso"><h3><i class="bi bi-whatsapp"></i>3 · Por WhatsApp</h3><div class="cuerpo d-flex flex-column gap-3">
+      <p class="text-muted small mb-0">Va <strong>solo al móvil que ya está en el ERP</strong> (<span class="num">000000000</span>). Un número dictado por quien escribe se rechaza: sería entregarle el código a quien lo pide.</p>
+      <button class="btn-accent mt-auto" style="background:var(--c-ok)"><i class="bi bi-whatsapp me-1"></i>Preparar mensaje</button></div></div>
+  </div>
+  <div class="panel paso mb-3"><h3><i class="bi bi-pin-angle"></i>Fijar el correo de este cliente <span class="text-muted fw-normal">— para siempre, no sólo esta vez</span></h3><div class="cuerpo">
+    <p class="text-muted small">Enviar a un correo nuevo (arriba) manda el código <strong>una vez</strong>: el cliente vuelve a quedar bloqueado en su siguiente intento. Esto en cambio queda guardado y <strong>entra solo la próxima vez</strong>, hasta que alguien lo cambie.</p>
+    <div class="row g-3"><div class="col-md-6"><label class="small" for="pg3">Correo nuevo</label><input id="pg3" class="form-control" placeholder="pagos@empresa.cl"></div>
+      <div class="col-md-6"><div class="small mb-1">¿Por qué se cambia?</div>
+        <div class="form-check"><input class="form-check-input" type="radio" name="porque" id="r1" checked><label class="form-check-label" for="r1"><strong>Quien paga no es quien compra.</strong> <span class="text-muted">El del ERP es del comprador y está bien.</span></label></div>
+        <div class="form-check"><input class="form-check-input" type="radio" name="porque" id="r2"><label class="form-check-label" for="r2"><strong>El correo del ERP está malo o vacío</strong> <span class="text-muted">— queda además la tarea de corregirlo en el SGE.</span></label></div></div>
+      <div class="col-md-9"><label class="small" for="pg4">¿Cómo verificaste que es el cliente?</label><input id="pg4" class="form-control" placeholder="Ej: llamé al fijo del ERP y confirmé la deuda"></div>
+      <div class="col-md-3 d-flex align-items-end"><button class="btn-accent w-100"><i class="bi bi-pin-angle me-1"></i>Fijar</button></div></div></div></div>
+  <div class="panel tabla-wrap">
+    <div class="p-3 fw-semibold" style="border-bottom:1px solid var(--ant-line)"><i class="bi bi-credit-card me-2" style="color:var(--ant-icono)"></i>Pagos recientes en el portal</div>
+    <table class="t"><thead><tr><th>Referencia</th><th class="num">Monto</th><th>Medio</th><th>Estado</th><th>Cuándo</th><th><span class="visually-hidden">Acción</span></th></tr></thead>
+      <tbody>
+        <tr><td><code>0000aa00-0000-0000-0000-000000000000</code></td><td class="num">$00</td><td>WEBPAY</td><td><span class="estado" style="--c:var(--c-warn)">EN_CONCILIACION</span></td><td class="num">0000-00-00 00:00:00</td><td class="text-end"><button class="btn-ghost btn-borde undo-pago" style="color:var(--c-bad)">Deshacer</button></td></tr>
+        <tr><td><code>0000bb00-0000-0000-0000-000000000000</code></td><td class="num">$00</td><td>WEBPAY</td><td><span class="estado" style="--c:var(--c-neutro)">ANULADO</span></td><td class="num">0000-00-00 00:00:00</td><td class="text-end"><button class="btn-ghost btn-borde undo-pago" style="color:var(--c-bad)">Deshacer</button></td></tr>
+      </tbody></table>
+  </div>
+</main>
+<script>
+(function(){ ant.$$('.undo-pago').forEach(b => b.onclick = () => ant.toast('Ejemplo: esta acción SÍ debe pedir confirmación (es financiera).', null, 5000)); })();
+</script>
