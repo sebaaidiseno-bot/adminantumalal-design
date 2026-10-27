@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b2a4a">
+<title>Portal · Propuesta de rediseño</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<style>
+/* ============ Tokens ============ */
+:root{
+  --ant-navy:#0b2a4a;        /* texto fuerte / marca */
+  --ant-blue:#1d5fa8;        /* iconos de módulo y enlaces */
+  --ant-accent:#e85215;      /* única acción primaria (naranja de la casa) */
+  --ant-bg:#f4f6f9;
+  --ant-surface:#fff;
+  --ant-line:#e3e8ee;
+  --ant-muted:#5b6b7d;
+  --ant-r-s:8px; --ant-r-m:12px;
+  --ant-shadow:0 1px 2px rgba(11,42,74,.05);
+  --ant-shadow-hover:0 4px 14px rgba(11,42,74,.10);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-bs-theme="light"]){
+    --ant-navy:#e8eef6; --ant-blue:#6aa8ee; --ant-bg:#0a1626; --ant-surface:#10233a;
+    --ant-line:#1f3550; --ant-muted:#93a6bc; --ant-shadow:none; --ant-shadow-hover:0 4px 14px rgba(0,0,0,.4);
+  }
+}
+html{color-scheme:light dark}
+body{background:var(--ant-bg);color:var(--ant-navy);font-size:14px;
+  padding-inline:env(safe-area-inset-left) env(safe-area-inset-right);
+  padding-bottom:env(safe-area-inset-bottom)}
+h1,h2,h3,.titulo{text-wrap:balance}
+p{text-wrap:pretty}
+.num,.kpi-valor,td.num,th.num{font-variant-numeric:tabular-nums}
+a{color:var(--ant-blue)}
+
+/* ============ Header (claro y bajo, sin bloque oscuro gigante) ============ */
+.top{position:sticky;top:0;z-index:30;background:var(--ant-surface);border-bottom:1px solid var(--ant-line);
+  padding-top:env(safe-area-inset-top)}
+.top-in{display:flex;align-items:center;gap:.5rem;height:52px;max-width:1280px;margin:auto;padding-inline:16px}
+.marca{font-weight:800;letter-spacing:.04em;color:var(--ant-navy);text-decoration:none;display:flex;align-items:center;gap:.5rem}
+.marca i{color:var(--ant-accent);font-size:1.25rem}
+.marca small{font-weight:500;letter-spacing:0;color:var(--ant-muted)}
+.btn-ghost,.btn-accent{white-space:nowrap}
+.btn-ghost{display:inline-flex;align-items:center;gap:.4rem;min-height:40px;padding:0 .75rem;border:0;background:transparent;
+  color:var(--ant-navy);border-radius:var(--ant-r-s);text-decoration:none;font-weight:500}
+.btn-ghost:hover{background:color-mix(in srgb,var(--ant-blue) 10%,transparent)}
+.btn-borde{border:1px solid var(--ant-line)}
+.btn-cmd{border:1px solid var(--ant-line);color:var(--ant-muted);background:var(--ant-bg);min-width:200px;justify-content:space-between}
+kbd{background:var(--ant-surface);color:var(--ant-muted);border:1px solid var(--ant-line);border-bottom-width:2px;
+  border-radius:5px;padding:0 .35rem;font:600 11px/1.6 system-ui;box-shadow:none}
+.badge-n{background:var(--ant-accent);color:#fff;border-radius:99px;font-size:10px;font-weight:700;padding:1px 6px;margin-left:-6px;position:relative;top:-8px}
+
+.wrap{max-width:1280px;margin:auto;padding:16px}
+.saludo{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:.5rem;margin-bottom:12px}
+.saludo h1{font-size:1.25rem;font-weight:700;margin:0}
+.saludo p{margin:0;color:var(--ant-muted)}
+
+/* ============ Superficies ============ */
+.panel{background:var(--ant-surface);border:1px solid var(--ant-line);border-radius:var(--ant-r-m);box-shadow:var(--ant-shadow)}
+.buscador{display:flex;gap:.5rem;padding:10px 12px;align-items:center}
+.buscador .form-control,.campo{border:1px solid var(--ant-line);background:var(--ant-bg);color:var(--ant-navy);min-height:40px;box-shadow:none}
+.btn-accent{background:var(--ant-accent);border:0;color:#fff;font-weight:600;min-height:40px;padding:0 1rem;border-radius:var(--ant-r-s)}
+.btn-accent:hover{filter:brightness(.93);color:#fff}
+.btn-accent:disabled{opacity:.6}
+
+/* ============ KPI compactos ============ */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:12px 0 20px}
+.kpi{padding:10px 12px;display:flex;flex-direction:column;gap:2px;text-decoration:none;color:inherit}
+a.kpi:hover{box-shadow:var(--ant-shadow-hover)}
+.kpi-t{font-size:12px;color:var(--ant-muted);display:flex;align-items:center;gap:.4rem;text-wrap:balance}
+.kpi-t::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--c,var(--ant-blue));flex:none}
+.kpi-valor{font-size:1.5rem;font-weight:700;line-height:1.1}
+.kpi.cero .kpi-valor{color:var(--ant-muted);font-weight:600}
+
+/* ============ Módulos agrupados ============ */
+.mod-barra{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;justify-content:space-between;margin-bottom:8px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{border:1px solid var(--ant-line);background:var(--ant-surface);color:var(--ant-navy);border-radius:99px;min-height:32px;padding:0 .8rem;font-weight:500}
+.chip[aria-pressed="true"]{background:var(--ant-navy);color:var(--ant-surface);border-color:var(--ant-navy)}
+.grupo{margin-top:18px}
+.grupo-h{display:flex;align-items:center;gap:.5rem;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--ant-muted);margin:0 0 8px;padding-bottom:6px;border-bottom:1px solid var(--ant-line)}
+.grupo-h .n{font-weight:500;letter-spacing:0;text-transform:none}
+.grid-mod{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:10px}
+.mod{position:relative;background:var(--ant-surface);border:1px solid var(--ant-line);border-radius:var(--ant-r-m);
+  corner-shape:squircle;
+  min-height:104px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:12px 10px 10px;
+  text-align:center;box-shadow:var(--ant-shadow);transition:box-shadow .18s,border-color .18s,transform .18s}
+.mod:hover,.mod:focus-within{box-shadow:var(--ant-shadow-hover);border-color:color-mix(in srgb,var(--ant-blue) 40%,var(--ant-line))}
+.mod:hover{transform:translateY(-1px)}
+.mod-icono{font-size:2.5rem;line-height:1;color:var(--ant-blue)}   /* sin fondo azul: el icono ES el color */
+.mod-nombre{font-weight:600;font-size:13px;line-height:1.25;color:var(--ant-navy);text-decoration:none;text-wrap:balance}
+.mod-nombre::after{content:"";position:absolute;inset:0;border-radius:inherit}  /* toda la tarjeta es enlace */
+.mod-nivel,.mod-fijo{position:absolute;top:10px;left:10px;font-size:12px;color:var(--ant-muted)}
+.mod-fijo{color:var(--ant-accent)}
+.mod-mas{position:absolute;top:0;right:0;z-index:2;min-width:44px;min-height:44px;display:grid;place-items:center;border:0;background:none;
+  color:var(--ant-muted);border-radius:var(--ant-r-s);opacity:0;transition:opacity .15s}
+.mod:hover .mod-mas,.mod:focus-within .mod-mas,.mod-mas[aria-expanded="true"]{opacity:1}
+@media (hover:none){.mod-mas{opacity:1}}
+.mod-mas:hover{background:color-mix(in srgb,var(--ant-blue) 10%,transparent);color:var(--ant-navy)}
+.dropdown-menu{--bs-dropdown-border-color:var(--ant-line);--bs-dropdown-bg:var(--ant-surface);--bs-dropdown-link-color:var(--ant-navy);
+  --bs-dropdown-link-hover-bg:color-mix(in srgb,var(--ant-blue) 10%,transparent);--bs-dropdown-link-hover-color:var(--ant-navy);
+  --bs-dropdown-border-radius:var(--ant-r-m);--bs-dropdown-padding-y:.35rem;font-size:13px;box-shadow:var(--ant-shadow-hover)}
+.dropdown-item{display:flex;align-items:center;gap:.5rem;min-height:36px;border-radius:6px;margin-inline:.25rem;width:auto}
+.dropdown-item i{color:var(--ant-blue)}
+.sin-res{padding:24px;text-align:center;color:var(--ant-muted)}
+
+/* ============ Pantalla interna (Panel de ventas) ============ */
+.shell{display:grid;grid-template-columns:232px minmax(0,1fr);gap:16px;align-items:start}
+.lateral{position:sticky;top:68px;padding:8px;max-height:calc(100vh - 84px);overflow:auto}
+.lateral details{border-bottom:1px solid var(--ant-line);padding:2px 0}
+.lateral details:last-child{border:0}
+.lateral summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;min-height:36px;padding:0 8px;
+  font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ant-muted);border-radius:6px}
+.lateral summary::-webkit-details-marker{display:none}
+.lateral summary::after{content:"\F282";font-family:bootstrap-icons;transition:transform .2s}
+.lateral details[open] summary::after{transform:rotate(180deg)}
+.lateral a{display:flex;align-items:center;gap:.5rem;min-height:36px;padding:0 8px;border-radius:6px;color:var(--ant-navy);text-decoration:none}
+.lateral a i{color:var(--ant-blue)}
+.lateral a:hover{background:color-mix(in srgb,var(--ant-blue) 8%,transparent)}
+.lateral a[aria-current="page"]{background:color-mix(in srgb,var(--ant-blue) 14%,transparent);font-weight:600}
+.migas{display:flex;align-items:center;gap:.4rem;color:var(--ant-muted);font-size:13px;margin-bottom:8px}
+.pestanas{display:flex;gap:2px;border-bottom:1px solid var(--ant-line);margin-bottom:12px;align-items:center}  /* sin scroll lateral: lo que no cabe va a "Más" */
+.pestanas a,.pestanas button{border:0;background:none;padding:0 .9rem;min-height:40px;display:flex;align-items:center;color:var(--ant-muted);
+  text-decoration:none;font-weight:500;border-bottom:2px solid transparent;margin-bottom:-1px}
+.pestanas a[aria-current="page"]{color:var(--ant-navy);border-color:var(--ant-accent);font-weight:600}
+.filtros{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;padding:12px;margin-bottom:12px}
+.filtros label{font-size:12px;color:var(--ant-muted);margin-bottom:2px}
+.filtros .form-select{min-height:38px;border-color:var(--ant-line);background-color:var(--ant-bg);color:var(--ant-navy);box-shadow:none;font-size:13px}
+.tabla-wrap{overflow:auto}
+table.t{width:100%;border-collapse:collapse}
+.t th{font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--ant-muted);font-weight:600;padding:10px 12px;
+  border-bottom:1px solid var(--ant-line);white-space:nowrap;background:var(--ant-surface)}
+.t td{padding:10px 12px;border-bottom:1px solid var(--ant-line)}
+.t tr:last-child td{border:0}
+.t .num{text-align:right}
+.estado{font-size:12px;font-weight:600;padding:2px 8px;border-radius:99px;background:color-mix(in srgb,var(--c) 14%,transparent);color:var(--c)}
+
+/* ============ Skeleton (solo si tarda >300 ms; misma tabla, mismas columnas) ============ */
+.sk-b{height:1em;border-radius:6px;background:linear-gradient(90deg,var(--ant-line),color-mix(in srgb,var(--ant-line) 50%,var(--ant-surface)),var(--ant-line));
+  background-size:200% 100%;animation:sk 1.2s linear infinite}
+@keyframes sk{to{background-position:-200% 0}}
+
+/* ============ Command menu ============ */
+dialog.cmd{border:1px solid var(--ant-line);border-radius:var(--ant-r-m);padding:0;width:min(560px,calc(100vw - 24px));margin:12vh auto 0;
+  background:var(--ant-surface);color:var(--ant-navy);box-shadow:0 20px 60px rgba(0,0,0,.25)}
+dialog.cmd::backdrop{background:rgba(5,15,28,.45)}
+.cmd input{width:100%;border:0;border-bottom:1px solid var(--ant-line);padding:14px 16px;font-size:15px;background:transparent;color:inherit;outline:none}
+.cmd ul{list-style:none;margin:0;padding:6px;max-height:50vh;overflow:auto}
+.cmd li{display:flex;align-items:center;gap:.6rem;min-height:40px;padding:0 10px;border-radius:8px;cursor:pointer}
+.cmd li i{color:var(--ant-blue);font-size:1.1rem}
+.cmd li small{margin-left:auto;color:var(--ant-muted)}
+.cmd li[aria-selected="true"]{background:color-mix(in srgb,var(--ant-blue) 14%,transparent)}
+.cmd-pie{display:flex;gap:12px;padding:8px 14px;border-top:1px solid var(--ant-line);color:var(--ant-muted);font-size:12px}
+
+/* ============ Toast con deshacer ============ */
+#toasts{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom));z-index:60;display:grid;gap:8px}
+.toast-u{display:flex;align-items:center;gap:12px;background:#0b2a4a;color:#fff;padding:8px 8px 8px 16px;border-radius:var(--ant-r-m);
+  box-shadow:0 8px 24px rgba(0,0,0,.25);animation:in .2s ease-out}
+.toast-u button{border:0;background:none;color:#ffb48f;font-weight:700;min-height:40px;padding:0 .8rem;border-radius:8px}
+.toast-u button:hover{background:rgba(255,255,255,.1)}
+@keyframes in{from{opacity:0;transform:translateY(8px)}}
+
+.vista[hidden]{display:none}
+@view-transition{navigation:auto}
+::view-transition-group(*){animation-duration:.2s}
+:focus-visible{outline:3px solid color-mix(in srgb,var(--ant-accent) 70%,transparent);outline-offset:2px}
+.skip{position:absolute;left:-999px}.skip:focus{left:8px;top:8px;z-index:99;background:#fff;padding:8px}
+
+@media (max-width:860px){
+  .shell{grid-template-columns:1fr}
+  .lateral{position:static;max-height:none}
+  .btn-cmd{min-width:0}.btn-cmd .txt,.btn-cmd kbd,.hide-sm,.solo-desk{display:none}
+  .top-in{gap:0;padding-inline:8px}.btn-ghost{padding:0 .6rem}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  ::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none!important}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Saltar al contenido</a>
+
+<header class="top">
+  <div class="top-in">
+    <a class="marca" href="#portal" data-ir="portal"><i class="bi bi-gear-wide-connected"></i> ANTUMALAL <small class="hide-sm">Administración</small></a>
+    <span class="flex-grow-1"></span>
+    <button class="btn-ghost btn-cmd" id="abrirCmd" aria-haspopup="dialog">
+      <span><i class="bi bi-search"></i> <span class="txt">Buscar páginas y acciones</span></span>
+      <kbd data-atajo="K"></kbd>
+    </button>
+    <a class="btn-ghost solo-desk" href="#portal" data-ir="portal" title="Portal"><i class="bi bi-house-door"></i><span class="hide-sm">Portal</span></a>
+    <a class="btn-ghost" href="#clientes" data-ir="clientes" title="Clientes"><i class="bi bi-person-vcard"></i><span class="hide-sm">Clientes</span></a>
+    <button class="btn-ghost" aria-label="Notificaciones, 12 sin leer"><i class="bi bi-bell"></i><span class="badge-n">12</span></button>
+    <div class="dropdown">
+      <button class="btn-ghost" data-bs-toggle="dropdown" aria-label="Menú de usuario"><i class="bi bi-person-circle fs-5"></i><span class="hide-sm">Nombre Apellido</span><i class="bi bi-chevron-down small"></i></button>
+      <ul class="dropdown-menu dropdown-menu-end">
+        <li><a class="dropdown-item" href="#"><i class="bi bi-sliders"></i>Personalizar portal</a></li>
+        <li><a class="dropdown-item" href="#"><i class="bi bi-question-circle"></i>Guía</a></li>
+        <li><hr class="dropdown-divider"></li>
+        <li><a class="dropdown-item" href="#"><i class="bi bi-box-arrow-right"></i>Cerrar sesión</a></li>
+      </ul>
+    </div>
+  </div>
+</header>
+
+<main id="main" class="wrap">
+
+<!-- =================== VISTA 1: PORTAL =================== -->
+<section class="vista" id="v-portal" aria-label="Portal">
+  <div class="saludo">
+    <h1>Hola, Nombre</h1>
+    <p class="hide-sm">Elige un módulo o presiona <kbd data-atajo="K"></kbd> para ir a cualquier parte.</p>
+  </div>
+
+  <form class="panel buscador" role="search" id="formCliente">
+    <i class="bi bi-person-vcard text-muted"></i>
+    <input class="form-control" type="search" placeholder="Buscar cliente por RUT o nombre" aria-label="Buscar cliente" autocomplete="off">
+    <button class="btn-accent" type="submit"><i class="bi bi-search me-1"></i>Buscar</button>
+  </form>
+
+  <div class="kpis" aria-label="Pendientes del día">
+    <a class="panel kpi cero" href="#" style="--c:#d69e2e"><span class="kpi-t">Solicitudes por aprobar</span><span class="kpi-valor num">0</span></a>
+    <a class="panel kpi" href="#" style="--c:#2b6cb0"><span class="kpi-t">Pagos por transferir</span><span class="kpi-valor num">00</span></a>
+    <a class="panel kpi cero" href="#" style="--c:#c0392b"><span class="kpi-t">Importaciones bloqueadas</span><span class="kpi-valor num">0</span></a>
+    <a class="panel kpi" href="#" style="--c:#d69e2e"><span class="kpi-t">Docs de aduana pendientes</span><span class="kpi-valor num">00</span></a>
+    <a class="panel kpi cero" href="#" style="--c:#0b7285"><span class="kpi-t">Mis tareas pendientes</span><span class="kpi-valor num">0</span></a>
+    <a class="panel kpi cero" href="#" style="--c:#6b7280"><span class="kpi-t">Mermas sin resolver</span><span class="kpi-valor num">0</span></a>
+  </div>
+
+  <div class="mod-barra">
+    <div class="chips" id="chips" role="group" aria-label="Filtrar por área"></div>
+    <div class="d-flex gap-2 flex-grow-1 justify-content-end">
+      <div class="position-relative" style="max-width:320px;flex:1">
+        <i class="bi bi-search position-absolute top-50 translate-middle-y ms-3 text-muted"></i>
+        <input id="qMod" type="search" class="form-control campo ps-5" placeholder="Filtrar módulos" aria-label="Filtrar módulos">
+      </div>
+      <button class="btn-ghost btn-borde"><i class="bi bi-sliders"></i><span class="hide-sm">Personalizar</span></button>
+    </div>
+  </div>
+  <div id="grupos"></div>
+  <p class="sin-res" id="sinRes" hidden>Ningún módulo coincide con tu búsqueda.</p>
+</section>
+
+<!-- =================== VISTA 2: PANEL DE VENTAS =================== -->
+<section class="vista" id="v-ventas" aria-label="Panel de Ventas" hidden>
+  <div class="shell">
+    <nav class="panel lateral" aria-label="Pantallas de Ventas">
+      <details open><summary>Vista</summary>
+        <a href="#ventas" aria-current="page"><i class="bi bi-globe2"></i>Toda la empresa</a>
+        <a href="#ventas"><i class="bi bi-truck"></i>Distribución</a>
+        <a href="#ventas"><i class="bi bi-wrench"></i>Servicio</a>
+      </details>
+      <details open><summary>Seguimiento</summary>
+        <a href="#ventas"><i class="bi bi-bar-chart-line"></i>Panel</a>
+        <a href="#ventas"><i class="bi bi-flag"></i>Metas</a>
+        <a href="#ventas"><i class="bi bi-lightning-charge"></i>Hoy</a>
+        <a href="#ventas"><i class="bi bi-trophy"></i>Ranking de vendedores</a>
+      </details>
+      <details><summary>Análisis</summary>
+        <a href="#ventas"><i class="bi bi-tags"></i>Marcas y familias</a>
+        <a href="#ventas"><i class="bi bi-calendar3"></i>Mes a mes</a>
+        <a href="#ventas"><i class="bi bi-droplet"></i>Lubricantes (litros)</a>
+        <a href="#ventas"><i class="bi bi-list-ul"></i>Listado de productos</a>
+      </details>
+      <details><summary>Control</summary>
+        <a href="#ventas"><i class="bi bi-calculator"></i>Cuadratura</a>
+        <a href="#ventas"><i class="bi bi-receipt"></i>Facturas de servicio</a>
+        <a href="#ventas"><i class="bi bi-file-earmark-text"></i>Informes diarios</a>
+      </details>
+      <details><summary>Administración</summary>
+        <a href="#ventas"><i class="bi bi-bullseye"></i>Configurar metas</a>
+        <a href="#ventas"><i class="bi bi-award"></i>Bonos por categoría</a>
+      </details>
+    </nav>
+
+    <div>
+      <div class="migas"><a href="#portal" data-ir="portal">Portal</a><i class="bi bi-chevron-right small"></i><span>Ventas</span><i class="bi bi-chevron-right small"></i><strong>Panel</strong></div>
+      <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-2">
+        <h1 class="h4 m-0">Panel de Ventas</h1>
+        <div class="d-flex gap-2">
+          <button class="btn-ghost btn-borde" id="btnRecargar"><i class="bi bi-arrow-repeat"></i>Actualizar</button>
+          <button class="btn-ghost btn-borde"><i class="bi bi-download"></i>Exportar</button>
+        </div>
+      </div>
+      <nav class="pestanas" aria-label="Secciones">
+        <a href="#ventas" aria-current="page">Resumen</a><a href="#ventas">Por vendedor</a><a href="#ventas">Por sucursal</a>
+        <div class="dropdown">
+          <button data-bs-toggle="dropdown" aria-expanded="false">Más <i class="bi bi-chevron-down ms-1 small"></i></button>
+          <ul class="dropdown-menu"><li><a class="dropdown-item" href="#">Mes a mes</a></li><li><a class="dropdown-item" href="#">Marcas</a></li><li><a class="dropdown-item" href="#">Informes</a></li></ul>
+        </div>
+      </nav>
+
+      <form class="panel filtros" onsubmit="return false">
+        <div><label for="f1">Año</label><select id="f1" class="form-select"><option>2026</option></select></div>
+        <div><label for="f2">Mes</label><select id="f2" class="form-select"><option>Mes</option></select></div>
+        <div><label for="f3">Sucursal</label><select id="f3" class="form-select"><option>Todas</option></select></div>
+        <div><label for="f4">Vendedor</label><select id="f4" class="form-select"><option>Todos</option></select></div>
+      </form>
+
+      <div class="kpis" style="margin-top:0">
+        <div class="panel kpi" style="--c:#2b6cb0"><span class="kpi-t">Venta del mes</span><span class="kpi-valor num">$ 000.000.000</span></div>
+        <div class="panel kpi" style="--c:#198754"><span class="kpi-t">Meta cumplida</span><span class="kpi-valor num">00,0 %</span></div>
+        <div class="panel kpi" style="--c:#d69e2e"><span class="kpi-t">Documentos</span><span class="kpi-valor num">0.000</span></div>
+        <div class="panel kpi" style="--c:#6b7280"><span class="kpi-t">Ticket promedio</span><span class="kpi-valor num">$ 000.000</span></div>
+      </div>
+
+      <div class="panel tabla-wrap" id="tablaVentas" aria-busy="false">
+        <table class="t">
+          <caption class="visually-hidden">Ventas por vendedor (datos de ejemplo)</caption>
+          <thead><tr><th scope="col">Vendedor</th><th scope="col">Sucursal</th><th scope="col">Estado</th><th class="num" scope="col">Venta</th><th class="num" scope="col">Meta</th><th class="num" scope="col">Cumpl.</th><th scope="col"><span class="visually-hidden">Acciones</span></th></tr></thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =================== VISTA 3: CLIENTES (referencia) =================== -->
+<section class="vista" id="v-clientes" hidden>
+  <div class="migas"><a href="#portal" data-ir="portal">Portal</a><i class="bi bi-chevron-right small"></i><strong>Clientes</strong></div>
+  <h1 class="h4">Clientes</h1>
+  <p class="text-muted">Pantalla de referencia: aplicaría los mismos patrones (filtros en una fila, tabla con números tabulares, menú «Más», skeleton).</p>
+</section>
+</main>
+
+<dialog class="cmd" id="cmd" aria-label="Buscar páginas y acciones">
+  <input id="cmdQ" type="text" role="combobox" aria-expanded="true" aria-controls="cmdLista" aria-autocomplete="list" placeholder="Escribe una página o acción…" autocomplete="off">
+  <ul id="cmdLista" role="listbox"></ul>
+  <div class="cmd-pie"><span><kbd>↑</kbd> <kbd>↓</kbd> navegar</span><span><kbd>↵</kbd> abrir</span><span><kbd>Esc</kbd> cerrar</span></div>
+</dialog>
+<div id="toasts" role="status" aria-live="polite"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+(function(){
+'use strict';
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const esMac = /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent);
+const $ = (s, r=document) => r.querySelector(s);
+const $$ = (s, r=document) => [...r.querySelectorAll(s)];
+const safe = (fn) => { try { return fn(); } catch(e) { return null; } };
+
+/* ---- Datos de ejemplo (los nombres de módulo son la estructura; todo lo demás es ficticio) ---- */
+const GRUPOS = [
+  {id:'ventas', nombre:'Ventas', mods:[
+    ['Panel de Ventas','bar-chart-line','#ventas'],['Pedidos de repuesto','cart-plus'],['Taller: órdenes de trabajo','wrench-adjustable'],
+    ['Descuentos y Plazos','percent'],['Control de Notas de Venta','shield-exclamation']]},
+  {id:'cobranza', nombre:'Cobranza y Finanzas', mods:[
+    ['Portal de Pagos','credit-card-2-front'],['Solicitudes de Pago','cash-coin'],['Conciliación de Ingresos','shield-check'],
+    ['Morosidad Empresarial','graph-down-arrow'],['Protestos','file-earmark-x'],['Talonario Digital','receipt-cutoff'],
+    ['Cumplimiento Forma de Pago','clipboard2-check'],['Importación de Facturas','file-earmark-arrow-up']]},
+  {id:'bodega', nombre:'Bodega y Logística', mods:[
+    ['Bodega','boxes'],['Toma de Inventario','upc-scan'],['Mermas y Logística','clipboard2-x'],
+    ['Pedidos de mercadería','clipboard-data'],['Maestro de Productos','database']]},
+  {id:'abast', nombre:'Abastecimiento', mods:[['Importaciones','box-seam'],['Proveedores','truck']]},
+  {id:'clientes', nombre:'Clientes y Marketing', mods:[['Raphael Chat','chat-dots'],['Clientes','person-vcard','#clientes']]},
+  {id:'gestion', nombre:'Gestión', mods:[['Tareas y Recordatorios','check2-square'],['Cardinal OS','signpost-split']]}
+];
+const NOMBRES = ['Vendedor A','Vendedor B','Vendedor C','Vendedor D','Vendedor E','Vendedor F','Vendedor G','Vendedor H'];
+const SUC = ['Sucursal 1','Sucursal 2','Sucursal 3'];
+const ESTADOS = [['En meta','#198754'],['En riesgo','#b7791f'],['Bajo meta','#c0392b']];
+const fmt = new Intl.NumberFormat('es-CL');
+
+/* ---- Atajos: ⌘ en Mac, Ctrl en el resto ---- */
+$$('[data-atajo]').forEach(k => k.textContent = (esMac ? '⌘' : 'Ctrl') + ' ' + k.dataset.atajo);
+
+/* ---- Estado personal (fijados/ocultos); con backend sería una llamada con rollback ---- */
+const store = {
+  get(k, d){ const v = safe(() => JSON.parse(localStorage.getItem(k))); return v == null ? d : v; },
+  set(k, v){ safe(() => localStorage.setItem(k, JSON.stringify(v))); }
+};
+let fijados = new Set(store.get('ant.fijados', []));
+let ocultos = new Set(store.get('ant.ocultos', []));
+const guardar = () => { store.set('ant.fijados',[...fijados]); store.set('ant.ocultos',[...ocultos]); };
+
+/* ---- View transitions (<300 ms) con respaldo si el navegador no las tiene ---- */
+function transicion(fn){
+  if (!reduce && document.startViewTransition) document.startViewTransition(fn); else fn();
+}
+
+/* ---- Módulos agrupados ---- */
+let filtroGrupo = 'todos', texto = '';
+const norm = s => s.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase();
+
+function tarjeta(g, m){
+  const [nombre, icono, href] = m, key = g.id + ':' + nombre, fijo = fijados.has(key);
+  return `<div class="mod">
+    ${fijo ? '<i class="bi bi-pin-angle-fill mod-fijo" role="img" aria-label="Fijado"></i>' : '<i class="bi bi-shield-lock mod-nivel" role="img" aria-label="Solo administradores" title="Solo administradores"></i>'}
+    <div class="dropdown">
+      <button class="mod-mas" data-bs-toggle="dropdown" aria-label="Opciones de ${nombre}"><i class="bi bi-three-dots"></i></button>
+      <ul class="dropdown-menu dropdown-menu-end">
+        <li><button class="dropdown-item" data-acc="fijar" data-key="${key}"><i class="bi bi-pin-angle"></i>${fijo?'Quitar fijado':'Fijar primero'}</button></li>
+        <li><button class="dropdown-item" data-acc="ayuda" data-key="${key}"><i class="bi bi-question-circle"></i>Qué hace</button></li>
+        <li><button class="dropdown-item" data-acc="ocultar" data-key="${key}"><i class="bi bi-eye-slash"></i>Ocultar</button></li>
+      </ul>
+    </div>
+    <i class="bi bi-${icono} mod-icono" aria-hidden="true"></i>
+    <a class="mod-nombre" href="${href || '#'}" ${href ? 'data-ir="'+href.slice(1)+'"' : ''}>${nombre}</a>
+  </div>`;
+}
+function renderModulos(){
+  const q = norm(texto.trim()); let total = 0;
+  $('#grupos').innerHTML = GRUPOS.map(g => {
+    if (filtroGrupo !== 'todos' && filtroGrupo !== g.id) return '';
+    const mods = g.mods.filter(m => !ocultos.has(g.id+':'+m[0]) && (!q || norm(m[0]).includes(q)))
+      .sort((a,b) => fijados.has(g.id+':'+b[0]) - fijados.has(g.id+':'+a[0]));
+    total += mods.length;
+    if (!mods.length) return '';
+    return `<section class="grupo" aria-labelledby="h-${g.id}">
+      <h2 class="grupo-h" id="h-${g.id}">${g.nombre} <span class="n">· ${mods.length}</span></h2>
+      <div class="grid-mod">${mods.map(m => tarjeta(g,m)).join('')}</div></section>`;
+  }).join('');
+  $('#sinRes').hidden = total > 0;
+}
+$('#chips').innerHTML = [['todos','Todos']].concat(GRUPOS.map(g=>[g.id,g.nombre])).map(([id,n]) =>
+  `<button class="chip" data-g="${id}" aria-pressed="${id==='todos'}">${n}</button>`).join('');
+$('#chips').addEventListener('click', e => {
+  const b = e.target.closest('[data-g]'); if (!b) return;
+  filtroGrupo = b.dataset.g;
+  $$('#chips .chip').forEach(c => c.setAttribute('aria-pressed', c === b));
+  transicion(renderModulos);
+});
+$('#qMod').addEventListener('input', e => { texto = e.target.value; renderModulos(); });
+
+/* ---- Toast con Deshacer (6–8 s; el contenedor es role=status) ---- */
+function toast(msg, onUndo, ms=8000){
+  const t = document.createElement('div'); t.className = 'toast-u';
+  const s = document.createElement('span'); s.textContent = msg; t.appendChild(s);
+  let hecho = false;
+  if (onUndo) {
+    const b = document.createElement('button'); b.type = 'button'; b.textContent = 'Deshacer';
+    b.onclick = () => { hecho = true; onUndo(); t.remove(); }; t.appendChild(b);
+  }
+  $('#toasts').appendChild(t); setTimeout(() => { if (!hecho) t.remove(); }, ms);
+}
+
+/* ---- Acciones de tarjeta: se aplican al instante (optimista) y se pueden deshacer; sin diálogo de confirmación ---- */
+document.addEventListener('click', e => {
+  const a = e.target.closest('[data-acc]'); if (!a) return;
+  const key = a.dataset.key, nombre = key.split(':')[1];
+  if (a.dataset.acc === 'fijar') {
+    const antes = fijados.has(key);
+    antes ? fijados.delete(key) : fijados.add(key);
+    guardar(); renderModulos();
+    toast(antes ? `«${nombre}» ya no está fijado` : `«${nombre}» fijado arriba`,
+      () => { antes ? fijados.add(key) : fijados.delete(key); guardar(); renderModulos(); }, 6000);
+  } else if (a.dataset.acc === 'ocultar') {
+    ocultos.add(key); guardar(); renderModulos();
+    toast(`«${nombre}» oculto de tu vista`, () => { ocultos.delete(key); guardar(); renderModulos(); });
+  } else {
+    toast(`${nombre}: aquí va la descripción del módulo (texto de ejemplo).`, null, 5000);
+  }
+});
+
+/* ---- Vistas ---- */
+function ir(nombre){
+  if (!$('#v-'+nombre)) nombre = 'portal';
+  transicion(() => {
+    $$('.vista').forEach(v => v.hidden = v.id !== 'v-'+nombre);
+    if (nombre === 'ventas') cargarVentas();
+    scrollTo(0,0);
+  });
+}
+document.addEventListener('click', e => {
+  const l = e.target.closest('[data-ir]'); if (!l) return;
+  e.preventDefault(); history.pushState(null,'','#'+l.dataset.ir); ir(l.dataset.ir);
+});
+addEventListener('popstate', () => ir(location.hash.slice(1) || 'portal'));
+
+/* ---- Tabla: skeleton solo si la carga pasa de 300 ms, con las mismas columnas que la tabla real ---- */
+function filas(skel){
+  return NOMBRES.map((n,i) => {
+    if (skel) return '<tr>' + [70,55,40,60,50,45].map((w,j) => `<td${j>2?' class="num"':''}><div class="sk-b" style="width:${w}%;margin-left:${j>2?'auto':'0'}"></div></td>`).join('') + '<td></td></tr>';
+    const venta = 40e6 + ((i*7919)%30)*1.7e6, meta = 55e6, c = venta/meta*100, e = ESTADOS[c>=95?0:c>=80?1:2];
+    return `<tr><td>${n}</td><td>${SUC[i%3]}</td><td><span class="estado" style="--c:${e[1]}">${e[0]}</span></td>
+      <td class="num">$ ${fmt.format(Math.round(venta))}</td><td class="num">$ ${fmt.format(meta)}</td><td class="num">${c.toFixed(1).replace('.',',')} %</td>
+      <td class="text-end"><button class="btn-ghost" aria-label="Ver detalle de ${n}"><i class="bi bi-chevron-right"></i></button></td></tr>`;
+  }).join('');
+}
+let cargaId = 0;
+function cargarVentas(){
+  const id = ++cargaId, tb = $('#tbody'), cont = $('#tablaVentas');
+  cont.setAttribute('aria-busy','true');
+  const t = setTimeout(() => { if (id === cargaId) tb.innerHTML = filas(true); }, 300);
+  setTimeout(() => { clearTimeout(t); if (id !== cargaId) return; tb.innerHTML = filas(false); cont.setAttribute('aria-busy','false'); }, 900);
+}
+$('#btnRecargar').onclick = cargarVentas;
+
+/* ---- Envío: botón deshabilitado mientras corre + Idempotency-Key estable por intento de la acción ---- */
+$('#formCliente').addEventListener('submit', e => {
+  e.preventDefault(); const b = e.submitter, key = crypto.randomUUID();
+  b.disabled = true;
+  setTimeout(() => { b.disabled = false; toast('Búsqueda de ejemplo · Idempotency-Key ' + key.slice(0,8) + '…', null, 4000); }, 600);
+});
+
+/* ---- Command menu ---- */
+const cmd = $('#cmd'), cq = $('#cmdQ'), cl = $('#cmdLista');
+let items = [], sel = 0;
+function todos(){
+  const base = [['Ir al Portal','house-door','portal','Página'],['Ir a Panel de Ventas','bar-chart-line','ventas','Página'],['Ir a Clientes','person-vcard','clientes','Página']];
+  const mods = GRUPOS.flatMap(g => g.mods.map(m => [m[0], m[1], (m[2]||'#portal').slice(1), g.nombre]));
+  return base.concat(mods);
+}
+function pintarCmd(){
+  const q = norm(cq.value.trim());
+  items = todos().filter(i => !q || norm(i[0]).includes(q) || norm(i[3]).includes(q)).slice(0,30); sel = 0;
+  cl.innerHTML = items.length ? items.map((i,n) => `<li role="option" id="op${n}" aria-selected="${n===0}" data-n="${n}"><i class="bi bi-${i[1]}"></i>${i[0]}<small>${i[3]}</small></li>`).join('')
+    : '<li class="text-muted" role="option" aria-disabled="true">Sin resultados</li>';
+  cq.setAttribute('aria-activedescendant', items.length ? 'op0' : '');
+}
+function marcar(n){
+  if (!items.length) return; sel = (n + items.length) % items.length;
+  $$('li', cl).forEach((li,i) => li.setAttribute('aria-selected', i === sel));
+  cq.setAttribute('aria-activedescendant', 'op'+sel); $$('li', cl)[sel].scrollIntoView({block:'nearest'});
+}
+function elegir(n){ const i = items[n]; if (!i) return; cmd.close(); history.pushState(null,'','#'+i[2]); ir(i[2]); }
+function abrirCmd(){ cq.value=''; pintarCmd(); cmd.showModal(); cq.focus(); }
+$('#abrirCmd').onclick = abrirCmd;
+cq.addEventListener('input', pintarCmd);
+cq.addEventListener('keydown', e => {
+  if (e.key === 'ArrowDown') { e.preventDefault(); marcar(sel+1); }
+  else if (e.key === 'ArrowUp') { e.preventDefault(); marcar(sel-1); }
+  else if (e.key === 'Enter') { e.preventDefault(); elegir(sel); }
+});
+cl.addEventListener('click', e => { const li = e.target.closest('li[data-n]'); if (li) elegir(+li.dataset.n); });
+cmd.addEventListener('click', e => { if (e.target === cmd) cmd.close(); });
+
+/* ---- Atajos globales: nunca se disparan mientras se escribe en un campo ---- */
+const escribiendo = el => el && (/^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName) || el.isContentEditable);
+addEventListener('keydown', e => {
+  if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); cmd.open ? cmd.close() : abrirCmd(); return; }
+  if (escribiendo(e.target) || e.metaKey || e.ctrlKey || e.altKey) return;
+  if (e.key === '/') { e.preventDefault(); $('#qMod').focus(); }
+});
+
+renderModulos();
+ir(location.hash.slice(1) || 'portal');
+})();
+</script>
+</body>
+</html>
